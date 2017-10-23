@@ -1,0 +1,8 @@
+# Ignore everything
+/*
+
+# Not these files
+!/*.py
+!/.gitattributes
+!/.gitignore
+!/README.md
