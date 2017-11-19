@@ -80,7 +80,7 @@ DATA_SETS = (
         'OUT_FILE_NAME': './acestream-ttv-all.m3u',
 
         # Output file first line:
-        'OUT_FILE_FIRST_LINE': '#EXTM3U\r\n',
+        'OUT_FILE_FIRST_LINE': '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip"\r\n',
 
         # Output file format:
         'OUT_FILE_FORMAT': '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
