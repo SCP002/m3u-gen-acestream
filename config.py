@@ -24,15 +24,15 @@ JSON_SRC_MAX_ATTEMPTS = 10
 CONN_TIMEOUT = 10
 
 # Send email on program crash or not:
-NOTIFY = True
+MAIL_ON_CRASH = True
 
 # Send email from:
 # Note: To use this feature with gmail, enable 'less secure apps' on the sender account.
 # See: https://myaccount.google.com/lesssecureapps
-NOTIFY_FROM = 'from.email.address@domain.com'
+MAIL_FROM = 'from.email.address@domain.com'
 
 # Send email to:
-NOTIFY_TO = 'to.email.address@domain.com'
+MAIL_TO = 'to.email.address@domain.com'
 
 # SMTP server address:
 SMTP_ADDR = 'smtp.gmail.com:587'
@@ -43,8 +43,8 @@ SMTP_LOGIN = 'my.email.login'
 # SMTP server password:
 SMTP_PWD = 'my.email.password'
 
-# Ask to press <Enter> to exit or not:
-PAUSE = False
+# Ask to press <Enter> on program crash to exit or not:
+PAUSE_ON_CRASH = False
 
 # Data sets used to generate m3u files:
 DATA_SETS = (

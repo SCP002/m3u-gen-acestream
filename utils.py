@@ -35,5 +35,5 @@ def send_email(subject, text):
     server.ehlo()
     server.starttls()
     server.login(cfg.SMTP_LOGIN, cfg.SMTP_PWD)
-    server.sendmail(cfg.NOTIFY_FROM, cfg.NOTIFY_TO, message)
+    server.sendmail(cfg.MAIL_FROM, cfg.MAIL_TO, message)
     server.quit()

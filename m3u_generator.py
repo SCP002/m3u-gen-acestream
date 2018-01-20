@@ -78,12 +78,12 @@ if __name__ == '__main__':
     except Exception:
         print_exc()
 
-        if cfg.NOTIFY:
+        if cfg.MAIL_ON_CRASH:
             print('Sending notification.', file=stderr)
             send_email('M3UGenerator has crashed on ' + gethostname() + '@' + gethostbyname(gethostname()),
                        format_exc())
 
-        if cfg.PAUSE:
+        if cfg.PAUSE_ON_CRASH:
             input('Press <Enter> to exit...')
 
         exit(1)
