@@ -13,18 +13,8 @@ from time import sleep
 from traceback import print_exc, format_exc
 
 import config as cfg
-from channel_handler import get_channel_list, is_channel_allowed, replace_categories
+from channel_handler import get_channel_list, is_channel_allowed, replace_categories, write_entry
 from utils import wait_for_internet, send_email
-
-
-def write_entry(out_file, data_set, channel):
-    out_file_format = data_set.get('OUT_FILE_FORMAT')
-
-    entry = out_file_format \
-        .replace('{CATEGORY}', channel.get('cat')) \
-        .replace('{NAME}', channel.get('name')) \
-        .replace('{CONTENT_ID}', channel.get('url'))
-    out_file.write(entry)
 
 
 def main():
@@ -80,7 +70,7 @@ def main():
         sleep(cfg.UPDATE_DELAY)
 
 
-# Main entry point
+# Main start point.
 if __name__ == '__main__':
     # noinspection PyBroadException
     try:

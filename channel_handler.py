@@ -77,3 +77,13 @@ def is_channel_allowed(channel, data_set):
             return False
 
     return True
+
+
+def write_entry(out_file, data_set, channel):
+    out_file_format = data_set.get('OUT_FILE_FORMAT')
+
+    entry = out_file_format \
+        .replace('{CATEGORY}', channel.get('cat')) \
+        .replace('{NAME}', channel.get('name')) \
+        .replace('{CONTENT_ID}', channel.get('url'))
+    out_file.write(entry)
