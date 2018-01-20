@@ -76,8 +76,14 @@ DATA_SETS = (
         # }
         'JSON_URL': 'http://91.92.66.82/trash/ttv-list/ttv.json',
 
+        # JSON response encoding:
+        'RESP_ENCODING': 'UTF-8-SIG',
+
         # Output file name:
         'OUT_FILE_NAME': './acestream-ttv-all.m3u',
+
+        # Output file encoding:
+        'OUT_FILE_ENCODING': 'UTF-8',
 
         # Output file first line:
         'OUT_FILE_FIRST_LINE': '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip" '

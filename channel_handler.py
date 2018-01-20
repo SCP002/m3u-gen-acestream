@@ -15,7 +15,10 @@ import config as cfg
 from utils import wait_for_internet
 
 
-def get_channel_list(json_url):
+def get_channel_list(data_set):
+    json_url = data_set.get('JSON_URL')
+    resp_encoding = data_set.get('RESP_ENCODING')
+
     for attempt_number in range(1, cfg.JSON_SRC_MAX_ATTEMPTS):
         print('Retrieving JSON file, attempt', attempt_number, 'of', cfg.JSON_SRC_MAX_ATTEMPTS, end='\n\n')
 
@@ -24,7 +27,7 @@ def get_channel_list(json_url):
 
         try:
             with closing(urlopen(json_url, timeout=cfg.CONN_TIMEOUT)) as response:
-                response = response.read()
+                response = response.read().decode(resp_encoding)
 
             channel_list = loads(response).get('channels')
 
@@ -42,7 +45,9 @@ def get_channel_list(json_url):
                 raise
 
 
-def replace_categories(channel_list, replace_cats):
+def replace_categories(channel_list, data_set):
+    replace_cats = data_set.get('REPLACE_CATS')
+
     for target_name in replace_cats:
         target_category = replace_cats.get(target_name)
 
@@ -55,7 +60,10 @@ def replace_categories(channel_list, replace_cats):
     return channel_list
 
 
-def is_channel_allowed(channel, exclude_cats, exclude_names):
+def is_channel_allowed(channel, data_set):
+    exclude_cats = data_set.get('EXCLUDE_CATS')
+    exclude_names = data_set.get('EXCLUDE_NAMES')
+
     if len(exclude_cats) > 0:
         categories_filter = '(' + ')|('.join(exclude_cats) + ')'
 

@@ -17,7 +17,9 @@ from channel_handler import get_channel_list, is_channel_allowed, replace_catego
 from utils import wait_for_internet, send_email
 
 
-def write_entry(out_file, out_file_format, channel):
+def write_entry(out_file, data_set, channel):
+    out_file_format = data_set.get('OUT_FILE_FORMAT')
+
     entry = out_file_format \
         .replace('{CATEGORY}', channel.get('cat')) \
         .replace('{NAME}', channel.get('name')) \
@@ -37,30 +39,26 @@ def main():
             data_set_number += 1
             print('Processing data set', data_set_number, 'of', len(cfg.DATA_SETS))
 
-            json_url = data_set.get('JSON_URL')
-            out_file = data_set.get('OUT_FILE_NAME')
+            out_file_name = data_set.get('OUT_FILE_NAME')
+            out_file_encoding = data_set.get('OUT_FILE_ENCODING')
             out_file_first_line = data_set.get('OUT_FILE_FIRST_LINE')
-            out_file_format = data_set.get('OUT_FILE_FORMAT')
-            replace_cats = data_set.get('REPLACE_CATS')
-            exclude_cats = data_set.get('EXCLUDE_CATS')
-            exclude_names = data_set.get('EXCLUDE_NAMES')
 
-            makedirs(dirname(out_file), exist_ok=True)
-            out_file = open(out_file, 'w', 'utf-8')
+            makedirs(dirname(out_file_name), exist_ok=True)
+            out_file = open(out_file_name, 'w', out_file_encoding)
             out_file.write(out_file_first_line)
 
             total_channel_count = 0
             allowed_channel_count = 0
 
-            channel_list = get_channel_list(json_url)
-            channel_list = replace_categories(channel_list, replace_cats)
+            channel_list = get_channel_list(data_set)
+            channel_list = replace_categories(channel_list, data_set)
             channel_list.sort(key=lambda x: x.get('cat'))
 
             for channel in channel_list:
                 total_channel_count += 1
 
-                if is_channel_allowed(channel, exclude_cats, exclude_names):
-                    write_entry(out_file, out_file_format, channel)
+                if is_channel_allowed(channel, data_set):
+                    write_entry(out_file, data_set, channel)
                     allowed_channel_count += 1
 
             out_file.close()
