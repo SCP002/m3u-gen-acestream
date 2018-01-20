@@ -42,7 +42,7 @@ def get_channel_list(json_url):
                 raise
 
 
-def replace_categories(replace_cats, channel_list):
+def replace_categories(channel_list, replace_cats):
     for target_name in replace_cats:
         target_category = replace_cats.get(target_name)
 
@@ -55,17 +55,17 @@ def replace_categories(replace_cats, channel_list):
     return channel_list
 
 
-def is_channel_allowed(category, name, exclude_cats, exclude_names):
+def is_channel_allowed(channel, exclude_cats, exclude_names):
     if len(exclude_cats) > 0:
         categories_filter = '(' + ')|('.join(exclude_cats) + ')'
 
-        if match(categories_filter, category, IGNORECASE):
+        if match(categories_filter, channel.get('cat'), IGNORECASE):
             return False
 
     if len(exclude_names) > 0:
         names_filter = '(' + ')|('.join(exclude_names) + ')'
 
-        if match(names_filter, name, IGNORECASE):
+        if match(names_filter, channel.get('name'), IGNORECASE):
             return False
 
     return True

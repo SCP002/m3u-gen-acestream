@@ -17,11 +17,11 @@ from channel_handler import get_channel_list, is_channel_allowed, replace_catego
 from utils import wait_for_internet, send_email
 
 
-def write_entry(out_file, out_file_format, category, name, content_id):
+def write_entry(out_file, out_file_format, channel):
     entry = out_file_format \
-        .replace('{CATEGORY}', category) \
-        .replace('{NAME}', name) \
-        .replace('{CONTENT_ID}', content_id)
+        .replace('{CATEGORY}', channel.get('cat')) \
+        .replace('{NAME}', channel.get('name')) \
+        .replace('{CONTENT_ID}', channel.get('url'))
     out_file.write(entry)
 
 
@@ -53,18 +53,14 @@ def main():
             allowed_channel_count = 0
 
             channel_list = get_channel_list(json_url)
-            channel_list = replace_categories(replace_cats, channel_list)
+            channel_list = replace_categories(channel_list, replace_cats)
             channel_list.sort(key=lambda x: x.get('cat'))
 
             for channel in channel_list:
-                name = channel.get('name')
-                content_id = channel.get('url')
-                category = channel.get('cat')
-
                 total_channel_count += 1
 
-                if is_channel_allowed(category, name, exclude_cats, exclude_names):
-                    write_entry(out_file, out_file_format, category, name, content_id)
+                if is_channel_allowed(channel, exclude_cats, exclude_names):
+                    write_entry(out_file, out_file_format, channel)
                     allowed_channel_count += 1
 
             out_file.close()
