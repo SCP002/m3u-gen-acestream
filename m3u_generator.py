@@ -3,6 +3,7 @@
 
 
 from codecs import open
+from contextlib import closing
 from datetime import datetime
 from datetime import timedelta
 from os import makedirs
@@ -34,24 +35,24 @@ def main():
             out_file_first_line = data_set.get('OUT_FILE_FIRST_LINE')
 
             makedirs(dirname(out_file_name), exist_ok=True)
-            out_file = open(out_file_name, 'w', out_file_encoding)
-            out_file.write(out_file_first_line)
 
-            total_channel_count = 0
-            allowed_channel_count = 0
+            with closing(open(out_file_name, 'w', out_file_encoding)) as out_file:
+                out_file.write(out_file_first_line)
 
-            channel_list = get_channel_list(data_set)
-            channel_list = replace_categories(channel_list, data_set)
-            channel_list.sort(key=lambda x: x.get('cat'))
+                total_channel_count = 0
+                allowed_channel_count = 0
 
-            for channel in channel_list:
-                total_channel_count += 1
+                channel_list = get_channel_list(data_set)
+                channel_list = replace_categories(channel_list, data_set)
+                channel_list.sort(key=lambda x: x.get('name'))
+                channel_list.sort(key=lambda x: x.get('cat'))
 
-                if is_channel_allowed(channel, data_set):
-                    write_entry(out_file, data_set, channel)
-                    allowed_channel_count += 1
+                for channel in channel_list:
+                    total_channel_count += 1
 
-            out_file.close()
+                    if is_channel_allowed(channel, data_set):
+                        write_entry(out_file, data_set, channel)
+                        allowed_channel_count += 1
 
             print('Playlist', data_set.get('OUT_FILE_NAME'), 'successfully generated.')
             print('Channels processed in total:', total_channel_count)
@@ -84,6 +85,6 @@ if __name__ == '__main__':
                        format_exc())
 
         if cfg.PAUSE_ON_CRASH:
-            input('Press <Enter> to exit...')
+            input('Press <Enter> to exit...\n')
 
         exit(1)

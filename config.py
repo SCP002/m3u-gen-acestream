@@ -24,7 +24,7 @@ JSON_SRC_MAX_ATTEMPTS = 10
 CONN_TIMEOUT = 10
 
 # Send email on program crash or not:
-MAIL_ON_CRASH = True
+MAIL_ON_CRASH = False
 
 # Send email from:
 # Note: To use this feature with gmail, enable 'less secure apps' on the sender account.
@@ -44,8 +44,9 @@ SMTP_LOGIN = 'my.email.login'
 SMTP_PWD = 'my.email.password'
 
 # Ask to press <Enter> on program crash to exit or not:
-PAUSE_ON_CRASH = False
+PAUSE_ON_CRASH = True
 
+# noinspection SpellCheckingInspection
 # Data sets used to generate m3u files:
 DATA_SETS = (
     # TTV, all:
