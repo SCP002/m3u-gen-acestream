@@ -87,8 +87,8 @@ DATA_SETS = (
         'OUT_FILE_ENCODING': 'UTF-8',
 
         # Output file first line:
-        'OUT_FILE_FIRST_LINE': '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip" '
-                               'm3uautoload=1 cache=500 deinterlace=1 tvg-shift=-1\r\n',
+        'OUT_FILE_FIRST_LINE': '#EXTM3U url-tvg="http://1ttvapi.top/ttv.xmltv.xml.gz" tvg-shift=0 deinterlace=1 '
+                               'm3uautoload=1 cache=3000\r\n',
 
         # Output file format:
         'OUT_FILE_FORMAT': '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
