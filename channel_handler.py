@@ -2,9 +2,10 @@
 # -*- coding: UTF-8 -*-
 
 
+from codecs import open
 from contextlib import closing
 from datetime import timedelta
-from json import loads
+from json import loads, load
 from re import match, IGNORECASE
 from sys import stderr
 from time import sleep
@@ -46,29 +47,46 @@ def get_channel_list(data_set):
 
 
 def replace_categories(channel_list, data_set):
-    replace_cats = data_set.get('REPLACE_CATS')
+    with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+        filter_contents = load(filter_file)
 
-    for target_name in replace_cats:
-        target_category = replace_cats.get(target_name)
+    replace_cats = filter_contents.get('replace_cats')
 
-        for current_channel in channel_list:
-            current_name = current_channel.get('name')
+    replaced = False
 
-            if match(target_name, current_name, IGNORECASE):
-                current_channel['cat'] = target_category
+    for replace_cat in replace_cats:
+        target_name = replace_cat.get('for_name')
+        target_category = replace_cat.get('to_cat')
+
+        for channel in channel_list:
+            current_name = channel.get('name')
+            current_category = channel.get('cat')
+
+            if match(target_name, current_name, IGNORECASE) and not current_category == target_category:
+                channel['cat'] = target_category
+                replaced = True
+                print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
+                      target_category + '".')
+
+    if replaced:
+        print()
 
     return channel_list
 
 
 def is_channel_allowed(channel, data_set):
-    exclude_cats = data_set.get('EXCLUDE_CATS')
-    exclude_names = data_set.get('EXCLUDE_NAMES')
+    with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+        filter_contents = load(filter_file)
+
+    exclude_cats = filter_contents.get('exclude_cats')
 
     if len(exclude_cats) > 0:
         categories_filter = '(' + ')|('.join(exclude_cats) + ')'
 
         if match(categories_filter, channel.get('cat'), IGNORECASE):
             return False
+
+    exclude_names = filter_contents.get('exclude_names')
 
     if len(exclude_names) > 0:
         names_filter = '(' + ')|('.join(exclude_names) + ')'
@@ -79,11 +97,12 @@ def is_channel_allowed(channel, data_set):
     return True
 
 
-def write_entry(out_file, data_set, channel):
+def write_entry(channel, data_set, out_file):
     out_file_format = data_set.get('OUT_FILE_FORMAT')
 
     entry = out_file_format \
         .replace('{CATEGORY}', channel.get('cat')) \
         .replace('{NAME}', channel.get('name')) \
         .replace('{CONTENT_ID}', channel.get('url'))
+
     out_file.write(entry)

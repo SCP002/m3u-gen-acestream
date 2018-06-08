@@ -2,6 +2,7 @@
 /*
 
 # Not these files
+!/*.json
 !/*.py
 !/.gitattributes
 !/.gitignore

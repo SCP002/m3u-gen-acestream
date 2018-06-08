@@ -94,17 +94,40 @@ DATA_SETS = (
         'OUT_FILE_FORMAT': '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
                            'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
 
-        # Categories that needs to be changed (channel names uses regex):
-        # Format: 'CHANNEL_NAME': 'CATEGORY_TO_SET':
-        'REPLACE_CATS': {
-        },
+        # Filter file name:
+        # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
+        # {
+        #
+        #   // Categories that needs to be changed (channel names uses regex):
+        #   "replace_cats": [
+        #     {
+        #       "for_name": ".*some channel name 1.*",
+        #       "to_cat": "some category 1"
+        #     },
+        #     {
+        #       "for_name": "some channel name 2",
+        #       "to_cat": "some category 2"
+        #     }
+        #   ],
+        #
+        #   // Categories blacklist (uses regex):
+        #   "exclude_cats": [
+        #     "some category 1",
+        #     "some category 2"
+        #   ],
+        #
+        #   // Channel names blacklist (uses regex):
+        #   "exclude_names": [
+        #     ".*some channel name 1.*",
+        #     "some channel name 2"
+        #   ]
+        #
+        # }
+        'FILTER_FILE_NAME': './filter.json',
 
-        # Categories blacklist (uses regex):
-        'EXCLUDE_CATS': (
-        ),
-
-        # Channel names blacklist (uses regex):
-        'EXCLUDE_NAMES': (
-        ),
+        # Filter file encoding:
+        'FILTER_FILE_ENCODING': 'UTF-8',
     },
+
+    # Feel free to insert another data sets (like above) here to generate multiple playlists each iteration.
 )

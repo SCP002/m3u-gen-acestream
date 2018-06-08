@@ -51,7 +51,7 @@ def main():
                     total_channel_count += 1
 
                     if is_channel_allowed(channel, data_set):
-                        write_entry(out_file, data_set, channel)
+                        write_entry(channel, data_set, out_file)
                         allowed_channel_count += 1
 
             print('Playlist', data_set.get('OUT_FILE_NAME'), 'successfully generated.')
