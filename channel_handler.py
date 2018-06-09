@@ -112,36 +112,50 @@ def clean_filter(src_channel_list, data_set):
     with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
         filter_contents = load(filter_file)
 
+        cleaned = False
+
         # Clean "replace_cats"
         replace_cats = filter_contents.get('replace_cats')
 
-        for replace_cat in replace_cats:
+        for replace_cat in replace_cats[:]:
             name_in_filter = replace_cat.get('for_name')
 
             if all(not match(name_in_filter, src_channel.get('name'), IGNORECASE) for src_channel in src_channel_list):
-                print('Not found any match for category replacement: "' + replace_cat + '" in source,',
-                      'removing from filter...')
                 replace_cats.remove(replace_cat)
+                cleaned = True
+                print('Not found any match for category replacement: "' + name_in_filter + '" in source,',
+                      'removed from filter.')
+
+        if cleaned:
+            cleaned = False
+            print('')
 
         # Clean "exclude_cats"
         exclude_cats = filter_contents.get('exclude_cats')
 
-        for exclude_cat in exclude_cats:
-            if all(not match(exclude_cat, src_channel.get('category'), IGNORECASE) for src_channel in src_channel_list):
-                print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
-                      'removing from filter...')
+        for exclude_cat in exclude_cats[:]:
+            if all(not match(exclude_cat, src_channel.get('cat'), IGNORECASE) for src_channel in src_channel_list):
                 exclude_cats.remove(exclude_cat)
+                cleaned = True
+                print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
+                      'removed from filter.')
+
+        if cleaned:
+            cleaned = False
+            print('')
 
         # Clean "exclude_names"
         exclude_names = filter_contents.get('exclude_names')
 
-        for exclude_name in exclude_names:
+        for exclude_name in exclude_names[:]:
             if all(not match(exclude_name, src_channel.get('name'), IGNORECASE) for src_channel in src_channel_list):
-                print('Not found any match for name exclusion: "' + exclude_name + '" in source,',
-                      'removing from filter...')
                 exclude_names.remove(exclude_name)
+                cleaned = True
+                print('Not found any match for name exclusion: "' + exclude_name + '" in source,',
+                      'removed from filter.')
 
-        print('')
+        if cleaned:
+            print('')
 
     # Write changes
     with closing(open(data_set.get('FILTER_FILE_NAME'), 'w', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
