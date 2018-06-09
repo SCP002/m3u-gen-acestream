@@ -14,7 +14,7 @@ from time import sleep
 from traceback import print_exc, format_exc
 
 import config as cfg
-from channel_handler import get_channel_list, is_channel_allowed, replace_categories, write_entry
+from channel_handler import get_channel_list, is_channel_allowed, replace_categories, write_entry, clean_filter
 from utils import wait_for_internet, send_email
 
 
@@ -46,6 +46,9 @@ def main():
                 channel_list = replace_categories(channel_list, data_set)
                 channel_list.sort(key=lambda x: x.get('name'))
                 channel_list.sort(key=lambda x: x.get('cat'))
+
+                if data_set.get('CLEAN_FILTER'):
+                    clean_filter(channel_list, data_set)
 
                 for channel in channel_list:
                     total_channel_count += 1

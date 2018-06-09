@@ -127,6 +127,9 @@ DATA_SETS = (
 
         # Filter file encoding:
         'FILTER_FILE_ENCODING': 'UTF-8',
+
+        # Remove entry from filter file if it is not found in source JSON or not:
+        'CLEAN_FILTER': False,
     },
 
     # Feel free to insert another data sets (like above) here to generate multiple playlists each iteration.

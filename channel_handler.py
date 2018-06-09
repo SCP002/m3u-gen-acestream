@@ -5,7 +5,7 @@
 from codecs import open
 from contextlib import closing
 from datetime import timedelta
-from json import loads, load
+from json import loads, load, dump
 from re import match, IGNORECASE
 from sys import stderr
 from time import sleep
@@ -69,7 +69,7 @@ def replace_categories(channel_list, data_set):
                       target_category + '".')
 
     if replaced:
-        print()
+        print('')
 
     return channel_list
 
@@ -106,3 +106,43 @@ def write_entry(channel, data_set, out_file):
         .replace('{CONTENT_ID}', channel.get('url'))
 
     out_file.write(entry)
+
+
+def clean_filter(src_channel_list, data_set):
+    with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+        filter_contents = load(filter_file)
+
+        # Clean "replace_cats"
+        replace_cats = filter_contents.get('replace_cats')
+
+        for replace_cat in replace_cats:
+            name_in_filter = replace_cat.get('for_name')
+
+            if all(not match(name_in_filter, src_channel.get('name'), IGNORECASE) for src_channel in src_channel_list):
+                print('Not found any match for category replacement: "' + replace_cat + '" in source,',
+                      'removing from filter...')
+                replace_cats.remove(replace_cat)
+
+        # Clean "exclude_cats"
+        exclude_cats = filter_contents.get('exclude_cats')
+
+        for exclude_cat in exclude_cats:
+            if all(not match(exclude_cat, src_channel.get('category'), IGNORECASE) for src_channel in src_channel_list):
+                print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
+                      'removing from filter...')
+                exclude_cats.remove(exclude_cat)
+
+        # Clean "exclude_names"
+        exclude_names = filter_contents.get('exclude_names')
+
+        for exclude_name in exclude_names:
+            if all(not match(exclude_name, src_channel.get('name'), IGNORECASE) for src_channel in src_channel_list):
+                print('Not found any match for name exclusion: "' + exclude_name + '" in source,',
+                      'removing from filter...')
+                exclude_names.remove(exclude_name)
+
+        print('')
+
+    # Write changes
+    with closing(open(data_set.get('FILTER_FILE_NAME'), 'w', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+        dump(filter_contents, filter_file, indent=2, ensure_ascii=False)
