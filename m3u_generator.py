@@ -13,81 +13,85 @@ from sys import stderr
 from time import sleep
 from traceback import print_exc, format_exc
 
-import config as cfg
-from channel_handler import get_channel_list, is_channel_allowed, replace_categories, write_entry, clean_filter
-from utils import wait_for_internet, send_email
+from channel_handler import ChannelHandler
+from config import Config
+from utils import Utils
 
 
-def main():
-    while True:
-        print('Started at', datetime.now().strftime('%b %d %H:%M:%S'), end='\n\n')
+class M3UGenerator:
 
-        wait_for_internet()
+    @staticmethod
+    def main():
+        while True:
+            print('Started at', datetime.now().strftime('%b %d %H:%M:%S'), end='\n\n')
 
-        data_set_number = 0
+            Utils.wait_for_internet()
 
-        for data_set in cfg.DATA_SETS:
-            data_set_number += 1
-            print('Processing data set', data_set_number, 'of', len(cfg.DATA_SETS))
+            data_set_number = 0
 
-            out_file_name = data_set.get('OUT_FILE_NAME')
-            out_file_encoding = data_set.get('OUT_FILE_ENCODING')
-            out_file_first_line = data_set.get('OUT_FILE_FIRST_LINE')
+            for data_set in Config.DATA_SETS:
+                data_set_number += 1
+                print('Processing data set', data_set_number, 'of', len(Config.DATA_SETS))
 
-            makedirs(dirname(out_file_name), exist_ok=True)
+                out_file_name = data_set.get('OUT_FILE_NAME')
+                out_file_encoding = data_set.get('OUT_FILE_ENCODING')
+                out_file_first_line = data_set.get('OUT_FILE_FIRST_LINE')
 
-            with closing(open(out_file_name, 'w', out_file_encoding)) as out_file:
-                out_file.write(out_file_first_line)
+                makedirs(dirname(out_file_name), exist_ok=True)
 
-                total_channel_count = 0
-                allowed_channel_count = 0
+                with closing(open(out_file_name, 'w', out_file_encoding)) as out_file:
+                    out_file.write(out_file_first_line)
 
-                channel_list = get_channel_list(data_set)
-                channel_list = replace_categories(channel_list, data_set)
-                channel_list.sort(key=lambda x: x.get('name'))
-                channel_list.sort(key=lambda x: x.get('cat'))
+                    total_channel_count = 0
+                    allowed_channel_count = 0
 
-                if data_set.get('CLEAN_FILTER'):
-                    clean_filter(channel_list, data_set)
+                    channel_list = ChannelHandler.get_channel_list(data_set)
+                    channel_list = ChannelHandler.replace_categories(channel_list, data_set)
+                    channel_list.sort(key=lambda x: x.get('name'))
+                    channel_list.sort(key=lambda x: x.get('cat'))
 
-                for channel in channel_list:
-                    total_channel_count += 1
+                    if data_set.get('CLEAN_FILTER'):
+                        ChannelHandler.clean_filter(channel_list, data_set)
 
-                    if is_channel_allowed(channel, data_set):
-                        write_entry(channel, data_set, out_file)
-                        allowed_channel_count += 1
+                    for channel in channel_list:
+                        total_channel_count += 1
 
-            print('Playlist', data_set.get('OUT_FILE_NAME'), 'successfully generated.')
-            print('Channels processed in total:', total_channel_count)
-            print('Channels allowed:', allowed_channel_count)
-            print('Channels denied:', total_channel_count - allowed_channel_count)
+                        if ChannelHandler.is_channel_allowed(channel, data_set):
+                            ChannelHandler.write_entry(channel, data_set, out_file)
+                            allowed_channel_count += 1
 
-            if data_set_number < len(cfg.DATA_SETS):
-                print('Sleeping for', timedelta(seconds=cfg.DATA_SET_DELAY), 'before processing next data set...')
-                sleep(cfg.DATA_SET_DELAY)
+                print('Playlist', data_set.get('OUT_FILE_NAME'), 'successfully generated.')
+                print('Channels processed in total:', total_channel_count)
+                print('Channels allowed:', allowed_channel_count)
+                print('Channels denied:', total_channel_count - allowed_channel_count)
 
-            print('')
+                if data_set_number < len(Config.DATA_SETS):
+                    print('Sleeping for', timedelta(seconds=Config.DATA_SET_DELAY),
+                          'before processing next data set...')
+                    sleep(Config.DATA_SET_DELAY)
 
-        print('Finished at', datetime.now().strftime('%b %d %H:%M:%S'))
-        print('Sleeping for', timedelta(seconds=cfg.UPDATE_DELAY), 'before the new update...')
-        print('-' * 45, end='\n\n\n')
-        sleep(cfg.UPDATE_DELAY)
+                print('')
+
+            print('Finished at', datetime.now().strftime('%b %d %H:%M:%S'))
+            print('Sleeping for', timedelta(seconds=Config.UPDATE_DELAY), 'before the new update...')
+            print('-' * 45, end='\n\n\n')
+            sleep(Config.UPDATE_DELAY)
 
 
 # Main start point.
 if __name__ == '__main__':
     # noinspection PyBroadException
     try:
-        main()
+        M3UGenerator.main()
     except Exception:
         print_exc()
 
-        if cfg.MAIL_ON_CRASH:
+        if Config.MAIL_ON_CRASH:
             print('Sending notification.', file=stderr)
-            send_email('M3UGenerator has crashed on ' + gethostname() + '@' + gethostbyname(gethostname()),
-                       format_exc())
+            Utils.send_email('M3UGenerator has crashed on ' + gethostname() + '@' + gethostbyname(gethostname()),
+                             format_exc())
 
-        if cfg.PAUSE_ON_CRASH:
+        if Config.PAUSE_ON_CRASH:
             input('Press <Enter> to exit...\n')
 
         exit(1)
