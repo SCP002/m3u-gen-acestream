@@ -2,54 +2,57 @@
 # -*- coding: UTF-8 -*-
 
 
+from typing import Dict, Tuple, Union
+
+
 class Config:
     # Address used to check internet connection:
-    CONN_CHECK_ADDR = 'http://google.com'
+    CONN_CHECK_ADDR: str = 'http://google.com'
 
     # Delay between requests to the internet connection check address (in seconds):
-    CONN_CHECK_REQ_DELAY = 30
+    CONN_CHECK_REQ_DELAY: int = 30
 
     # Delay between processing each data set (in seconds):
-    DATA_SET_DELAY = 5
+    DATA_SET_DELAY: int = 5
 
     # Delay between playlist updates (in seconds):
-    UPDATE_DELAY = 60 * 60
+    UPDATE_DELAY: int = 60 * 60
 
     # Delay between requests to the JSON source host if it is currently down (in seconds):
-    JSON_SRC_REQ_DELAY = 60 * 10
+    JSON_SRC_REQ_DELAY: int = 60 * 10
 
     # Amount of requests to the JSON source host before throw an exception if it is currently down:
-    JSON_SRC_MAX_ATTEMPTS = 10
+    JSON_SRC_MAX_ATTEMPTS: int = 10
 
     # Time to wait before consider that destination is unreachable (in seconds):
-    CONN_TIMEOUT = 10
+    CONN_TIMEOUT: int = 10
 
     # Send email on program crash or not:
-    MAIL_ON_CRASH = False
+    MAIL_ON_CRASH: bool = False
 
     # Send email from:
     # Note: To use this feature with gmail, enable 'less secure apps' on the sender account.
     # See: https://myaccount.google.com/lesssecureapps
-    MAIL_FROM = 'from.email.address@domain.com'
+    MAIL_FROM: str = 'from.email.address@domain.com'
 
     # Send email to:
-    MAIL_TO = 'to.email.address@domain.com'
+    MAIL_TO: str = 'to.email.address@domain.com'
 
     # SMTP server address:
-    SMTP_ADDR = 'smtp.gmail.com:587'
+    SMTP_ADDR: str = 'smtp.gmail.com:587'
 
     # SMTP server login:
-    SMTP_LOGIN = 'my.email.login'
+    SMTP_LOGIN: str = 'my.email.login'
 
     # SMTP server password:
-    SMTP_PWD = 'my.email.password'
+    SMTP_PWD: str = 'my.email.password'
 
     # Ask to press <Enter> on program crash to exit or not:
-    PAUSE_ON_CRASH = True
+    PAUSE_ON_CRASH: bool = True
 
     # noinspection SpellCheckingInspection
     # Data sets used to generate m3u files:
-    DATA_SETS = (
+    DATA_SETS: Tuple[Dict[str, Union[str, bool]]] = (
         # TTV, all:
         {
             # Source JSON file URL:
