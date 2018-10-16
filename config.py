@@ -2,7 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 
-from typing import Dict, Tuple, Union
+from typing import Tuple
+
+from data_set import DataSet
 
 
 class Config:
@@ -52,9 +54,9 @@ class Config:
 
     # noinspection SpellCheckingInspection
     # Data sets used to generate m3u files:
-    DATA_SETS: Tuple[Dict[str, Union[str, bool]]] = (
+    DATA_SETS: Tuple[DataSet] = (
         # TTV, all:
-        {
+        DataSet(
             # Source JSON file URL:
             # Response example:
             # {
@@ -79,24 +81,24 @@ class Config:
             #     }
             #   ]
             # }
-            'JSON_URL': 'http://91.92.66.82/trash/ttv-list/ttv.json',
+            'http://91.92.66.82/trash/ttv-list/ttv.json',
 
             # JSON response encoding:
-            'RESP_ENCODING': 'UTF-8-SIG',
+            'UTF-8-SIG',
 
             # Output file name:
-            'OUT_FILE_NAME': './acestream-ttv-all.m3u',
+            './acestream-ttv-all.m3u',
 
             # Output file encoding:
-            'OUT_FILE_ENCODING': 'UTF-8',
+            'UTF-8',
 
             # Output file first line:
-            'OUT_FILE_FIRST_LINE': '#EXTM3U url-tvg="http://1ttvapi.top/ttv.xmltv.xml.gz" tvg-shift=0 deinterlace=1 '
-                                   'm3uautoload=1 cache=3000\r\n',
+            '#EXTM3U url-tvg="http://1ttvapi.top/ttv.xmltv.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1 '
+            'cache=3000\r\n',
 
             # Output file format:
-            'OUT_FILE_FORMAT': '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
-                               'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
+            '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
+            'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
 
             # Filter file name:
             # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
@@ -127,14 +129,14 @@ class Config:
             #   ]
             #
             # }
-            'FILTER_FILE_NAME': './filter.json',
+            './filter.json',
 
             # Filter file encoding:
-            'FILTER_FILE_ENCODING': 'UTF-8',
+            'UTF-8',
 
             # Remove entry from filter file if it is not found in source JSON or not:
-            'CLEAN_FILTER': False,
-        },
+            False,
+        ),
 
         # Feel free to insert another data sets (like above) here to generate multiple playlists each iteration.
     )
