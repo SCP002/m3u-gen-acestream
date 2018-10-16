@@ -33,9 +33,9 @@ class M3UGenerator:
                 data_set_number += 1
                 print('Processing data set', data_set_number, 'of', len(Config.DATA_SETS))
 
-                out_file_name = data_set.get('OUT_FILE_NAME')
-                out_file_encoding = data_set.get('OUT_FILE_ENCODING')
-                out_file_first_line = data_set.get('OUT_FILE_FIRST_LINE')
+                out_file_name: str = data_set.out_file_name
+                out_file_encoding: str = data_set.out_file_encoding
+                out_file_first_line: str = data_set.out_file_first_line
 
                 makedirs(dirname(out_file_name), exist_ok=True)
 
@@ -50,7 +50,7 @@ class M3UGenerator:
                     channel_list.sort(key=lambda x: x.get('name'))
                     channel_list.sort(key=lambda x: x.get('cat'))
 
-                    if data_set.get('CLEAN_FILTER'):
+                    if data_set.clean_filter:
                         ChannelHandler.clean_filter(channel_list, data_set)
 
                     for channel in channel_list:
@@ -60,7 +60,7 @@ class M3UGenerator:
                             ChannelHandler.write_entry(channel, data_set, out_file)
                             allowed_channel_count += 1
 
-                print('Playlist', data_set.get('OUT_FILE_NAME'), 'successfully generated.')
+                print('Playlist', data_set.out_file_name, 'successfully generated.')
                 print('Channels processed in total:', total_channel_count)
                 print('Channels allowed:', allowed_channel_count)
                 print('Channels denied:', total_channel_count - allowed_channel_count)

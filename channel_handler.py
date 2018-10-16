@@ -14,15 +14,16 @@ from urllib.error import URLError
 from urllib.request import urlopen
 
 from config import Config
+from data_set import DataSet
 from utils import Utils
 
 
 class ChannelHandler:
 
     @staticmethod
-    def get_channel_list(data_set) -> List[Dict[str, str]]:
-        json_url = data_set.get('JSON_URL')
-        resp_encoding = data_set.get('RESP_ENCODING')
+    def get_channel_list(data_set: DataSet) -> List[Dict[str, str]]:
+        json_url: str = data_set.json_url
+        resp_encoding: str = data_set.resp_encoding
 
         for attempt_number in range(1, Config.JSON_SRC_MAX_ATTEMPTS):
             print('Retrieving JSON file, attempt', attempt_number, 'of', Config.JSON_SRC_MAX_ATTEMPTS, end='\n\n')
@@ -53,8 +54,8 @@ class ChannelHandler:
         return [{'name': '', 'url': '', 'cat': ''}]
 
     @staticmethod
-    def replace_categories(channel_list, data_set) -> List[Dict[str, str]]:
-        with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+    def replace_categories(channel_list, data_set: DataSet) -> List[Dict[str, str]]:
+        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents = load(filter_file)
 
         replace_cats = filter_contents.get('replace_cats')
@@ -81,8 +82,8 @@ class ChannelHandler:
         return channel_list
 
     @staticmethod
-    def is_channel_allowed(channel, data_set) -> bool:
-        with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+    def is_channel_allowed(channel, data_set: DataSet) -> bool:
+        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents = load(filter_file)
 
         exclude_cats = filter_contents.get('exclude_cats')
@@ -104,8 +105,8 @@ class ChannelHandler:
         return True
 
     @staticmethod
-    def write_entry(channel, data_set, out_file) -> None:
-        out_file_format = data_set.get('OUT_FILE_FORMAT')
+    def write_entry(channel, data_set: DataSet, out_file) -> None:
+        out_file_format = data_set.out_file_format
 
         entry = out_file_format \
             .replace('{CATEGORY}', channel.get('cat')) \
@@ -115,8 +116,8 @@ class ChannelHandler:
         out_file.write(entry)
 
     @staticmethod
-    def clean_filter(src_channel_list, data_set) -> None:
-        with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+    def clean_filter(src_channel_list, data_set: DataSet) -> None:
+        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents = load(filter_file)
 
             cleaned = False
@@ -167,5 +168,5 @@ class ChannelHandler:
                 print('')
 
         # Write changes
-        with closing(open(data_set.get('FILTER_FILE_NAME'), 'w', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
+        with closing(open(data_set.filter_file_name, 'w', data_set.filter_file_encoding)) as filter_file:
             dump(filter_contents, filter_file, indent=2, ensure_ascii=False)
