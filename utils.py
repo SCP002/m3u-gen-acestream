@@ -16,7 +16,7 @@ from config import Config
 class Utils:
 
     @staticmethod
-    def wait_for_internet():
+    def wait_for_internet() -> None:
         while True:
             try:
                 with closing(urlopen(Config.CONN_CHECK_ADDR, timeout=Config.CONN_TIMEOUT)):
@@ -31,7 +31,7 @@ class Utils:
                 sleep(Config.CONN_CHECK_REQ_DELAY)
 
     @staticmethod
-    def send_email(subject, text):
+    def send_email(subject, text) -> None:
         message = 'Subject: {}\n\n{}'.format(subject, text)
 
         server = SMTP(Config.SMTP_ADDR)

@@ -21,7 +21,7 @@ from utils import Utils
 class M3UGenerator:
 
     @staticmethod
-    def main():
+    def main() -> None:
         while True:
             print('Started at', datetime.now().strftime('%b %d %H:%M:%S'), end='\n\n')
 

@@ -9,6 +9,7 @@ from json import loads, load, dump
 from re import match, IGNORECASE
 from sys import stderr
 from time import sleep
+from typing import List, Dict
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -19,7 +20,7 @@ from utils import Utils
 class ChannelHandler:
 
     @staticmethod
-    def get_channel_list(data_set):
+    def get_channel_list(data_set) -> List[Dict[str, str]]:
         json_url = data_set.get('JSON_URL')
         resp_encoding = data_set.get('RESP_ENCODING')
 
@@ -49,8 +50,10 @@ class ChannelHandler:
                     print('Raising an exception.', end='\n\n', file=stderr)
                     raise
 
+        return [{'name': '', 'url': '', 'cat': ''}]
+
     @staticmethod
-    def replace_categories(channel_list, data_set):
+    def replace_categories(channel_list, data_set) -> List[Dict[str, str]]:
         with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
             filter_contents = load(filter_file)
 
@@ -78,7 +81,7 @@ class ChannelHandler:
         return channel_list
 
     @staticmethod
-    def is_channel_allowed(channel, data_set):
+    def is_channel_allowed(channel, data_set) -> bool:
         with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
             filter_contents = load(filter_file)
 
@@ -101,7 +104,7 @@ class ChannelHandler:
         return True
 
     @staticmethod
-    def write_entry(channel, data_set, out_file):
+    def write_entry(channel, data_set, out_file) -> None:
         out_file_format = data_set.get('OUT_FILE_FORMAT')
 
         entry = out_file_format \
@@ -112,7 +115,7 @@ class ChannelHandler:
         out_file.write(entry)
 
     @staticmethod
-    def clean_filter(src_channel_list, data_set):
+    def clean_filter(src_channel_list, data_set) -> None:
         with closing(open(data_set.get('FILTER_FILE_NAME'), 'r', data_set.get('FILTER_FILE_ENCODING'))) as filter_file:
             filter_contents = load(filter_file)
 
