@@ -31,10 +31,10 @@ class Utils:
                 sleep(Config.CONN_CHECK_REQ_DELAY)
 
     @staticmethod
-    def send_email(subject, text) -> None:
-        message = 'Subject: {}\n\n{}'.format(subject, text)
+    def send_email(subject: str, text: str) -> None:
+        message: str = 'Subject: {}\n\n{}'.format(subject, text)
 
-        server = SMTP(Config.SMTP_ADDR)
+        server: SMTP = SMTP(Config.SMTP_ADDR)
         server.ehlo()
         server.starttls()
         server.login(Config.SMTP_LOGIN, Config.SMTP_PWD)
