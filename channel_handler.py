@@ -31,8 +31,8 @@ class ChannelHandler:
                 Utils.wait_for_internet()
 
             try:
-                with closing(urlopen(json_url, timeout=Config.CONN_TIMEOUT)) as response:
-                    response = response.read().decode(resp_encoding)
+                with closing(urlopen(json_url, timeout=Config.CONN_TIMEOUT)) as response_raw:
+                    response = response_raw.read().decode(resp_encoding)
 
                 channel_list = loads(response).get('channels')
 
