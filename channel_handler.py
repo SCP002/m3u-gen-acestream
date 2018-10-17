@@ -15,6 +15,7 @@ from urllib.request import urlopen
 
 from config import Config
 from data_set import DataSet
+from filter import Filter, FilterDecoder, ReplaceCatEntry
 from utils import Utils
 
 
@@ -56,15 +57,17 @@ class ChannelHandler:
     @staticmethod
     def replace_categories(channel_list, data_set: DataSet) -> List[Dict[str, str]]:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents = load(filter_file)
+            filter_contents_raw: Dict[str, list] = load(filter_file)
 
-        replace_cats = filter_contents.get('replace_cats')
+        filter_contents: Filter = FilterDecoder.decode(filter_contents_raw)
+
+        replace_cats: List[ReplaceCatEntry] = filter_contents.replace_cats
 
         replaced = False
 
         for replace_cat in replace_cats:
-            target_name = replace_cat.get('for_name')
-            target_category = replace_cat.get('to_cat')
+            target_name = replace_cat.for_name
+            target_category = replace_cat.to_cat
 
             for channel in channel_list:
                 current_name = channel.get('name')
@@ -120,7 +123,7 @@ class ChannelHandler:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents = load(filter_file)
 
-            cleaned = False
+            cleaned = False  # TODO: Too deep nesting from this point?
 
             # Clean "replace_cats"
             replace_cats = filter_contents.get('replace_cats')
