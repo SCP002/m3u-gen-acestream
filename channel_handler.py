@@ -59,9 +59,9 @@ class ChannelHandler:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents_raw: Dict[str, list] = load(filter_file)
 
-        filter_contents: Filter = FilterDecoder.decode(filter_contents_raw)
+        filter_contents_decoded: Filter = FilterDecoder.decode(filter_contents_raw)
 
-        replace_cats: List[ReplaceCatEntry] = filter_contents.replace_cats
+        replace_cats: List[ReplaceCatEntry] = filter_contents_decoded.replace_cats
 
         replaced = False
 
@@ -87,9 +87,11 @@ class ChannelHandler:
     @staticmethod
     def is_channel_allowed(channel, data_set: DataSet) -> bool:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents = load(filter_file)
+            filter_contents_raw: Dict[str, list] = load(filter_file)
 
-        exclude_cats = filter_contents.get('exclude_cats')
+        filter_contents_decoded: Filter = FilterDecoder.decode(filter_contents_raw)
+
+        exclude_cats: List[str] = filter_contents_decoded.exclude_cats
 
         if len(exclude_cats) > 0:
             categories_filter = '(' + ')|('.join(exclude_cats) + ')'
@@ -97,7 +99,7 @@ class ChannelHandler:
             if match(categories_filter, channel.get('cat'), IGNORECASE):
                 return False
 
-        exclude_names = filter_contents.get('exclude_names')
+        exclude_names: List[str] = filter_contents_decoded.exclude_names
 
         if len(exclude_names) > 0:
             names_filter = '(' + ')|('.join(exclude_names) + ')'
@@ -121,15 +123,17 @@ class ChannelHandler:
     @staticmethod
     def clean_filter(src_channel_list, data_set: DataSet) -> None:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents = load(filter_file)
+            filter_contents_raw: Dict[str, list] = load(filter_file)
+
+            filter_contents_decoded: Filter = FilterDecoder.decode(filter_contents_raw)
 
             cleaned = False  # TODO: Too deep nesting from this point?
 
             # Clean "replace_cats"
-            replace_cats = filter_contents.get('replace_cats')
+            replace_cats: List[ReplaceCatEntry] = filter_contents_decoded.replace_cats
 
             for replace_cat in replace_cats[:]:
-                name_in_filter = replace_cat.get('for_name')
+                name_in_filter = replace_cat.for_name
 
                 if all(not match(name_in_filter, src_channel.get('name'), IGNORECASE) for src_channel in
                        src_channel_list):
@@ -143,7 +147,7 @@ class ChannelHandler:
                 print('')
 
             # Clean "exclude_cats"
-            exclude_cats = filter_contents.get('exclude_cats')
+            exclude_cats: List[str] = filter_contents_decoded.exclude_cats
 
             for exclude_cat in exclude_cats[:]:
                 if all(not match(exclude_cat, src_channel.get('cat'), IGNORECASE) for src_channel in src_channel_list):
@@ -157,7 +161,7 @@ class ChannelHandler:
                 print('')
 
             # Clean "exclude_names"
-            exclude_names = filter_contents.get('exclude_names')
+            exclude_names: List[str] = filter_contents_decoded.exclude_names
 
             for exclude_name in exclude_names[:]:
                 if all(not match(exclude_name, src_channel.get('name'), IGNORECASE) for src_channel in
@@ -172,4 +176,4 @@ class ChannelHandler:
 
         # Write changes
         with closing(open(data_set.filter_file_name, 'w', data_set.filter_file_encoding)) as filter_file:
-            dump(filter_contents, filter_file, indent=2, ensure_ascii=False)
+            dump(filter_contents_decoded, filter_file, indent=2, ensure_ascii=False)
