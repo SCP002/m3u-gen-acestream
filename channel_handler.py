@@ -15,7 +15,7 @@ from urllib.request import urlopen
 
 from config import Config
 from data_set import DataSet
-from filter import Filter, ReplaceCatEntry, FilterDecoder, FilterEncoder
+from filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 from utils import Utils
 
 
@@ -59,7 +59,7 @@ class ChannelHandler:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
-        replace_cats: List[ReplaceCatEntry] = filter_contents.replace_cats
+        replace_cats: List[ReplaceCat] = filter_contents.replace_cats
 
         replaced = False
 
@@ -124,7 +124,7 @@ class ChannelHandler:
             cleaned = False  # TODO: Too deep nesting from this point?
 
             # Clean "replace_cats"
-            replace_cats: List[ReplaceCatEntry] = filter_contents.replace_cats
+            replace_cats: List[ReplaceCat] = filter_contents.replace_cats
 
             for replace_cat in replace_cats[:]:
                 name_in_filter = replace_cat.for_name

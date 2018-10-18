@@ -6,7 +6,7 @@ from json import JSONEncoder, JSONDecoder
 from typing import List, Dict
 
 
-class ReplaceCatEntry:
+class ReplaceCat:
 
     def __init__(self, for_name: str, to_cat: str) -> None:
         self.for_name = for_name
@@ -15,7 +15,7 @@ class ReplaceCatEntry:
 
 class Filter:
 
-    def __init__(self, replace_cats: List[ReplaceCatEntry], exclude_cats: List[str], exclude_names: List[str]) -> None:
+    def __init__(self, replace_cats: List[ReplaceCat], exclude_cats: List[str], exclude_names: List[str]) -> None:
         self.replace_cats = replace_cats
         self.exclude_cats = exclude_cats
         self.exclude_names = exclude_names
@@ -31,14 +31,14 @@ class FilterDecoder(JSONDecoder):
 
     @staticmethod
     def convert(input_obj: Dict[str, list]) -> Filter:
-        replace_cat_entries: List[ReplaceCatEntry] = []
+        replace_cats: List[ReplaceCat] = []
 
-        for replace_cat in input_obj.get('replace_cats', []):
-            for_name: str = replace_cat.get('for_name')
-            to_cat: str = replace_cat.get('to_cat')
+        for replace_cat_raw in input_obj.get('replace_cats', []):
+            for_name: str = replace_cat_raw.get('for_name')
+            to_cat: str = replace_cat_raw.get('to_cat')
 
-            replace_cat_entry: ReplaceCatEntry = ReplaceCatEntry(for_name, to_cat)
-            replace_cat_entries.append(replace_cat_entry)
+            replace_cat: ReplaceCat = ReplaceCat(for_name, to_cat)
+            replace_cats.append(replace_cat)
 
         exclude_cats: List[str] = []
 
@@ -50,7 +50,7 @@ class FilterDecoder(JSONDecoder):
         for exclude_name in input_obj.get('exclude_names', []):
             exclude_names.append(exclude_name)
 
-        output_obj: Filter = Filter(replace_cat_entries, exclude_cats, exclude_names)
+        output_obj: Filter = Filter(replace_cats, exclude_cats, exclude_names)
 
         return output_obj
 
@@ -60,21 +60,21 @@ class FilterEncoder(JSONEncoder):
     def default(self, input_obj: Filter) -> Dict[str, list]:
         output_obj: Dict[str, list] = {}
 
-        replace_cats: List[Dict[str, str]] = []
-        replace_cat_entries: List[ReplaceCatEntry] = input_obj.replace_cats
+        replace_cats_raw: List[Dict[str, str]] = []
+        replace_cats: List[ReplaceCat] = input_obj.replace_cats
 
-        for replace_cat_entry in replace_cat_entries:
-            replace_cat: Dict[str, str] = {
-                'for_name': replace_cat_entry.for_name,
-                'to_cat': replace_cat_entry.to_cat
+        for replace_cat in replace_cats:
+            replace_cat_raw: Dict[str, str] = {
+                'for_name': replace_cat.for_name,
+                'to_cat': replace_cat.to_cat
             }
 
-            replace_cats.append(replace_cat)
+            replace_cats_raw.append(replace_cat_raw)
 
         exclude_cats: List[str] = input_obj.exclude_cats
         exclude_names: List[str] = input_obj.exclude_names
 
-        output_obj['replace_cats'] = replace_cats
+        output_obj['replace_cats'] = replace_cats_raw
         output_obj['exclude_cats'] = exclude_cats
         output_obj['exclude_names'] = exclude_names
 
