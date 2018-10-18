@@ -12,7 +12,9 @@ from socket import gethostname, gethostbyname
 from sys import stderr
 from time import sleep
 from traceback import print_exc, format_exc
+from typing import List
 
+from channel import Channel
 from channel_handler import ChannelHandler
 from config import Config
 from utils import Utils
@@ -45,10 +47,10 @@ class M3UGenerator:
                     total_channel_count = 0
                     allowed_channel_count = 0
 
-                    channel_list = ChannelHandler.get_channel_list(data_set)
+                    channel_list: List[Channel] = ChannelHandler.get_channel_list(data_set)
                     channel_list = ChannelHandler.replace_categories(channel_list, data_set)
-                    channel_list.sort(key=lambda x: x.get('name'))
-                    channel_list.sort(key=lambda x: x.get('cat'))
+                    channel_list.sort(key=lambda x: x.name)
+                    channel_list.sort(key=lambda x: x.category)
 
                     if data_set.clean_filter:
                         ChannelHandler.clean_filter(channel_list, data_set)
