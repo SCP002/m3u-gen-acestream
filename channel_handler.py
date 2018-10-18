@@ -57,9 +57,7 @@ class ChannelHandler:
     @staticmethod
     def replace_categories(channel_list, data_set: DataSet) -> List[Dict[str, str]]:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents_raw: Dict[str, list] = load(filter_file)
-
-        filter_contents: Filter = FilterDecoder.decode(filter_contents_raw)
+            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
         replace_cats: List[ReplaceCatEntry] = filter_contents.replace_cats
 
@@ -87,9 +85,7 @@ class ChannelHandler:
     @staticmethod
     def is_channel_allowed(channel, data_set: DataSet) -> bool:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents_raw: Dict[str, list] = load(filter_file)
-
-        filter_contents: Filter = FilterDecoder.decode(filter_contents_raw)
+            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
         exclude_cats: List[str] = filter_contents.exclude_cats
 
@@ -123,9 +119,7 @@ class ChannelHandler:
     @staticmethod
     def clean_filter(src_channel_list, data_set: DataSet) -> None:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents_raw: Dict[str, list] = load(filter_file)
-
-            filter_contents: Filter = FilterDecoder.decode(filter_contents_raw)
+            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
             cleaned = False  # TODO: Too deep nesting from this point?
 

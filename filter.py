@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 
-from json import JSONEncoder
+from json import JSONEncoder, JSONDecoder
 from typing import List, Dict
 
 
@@ -21,10 +21,16 @@ class Filter:
         self.exclude_names = exclude_names
 
 
-class FilterDecoder:
+class FilterDecoder(JSONDecoder):
+
+    def decode(self, s: str, **kwargs) -> Filter:
+        # noinspection Mypy
+        input_obj: Dict[str, list] = super().decode(s, **kwargs)
+
+        return self.convert(input_obj)
 
     @staticmethod
-    def decode(input_obj: Dict[str, list]) -> Filter:  # TODO: Check 'object_pairs_hook' docs in json.JSONDecoder
+    def convert(input_obj: Dict[str, list]) -> Filter:
         replace_cat_entries: List[ReplaceCatEntry] = []
 
         for replace_cat in input_obj.get('replace_cats', []):
