@@ -24,8 +24,7 @@ class Filter:
 class FilterDecoder(JSONDecoder):
 
     def decode(self, s: str, **kwargs) -> Filter:
-        # noinspection Mypy
-        input_obj: Dict[str, list] = super().decode(s, **kwargs)
+        input_obj: Dict[str, list] = super().decode(s)
 
         return self.convert(input_obj)
 
