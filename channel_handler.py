@@ -23,7 +23,7 @@ from utils import Utils
 class ChannelHandler:
 
     @staticmethod
-    def get_channel_list(data_set: DataSet) -> List[Channel]:
+    def get_channels(data_set: DataSet) -> List[Channel]:
         json_url: str = data_set.json_url
         resp_encoding: str = data_set.resp_encoding
 
@@ -37,9 +37,9 @@ class ChannelHandler:
                 with closing(urlopen(json_url, timeout=Config.CONN_TIMEOUT)) as response_raw:
                     response: str = response_raw.read().decode(resp_encoding)
 
-                channel_list: List[Channel] = loads(response, cls=ChannelsDecoder)
+                channels: List[Channel] = loads(response, cls=ChannelsDecoder)
 
-                return channel_list
+                return channels
             except URLError as url_error:
                 print('Can not retrieve JSON file.', file=stderr)
                 print('Error:', url_error, file=stderr)
@@ -56,7 +56,7 @@ class ChannelHandler:
         return [Channel('', '', '')]
 
     @staticmethod
-    def replace_categories(channel_list: List[Channel], data_set: DataSet) -> List[Channel]:
+    def replace_categories(channels: List[Channel], data_set: DataSet) -> List[Channel]:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
@@ -68,7 +68,7 @@ class ChannelHandler:
             target_name: str = replace_cat.for_name
             target_category: str = replace_cat.to_cat
 
-            for channel in channel_list:
+            for channel in channels:
                 current_name: str = channel.name
                 current_category: str = channel.category
 
@@ -81,7 +81,7 @@ class ChannelHandler:
         if replaced:
             print('')
 
-        return channel_list
+        return channels
 
     @staticmethod
     def is_channel_allowed(channel: Channel, data_set: DataSet) -> bool:
@@ -118,7 +118,7 @@ class ChannelHandler:
         out_file.write(entry)
 
     @staticmethod
-    def clean_filter(src_channel_list: List[Channel], data_set: DataSet) -> None:
+    def clean_filter(src_channels: List[Channel], data_set: DataSet) -> None:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
@@ -130,7 +130,7 @@ class ChannelHandler:
         for replace_cat in replace_cats[:]:
             name_in_filter: str = replace_cat.for_name
 
-            if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
+            if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channels):
                 replace_cats.remove(replace_cat)
                 cleaned = True
                 print('Not found any match for category replacement: "' + name_in_filter + '" in source,',
@@ -144,7 +144,7 @@ class ChannelHandler:
         exclude_cats: List[str] = filter_contents.exclude_cats
 
         for exclude_cat in exclude_cats[:]:
-            if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channel_list):
+            if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channels):
                 exclude_cats.remove(exclude_cat)
                 cleaned = True
                 print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
@@ -158,7 +158,7 @@ class ChannelHandler:
         exclude_names: List[str] = filter_contents.exclude_names
 
         for exclude_name in exclude_names[:]:
-            if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
+            if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channels):
                 exclude_names.remove(exclude_name)
                 cleaned = True
                 print('Not found any match for name exclusion: "' + exclude_name + '" in source, removed from filter.')

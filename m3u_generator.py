@@ -47,15 +47,15 @@ class M3UGenerator:
                     total_channel_count: int = 0
                     allowed_channel_count: int = 0
 
-                    channel_list: List[Channel] = ChannelHandler.get_channel_list(data_set)
-                    channel_list = ChannelHandler.replace_categories(channel_list, data_set)
-                    channel_list.sort(key=lambda x: x.name)
-                    channel_list.sort(key=lambda x: x.category)
+                    channels: List[Channel] = ChannelHandler.get_channels(data_set)
+                    channels = ChannelHandler.replace_categories(channels, data_set)
+                    channels.sort(key=lambda x: x.name)
+                    channels.sort(key=lambda x: x.category)
 
                     if data_set.clean_filter:
-                        ChannelHandler.clean_filter(channel_list, data_set)
+                        ChannelHandler.clean_filter(channels, data_set)
 
-                    for channel in channel_list:
+                    for channel in channels:
                         total_channel_count += 1
 
                         if ChannelHandler.is_channel_allowed(channel, data_set):
