@@ -87,7 +87,7 @@ class Config:
             'UTF-8-SIG',
 
             # Output file name:
-            './acestream-ttv-all.m3u',
+            '../out/acestream-ttv-all.m3u',
 
             # Output file encoding:
             'UTF-8',

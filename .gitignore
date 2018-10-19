@@ -1,9 +1,13 @@
 # Ignore everything
 /*
 
+# Ignore these subdirectories
+/src/__pycache__
+
 # Not these files
-!/*.json
-!/*.py
 !/.gitattributes
 !/.gitignore
 !/README.md
+
+# Not these directories
+!/src
