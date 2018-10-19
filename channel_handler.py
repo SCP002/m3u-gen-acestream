@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 
-from codecs import open
+from codecs import open, StreamReaderWriter
 from contextlib import closing
 from datetime import timedelta
 from json import loads, load, dump
@@ -62,15 +62,15 @@ class ChannelHandler:
 
         replace_cats: List[ReplaceCat] = filter_contents.replace_cats
 
-        replaced = False
+        replaced: bool = False
 
         for replace_cat in replace_cats:
-            target_name = replace_cat.for_name
-            target_category = replace_cat.to_cat
+            target_name: str = replace_cat.for_name
+            target_category: str = replace_cat.to_cat
 
             for channel in channel_list:
-                current_name = channel.name
-                current_category = channel.category
+                current_name: str = channel.name
+                current_category: str = channel.category
 
                 if match(target_name, current_name, IGNORECASE) and not current_category == target_category:
                     channel.category = target_category
@@ -91,7 +91,7 @@ class ChannelHandler:
         exclude_cats: List[str] = filter_contents.exclude_cats
 
         if len(exclude_cats) > 0:
-            categories_filter = '(' + ')|('.join(exclude_cats) + ')'
+            categories_filter: str = '(' + ')|('.join(exclude_cats) + ')'
 
             if match(categories_filter, channel.category, IGNORECASE):
                 return False
@@ -99,7 +99,7 @@ class ChannelHandler:
         exclude_names: List[str] = filter_contents.exclude_names
 
         if len(exclude_names) > 0:
-            names_filter = '(' + ')|('.join(exclude_names) + ')'
+            names_filter: str = '(' + ')|('.join(exclude_names) + ')'
 
             if match(names_filter, channel.name, IGNORECASE):
                 return False
@@ -107,10 +107,10 @@ class ChannelHandler:
         return True
 
     @staticmethod
-    def write_entry(channel: Channel, data_set: DataSet, out_file) -> None:
-        out_file_format = data_set.out_file_format
+    def write_entry(channel: Channel, data_set: DataSet, out_file: StreamReaderWriter) -> None:
+        out_file_format: str = data_set.out_file_format
 
-        entry = out_file_format \
+        entry: str = out_file_format \
             .replace('{CATEGORY}', channel.category) \
             .replace('{NAME}', channel.name) \
             .replace('{CONTENT_ID}', channel.content_id)
@@ -122,13 +122,13 @@ class ChannelHandler:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
-            cleaned = False  # TODO: Too deep nesting from this point?
+            cleaned: bool = False  # TODO: Too deep nesting from this point?
 
             # Clean "replace_cats"
             replace_cats: List[ReplaceCat] = filter_contents.replace_cats
 
             for replace_cat in replace_cats[:]:
-                name_in_filter = replace_cat.for_name
+                name_in_filter: str = replace_cat.for_name
 
                 if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
                     replace_cats.remove(replace_cat)
