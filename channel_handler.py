@@ -122,50 +122,49 @@ class ChannelHandler:
         with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
-            cleaned: bool = False  # TODO: Too deep nesting from this point?
+        cleaned: bool = False
 
-            # Clean "replace_cats"
-            replace_cats: List[ReplaceCat] = filter_contents.replace_cats
+        # Clean "replace_cats"
+        replace_cats: List[ReplaceCat] = filter_contents.replace_cats
 
-            for replace_cat in replace_cats[:]:
-                name_in_filter: str = replace_cat.for_name
+        for replace_cat in replace_cats[:]:
+            name_in_filter: str = replace_cat.for_name
 
-                if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
-                    replace_cats.remove(replace_cat)
-                    cleaned = True
-                    print('Not found any match for category replacement: "' + name_in_filter + '" in source,',
-                          'removed from filter.')
+            if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
+                replace_cats.remove(replace_cat)
+                cleaned = True
+                print('Not found any match for category replacement: "' + name_in_filter + '" in source,',
+                      'removed from filter.')
 
-            if cleaned:
-                cleaned = False
-                print('')
+        if cleaned:
+            cleaned = False
+            print('')
 
-            # Clean "exclude_cats"
-            exclude_cats: List[str] = filter_contents.exclude_cats
+        # Clean "exclude_cats"
+        exclude_cats: List[str] = filter_contents.exclude_cats
 
-            for exclude_cat in exclude_cats[:]:
-                if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channel_list):
-                    exclude_cats.remove(exclude_cat)
-                    cleaned = True
-                    print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
-                          'removed from filter.')
+        for exclude_cat in exclude_cats[:]:
+            if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channel_list):
+                exclude_cats.remove(exclude_cat)
+                cleaned = True
+                print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
+                      'removed from filter.')
 
-            if cleaned:
-                cleaned = False
-                print('')
+        if cleaned:
+            cleaned = False
+            print('')
 
-            # Clean "exclude_names"
-            exclude_names: List[str] = filter_contents.exclude_names
+        # Clean "exclude_names"
+        exclude_names: List[str] = filter_contents.exclude_names
 
-            for exclude_name in exclude_names[:]:
-                if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
-                    exclude_names.remove(exclude_name)
-                    cleaned = True
-                    print('Not found any match for name exclusion: "' + exclude_name + '" in source,',
-                          'removed from filter.')
+        for exclude_name in exclude_names[:]:
+            if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channel_list):
+                exclude_names.remove(exclude_name)
+                cleaned = True
+                print('Not found any match for name exclusion: "' + exclude_name + '" in source, removed from filter.')
 
-            if cleaned:
-                print('')
+        if cleaned:
+            print('')
 
         # Write changes
         with closing(open(data_set.filter_file_name, 'w', data_set.filter_file_encoding)) as filter_file:
