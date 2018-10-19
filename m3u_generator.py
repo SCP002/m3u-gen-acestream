@@ -29,7 +29,7 @@ class M3UGenerator:
 
             Utils.wait_for_internet()
 
-            data_set_number = 0
+            data_set_number: int = 0
 
             for data_set in Config.DATA_SETS:
                 data_set_number += 1
@@ -44,8 +44,8 @@ class M3UGenerator:
                 with closing(open(out_file_name, 'w', out_file_encoding)) as out_file:
                     out_file.write(out_file_first_line)
 
-                    total_channel_count = 0
-                    allowed_channel_count = 0
+                    total_channel_count: int = 0
+                    allowed_channel_count: int = 0
 
                     channel_list: List[Channel] = ChannelHandler.get_channel_list(data_set)
                     channel_list = ChannelHandler.replace_categories(channel_list, data_set)
