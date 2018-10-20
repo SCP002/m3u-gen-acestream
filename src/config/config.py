@@ -129,7 +129,7 @@ class Config:
             #   ]
             #
             # }
-            './filter.json',
+            './filter/filter.json',
 
             # Filter file encoding:
             'UTF-8',

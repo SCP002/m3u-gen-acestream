@@ -16,7 +16,7 @@ from urllib.request import urlopen
 from channel import Channel, ChannelsDecoder
 from config.config import Config
 from config.data_set import DataSet
-from filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
+from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 from utils import Utils
 
 
