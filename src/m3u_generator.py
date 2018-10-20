@@ -16,7 +16,7 @@ from typing import List
 
 from channel import Channel
 from channel_handler import ChannelHandler
-from config import Config
+from config.config import Config
 from utils import Utils
 
 

@@ -14,8 +14,8 @@ from urllib.error import URLError
 from urllib.request import urlopen
 
 from channel import Channel, ChannelsDecoder
-from config import Config
-from data_set import DataSet
+from config.config import Config
+from config.data_set import DataSet
 from filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 from utils import Utils
 

@@ -4,7 +4,7 @@
 
 from typing import Tuple
 
-from data_set import DataSet
+from config.data_set import DataSet
 
 
 class Config:

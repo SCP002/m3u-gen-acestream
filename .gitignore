@@ -2,7 +2,7 @@
 /*
 
 # Ignore these subdirectories
-/src/__pycache__
+**/__pycache__
 
 # Not these files
 !/.gitattributes
