@@ -16,7 +16,7 @@ class Channel:
 
 class ChannelsDecoder(JSONDecoder):
 
-    def decode(self, s: str, **kwargs) -> List[Channel]:
+    def decode(self, s: str, **kwargs: bool) -> List[Channel]:
         input_obj: Dict[str, list] = super().decode(s)
 
         return self.convert(input_obj)
