@@ -19,10 +19,10 @@ class ChannelsDecoder(JSONDecoder):
     def decode(self, s: str, **kwargs: bool) -> List[Channel]:
         input_obj: Dict[str, list] = super().decode(s)
 
-        return self.convert(input_obj)
+        return self._convert(input_obj)
 
     @staticmethod
-    def convert(input_obj: Dict[str, list]) -> List[Channel]:
+    def _convert(input_obj: Dict[str, list]) -> List[Channel]:
         output_obj: List[Channel] = []
 
         channels_raw: List[dict] = input_obj.get('channels', [])

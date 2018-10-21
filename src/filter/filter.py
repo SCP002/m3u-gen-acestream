@@ -26,10 +26,10 @@ class FilterDecoder(JSONDecoder):
     def decode(self, s: str, **kwargs: bool) -> Filter:
         input_obj: Dict[str, list] = super().decode(s)
 
-        return self.convert(input_obj)
+        return self._convert(input_obj)
 
     @staticmethod
-    def convert(input_obj: Dict[str, list]) -> Filter:
+    def _convert(input_obj: Dict[str, list]) -> Filter:
         replace_cats: List[ReplaceCat] = []
 
         for replace_cat_raw in input_obj.get('replace_cats', []):
