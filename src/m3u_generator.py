@@ -17,6 +17,7 @@ from typing import List
 from channel.channel import Channel
 from channel.handler import ChannelHandler
 from config.config import Config
+from filter.handler import FilterHandler
 from utils import Utils
 
 
@@ -48,17 +49,17 @@ class M3UGenerator:
                     allowed_channel_count: int = 0
 
                     channels: List[Channel] = ChannelHandler.get_channels(data_set)
-                    channels = ChannelHandler.replace_categories(channels, data_set)
+                    channels = FilterHandler.replace_categories(channels, data_set)
                     channels.sort(key=lambda x: x.name)
                     channels.sort(key=lambda x: x.category)
 
                     if data_set.clean_filter:
-                        ChannelHandler.clean_filter(channels, data_set)
+                        FilterHandler.clean_filter(channels, data_set)
 
                     for channel in channels:
                         total_channel_count += 1
 
-                        if ChannelHandler.is_channel_allowed(channel, data_set):
+                        if FilterHandler.is_channel_allowed(channel, data_set):
                             ChannelHandler.write_entry(channel, data_set, out_file)
                             allowed_channel_count += 1
 

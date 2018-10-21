@@ -2,11 +2,10 @@
 # -*- coding: UTF-8 -*-
 
 
-from codecs import open, StreamReaderWriter
+from codecs import StreamReaderWriter
 from contextlib import closing
 from datetime import timedelta
-from json import loads, load, dump
-from re import match, IGNORECASE
+from json import loads
 from sys import stderr
 from time import sleep
 from typing import List
@@ -16,7 +15,6 @@ from urllib.request import urlopen
 from channel.channel import Channel, ChannelsDecoder
 from config.config import Config
 from config.data_set import DataSet
-from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 from utils import Utils
 
 
@@ -56,57 +54,6 @@ class ChannelHandler:
         return [Channel('', '', '')]
 
     @staticmethod
-    def replace_categories(channels: List[Channel], data_set: DataSet) -> List[Channel]:
-        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
-
-        replace_cats: List[ReplaceCat] = filter_contents.replace_cats
-
-        replaced: bool = False
-
-        for replace_cat in replace_cats:
-            target_name: str = replace_cat.for_name
-            target_category: str = replace_cat.to_cat
-
-            for channel in channels:
-                current_name: str = channel.name
-                current_category: str = channel.category
-
-                if match(target_name, current_name, IGNORECASE) and not current_category == target_category:
-                    channel.category = target_category
-                    replaced = True
-                    print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
-                          target_category + '".')
-
-        if replaced:
-            print('')
-
-        return channels
-
-    @staticmethod
-    def is_channel_allowed(channel: Channel, data_set: DataSet) -> bool:
-        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
-
-        exclude_cats: List[str] = filter_contents.exclude_cats
-
-        if len(exclude_cats) > 0:
-            categories_filter: str = '(' + ')|('.join(exclude_cats) + ')'
-
-            if match(categories_filter, channel.category, IGNORECASE):
-                return False
-
-        exclude_names: List[str] = filter_contents.exclude_names
-
-        if len(exclude_names) > 0:
-            names_filter: str = '(' + ')|('.join(exclude_names) + ')'
-
-            if match(names_filter, channel.name, IGNORECASE):
-                return False
-
-        return True
-
-    @staticmethod
     def write_entry(channel: Channel, data_set: DataSet, out_file: StreamReaderWriter) -> None:
         out_file_format: str = data_set.out_file_format
 
@@ -116,56 +63,3 @@ class ChannelHandler:
             .replace('{CONTENT_ID}', channel.content_id)
 
         out_file.write(entry)
-
-    @staticmethod
-    def clean_filter(src_channels: List[Channel], data_set: DataSet) -> None:
-        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
-            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
-
-        cleaned: bool = False
-
-        # Clean "replace_cats"
-        replace_cats: List[ReplaceCat] = filter_contents.replace_cats
-
-        for replace_cat in replace_cats[:]:
-            name_in_filter: str = replace_cat.for_name
-
-            if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channels):
-                replace_cats.remove(replace_cat)
-                cleaned = True
-                print('Not found any match for category replacement: "' + name_in_filter + '" in source,',
-                      'removed from filter.')
-
-        if cleaned:
-            cleaned = False
-            print('')
-
-        # Clean "exclude_cats"
-        exclude_cats: List[str] = filter_contents.exclude_cats
-
-        for exclude_cat in exclude_cats[:]:
-            if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channels):
-                exclude_cats.remove(exclude_cat)
-                cleaned = True
-                print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
-                      'removed from filter.')
-
-        if cleaned:
-            cleaned = False
-            print('')
-
-        # Clean "exclude_names"
-        exclude_names: List[str] = filter_contents.exclude_names
-
-        for exclude_name in exclude_names[:]:
-            if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channels):
-                exclude_names.remove(exclude_name)
-                cleaned = True
-                print('Not found any match for name exclusion: "' + exclude_name + '" in source, removed from filter.')
-
-        if cleaned:
-            print('')
-
-        # Write changes
-        with closing(open(data_set.filter_file_name, 'w', data_set.filter_file_encoding)) as filter_file:
-            dump(filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)
