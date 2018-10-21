@@ -13,7 +13,7 @@ from typing import List
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from channel import Channel, ChannelsDecoder
+from channel.channel import Channel, ChannelsDecoder
 from config.config import Config
 from config.data_set import DataSet
 from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder

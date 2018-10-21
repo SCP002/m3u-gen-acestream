@@ -14,8 +14,8 @@ from time import sleep
 from traceback import print_exc, format_exc
 from typing import List
 
-from channel import Channel
-from channel_handler import ChannelHandler
+from channel.channel import Channel
+from channel.channel_handler import ChannelHandler
 from config.config import Config
 from utils import Utils
 
