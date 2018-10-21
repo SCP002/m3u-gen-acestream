@@ -15,7 +15,7 @@ from traceback import print_exc, format_exc
 from typing import List
 
 from channel.channel import Channel
-from channel.channel_handler import ChannelHandler
+from channel.handler import ChannelHandler
 from config.config import Config
 from utils import Utils
 
