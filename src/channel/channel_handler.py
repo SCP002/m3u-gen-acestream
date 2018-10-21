@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from codecs import StreamReaderWriter
-from codecs import open
+from codecs import StreamReaderWriter, open
 from contextlib import closing
 from datetime import timedelta
 from json import loads
@@ -15,8 +14,7 @@ from typing import List
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from channel.channel import Channel
-from channel.channel import ChannelsDecoder
+from channel.channel import Channel, ChannelsDecoder
 from config.config import Config
 from config.data_set import DataSet
 from filter.filter_handler import FilterHandler

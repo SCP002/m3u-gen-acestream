@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from socket import gethostname, gethostbyname
 from sys import stderr
 from time import sleep
