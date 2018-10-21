@@ -9,16 +9,36 @@ from typing import List, Dict
 class ReplaceCat:
 
     def __init__(self, for_name: str, to_cat: str) -> None:
-        self.for_name = for_name
-        self.to_cat = to_cat
+        self._for_name = for_name
+        self._to_cat = to_cat
+
+    @property
+    def for_name(self) -> str:
+        return self._for_name
+
+    @property
+    def to_cat(self) -> str:
+        return self._to_cat
 
 
 class Filter:
 
     def __init__(self, replace_cats: List[ReplaceCat], exclude_cats: List[str], exclude_names: List[str]) -> None:
-        self.replace_cats = replace_cats
-        self.exclude_cats = exclude_cats
-        self.exclude_names = exclude_names
+        self._replace_cats = replace_cats
+        self._exclude_cats = exclude_cats
+        self._exclude_names = exclude_names
+
+    @property
+    def replace_cats(self) -> List[ReplaceCat]:
+        return self._replace_cats
+
+    @property
+    def exclude_cats(self) -> List[str]:
+        return self._exclude_cats
+
+    @property
+    def exclude_names(self) -> List[str]:
+        return self._exclude_names
 
 
 class FilterDecoder(JSONDecoder):
