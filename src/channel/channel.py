@@ -9,9 +9,25 @@ from typing import List, Dict
 class Channel:
 
     def __init__(self, name: str, category: str, content_id: str) -> None:
-        self.name = name
-        self.category = category
-        self.content_id = content_id
+        self._name = name
+        self._category = category
+        self._content_id = content_id
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def category(self) -> str:
+        return self._category
+
+    @category.setter
+    def category(self, category: str) -> None:
+        self._category = category
+
+    @property
+    def content_id(self) -> str:
+        return self._content_id
 
 
 class ChannelsDecoder(JSONDecoder):
