@@ -21,7 +21,7 @@ from utils import Utils
 class ChannelHandler:
 
     @staticmethod
-    def get_channels(data_set: DataSet) -> List[Channel]:
+    def fetch_channels(data_set: DataSet) -> List[Channel]:
         json_url: str = data_set.json_url
         resp_encoding: str = data_set.resp_encoding
 
