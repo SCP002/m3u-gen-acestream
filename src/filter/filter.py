@@ -9,8 +9,8 @@ from typing import List, Dict
 class ReplaceCat:
 
     def __init__(self, for_name: str, to_cat: str) -> None:
-        self._for_name = for_name
-        self._to_cat = to_cat
+        self._for_name: str = for_name
+        self._to_cat: str = to_cat
 
     @property
     def for_name(self) -> str:
@@ -24,9 +24,9 @@ class ReplaceCat:
 class Filter:
 
     def __init__(self, replace_cats: List[ReplaceCat], exclude_cats: List[str], exclude_names: List[str]) -> None:
-        self._replace_cats = replace_cats
-        self._exclude_cats = exclude_cats
-        self._exclude_names = exclude_names
+        self._replace_cats: List[ReplaceCat] = replace_cats
+        self._exclude_cats: List[str] = exclude_cats
+        self._exclude_names: List[str] = exclude_names
 
     @property
     def replace_cats(self) -> List[ReplaceCat]:

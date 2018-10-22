@@ -24,8 +24,8 @@ from utils import Utils
 class ChannelHandler:
 
     def __init__(self) -> None:
-        self._data_set = None
-        self._filter_handler = FilterHandler()
+        self._data_set: DataSet = None
+        self._filter_handler: FilterHandler = FilterHandler()
 
     @property
     def data_set(self) -> DataSet:

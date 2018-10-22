@@ -9,9 +9,9 @@ from typing import List, Dict
 class Channel:
 
     def __init__(self, name: str, category: str, content_id: str) -> None:
-        self._name = name
-        self._category = category
-        self._content_id = content_id
+        self._name: str = name
+        self._category: str = category
+        self._content_id: str = content_id
 
     @property
     def name(self) -> str:

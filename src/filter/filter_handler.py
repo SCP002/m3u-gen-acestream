@@ -13,10 +13,11 @@ from config.data_set import DataSet
 from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 
 
-class FilterHandler:  # TODO: Assign required variables before 'with' statements
+class FilterHandler:
 
     def __init__(self) -> None:
-        self._data_set = None
+        self._data_set: DataSet = None
+        self._filter_contents: Filter = None
 
     @property
     def data_set(self) -> DataSet:
@@ -26,11 +27,14 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
     def data_set(self, data_set: DataSet) -> None:
         self._data_set = data_set
 
-    def replace_categories(self, channels: List[Channel]) -> List[Channel]:
-        with closing(open(self.data_set.filter_file_name, 'r', self.data_set.filter_file_encoding)) as filter_file:
-            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
+        filter_file_name: str = data_set.filter_file_name
+        filter_file_encoding: str = data_set.filter_file_encoding
 
-        replace_cats: List[ReplaceCat] = filter_contents.replace_cats
+        with closing(open(filter_file_name, 'r', filter_file_encoding)) as filter_file:
+            self._filter_contents: Filter = load(filter_file, cls=FilterDecoder)
+
+    def replace_categories(self, channels: List[Channel]) -> List[Channel]:
+        replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
         replaced: bool = False
 
@@ -54,10 +58,7 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
         return channels
 
     def is_channel_allowed(self, channel: Channel) -> bool:
-        with closing(open(self.data_set.filter_file_name, 'r', self.data_set.filter_file_encoding)) as filter_file:
-            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
-
-        exclude_cats: List[str] = filter_contents.exclude_cats
+        exclude_cats: List[str] = self._filter_contents.exclude_cats
 
         if len(exclude_cats) > 0:
             categories_filter: str = '(' + ')|('.join(exclude_cats) + ')'
@@ -65,7 +66,7 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
             if match(categories_filter, channel.category, IGNORECASE):
                 return False
 
-        exclude_names: List[str] = filter_contents.exclude_names
+        exclude_names: List[str] = self._filter_contents.exclude_names
 
         if len(exclude_names) > 0:
             names_filter: str = '(' + ')|('.join(exclude_names) + ')'
@@ -76,13 +77,10 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
         return True
 
     def clean_filter(self, src_channels: List[Channel]) -> None:
-        with closing(open(self.data_set.filter_file_name, 'r', self.data_set.filter_file_encoding)) as filter_file:
-            filter_contents: Filter = load(filter_file, cls=FilterDecoder)
-
         cleaned: bool = False
 
         # Clean "replace_cats"
-        replace_cats: List[ReplaceCat] = filter_contents.replace_cats
+        replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
         for replace_cat in replace_cats[:]:
             name_in_filter: str = replace_cat.for_name
@@ -98,7 +96,7 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
             print('')
 
         # Clean "exclude_cats"
-        exclude_cats: List[str] = filter_contents.exclude_cats
+        exclude_cats: List[str] = self._filter_contents.exclude_cats
 
         for exclude_cat in exclude_cats[:]:
             if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channels):
@@ -112,7 +110,7 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
             print('')
 
         # Clean "exclude_names"
-        exclude_names: List[str] = filter_contents.exclude_names
+        exclude_names: List[str] = self._filter_contents.exclude_names
 
         for exclude_name in exclude_names[:]:
             if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channels):
@@ -125,4 +123,4 @@ class FilterHandler:  # TODO: Assign required variables before 'with' statements
 
         # Write changes
         with closing(open(self.data_set.filter_file_name, 'w', self.data_set.filter_file_encoding)) as filter_file:
-            dump(filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)
+            dump(self._filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)

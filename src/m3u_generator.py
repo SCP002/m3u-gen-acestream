@@ -17,14 +17,14 @@ class M3UGenerator:
 
     @staticmethod
     def main() -> None:
-        channel_handler = ChannelHandler()
+        channel_handler: ChannelHandler = ChannelHandler()
 
         while True:
             print('Started at', datetime.now().strftime('%b %d %H:%M:%S'), end='\n\n')
 
             Utils.wait_for_internet()
 
-            data_set_number: int = 0  # TODO: Use list index instead?
+            data_set_number: int = 0
 
             for data_set in Config.DATA_SETS:
                 data_set_number += 1
