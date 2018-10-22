@@ -17,6 +17,8 @@ class M3UGenerator:
 
     @staticmethod
     def main() -> None:
+        channel_handler = ChannelHandler()
+
         while True:
             print('Started at', datetime.now().strftime('%b %d %H:%M:%S'), end='\n\n')
 
@@ -28,7 +30,8 @@ class M3UGenerator:
                 data_set_number += 1
                 print('Processing data set', data_set_number, 'of', len(Config.DATA_SETS))
 
-                ChannelHandler.write_playlist(data_set)
+                channel_handler.data_set = data_set
+                channel_handler.write_playlist()
 
                 if data_set_number < len(Config.DATA_SETS):
                     print('Sleeping for', timedelta(seconds=Config.DATA_SET_DELAY),

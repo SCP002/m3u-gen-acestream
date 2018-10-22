@@ -23,11 +23,21 @@ from utils import Utils
 
 class ChannelHandler:
 
-    @staticmethod
-    def write_playlist(data_set: DataSet) -> None:
-        out_file_name: str = data_set.out_file_name
-        out_file_encoding: str = data_set.out_file_encoding
-        out_file_first_line: str = data_set.out_file_first_line
+    def __init__(self) -> None:
+        self._data_set = None
+
+    @property
+    def data_set(self) -> DataSet:
+        return self._data_set
+
+    @data_set.setter
+    def data_set(self, data_set: DataSet) -> None:
+        self._data_set = data_set
+
+    def write_playlist(self) -> None:
+        out_file_name: str = self.data_set.out_file_name
+        out_file_encoding: str = self.data_set.out_file_encoding
+        out_file_first_line: str = self.data_set.out_file_first_line
 
         makedirs(dirname(out_file_name), exist_ok=True)
 
@@ -37,30 +47,29 @@ class ChannelHandler:
             total_channel_count: int = 0
             allowed_channel_count: int = 0
 
-            channels: List[Channel] = ChannelHandler._fetch_channels(data_set)
-            channels = FilterHandler.replace_categories(channels, data_set)
+            channels: List[Channel] = self._fetch_channels()
+            channels = FilterHandler.replace_categories(channels, self.data_set)
             channels.sort(key=lambda x: x.name)
             channels.sort(key=lambda x: x.category)
 
-            if data_set.clean_filter:
-                FilterHandler.clean_filter(channels, data_set)
+            if self.data_set.clean_filter:
+                FilterHandler.clean_filter(channels, self.data_set)
 
             for channel in channels:
                 total_channel_count += 1
 
-                if FilterHandler.is_channel_allowed(channel, data_set):
-                    ChannelHandler._write_entry(channel, data_set, out_file)
+                if FilterHandler.is_channel_allowed(channel, self.data_set):
+                    self._write_entry(channel, out_file)
                     allowed_channel_count += 1
 
-        print('Playlist', data_set.out_file_name, 'successfully generated.')
+        print('Playlist', self.data_set.out_file_name, 'successfully generated.')
         print('Channels processed in total:', total_channel_count)
         print('Channels allowed:', allowed_channel_count)
         print('Channels denied:', total_channel_count - allowed_channel_count)
 
-    @staticmethod
-    def _fetch_channels(data_set: DataSet) -> List[Channel]:
-        json_url: str = data_set.json_url
-        resp_encoding: str = data_set.resp_encoding
+    def _fetch_channels(self) -> List[Channel]:
+        json_url: str = self.data_set.json_url
+        resp_encoding: str = self.data_set.resp_encoding
 
         for attempt_number in range(1, Config.JSON_SRC_MAX_ATTEMPTS):
             print('Retrieving JSON file, attempt', attempt_number, 'of', Config.JSON_SRC_MAX_ATTEMPTS, end='\n\n')
@@ -90,9 +99,8 @@ class ChannelHandler:
 
         return [Channel('', '', '')]
 
-    @staticmethod
-    def _write_entry(channel: Channel, data_set: DataSet, out_file: StreamReaderWriter) -> None:
-        out_file_format: str = data_set.out_file_format
+    def _write_entry(self, channel: Channel, out_file: StreamReaderWriter) -> None:
+        out_file_format: str = self.data_set.out_file_format
 
         entry: str = out_file_format \
             .replace('{CATEGORY}', channel.category) \
