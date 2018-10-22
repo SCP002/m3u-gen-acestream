@@ -31,7 +31,7 @@ class FilterHandler:
         filter_file_encoding: str = data_set.filter_file_encoding
 
         with closing(open(filter_file_name, 'r', filter_file_encoding)) as filter_file:
-            self._filter_contents: Filter = load(filter_file, cls=FilterDecoder)
+            self._filter_contents = load(filter_file, cls=FilterDecoder)
 
     def replace_categories(self, channels: List[Channel]) -> List[Channel]:
         replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
@@ -122,5 +122,8 @@ class FilterHandler:
             print('')
 
         # Write changes
-        with closing(open(self.data_set.filter_file_name, 'w', self.data_set.filter_file_encoding)) as filter_file:
+        filter_file_name: str = self.data_set.filter_file_name
+        filter_file_encoding: str = self.data_set.filter_file_encoding
+
+        with closing(open(filter_file_name, 'w', filter_file_encoding)) as filter_file:
             dump(self._filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)
