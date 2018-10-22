@@ -25,6 +25,7 @@ class ChannelHandler:
 
     def __init__(self) -> None:
         self._data_set = None
+        self._filter_handler = FilterHandler()
 
     @property
     def data_set(self) -> DataSet:
@@ -33,6 +34,7 @@ class ChannelHandler:
     @data_set.setter
     def data_set(self, data_set: DataSet) -> None:
         self._data_set = data_set
+        self._filter_handler.data_set = data_set
 
     def write_playlist(self) -> None:
         out_file_name: str = self.data_set.out_file_name
@@ -48,17 +50,17 @@ class ChannelHandler:
             allowed_channel_count: int = 0
 
             channels: List[Channel] = self._fetch_channels()
-            channels = FilterHandler.replace_categories(channels, self.data_set)
+            channels = self._filter_handler.replace_categories(channels)
             channels.sort(key=lambda x: x.name)
             channels.sort(key=lambda x: x.category)
 
             if self.data_set.clean_filter:
-                FilterHandler.clean_filter(channels, self.data_set)
+                self._filter_handler.clean_filter(channels)
 
             for channel in channels:
                 total_channel_count += 1
 
-                if FilterHandler.is_channel_allowed(channel, self.data_set):
+                if self._filter_handler.is_channel_allowed(channel):
                     self._write_entry(channel, out_file)
                     allowed_channel_count += 1
 

@@ -24,7 +24,7 @@ class M3UGenerator:
 
             Utils.wait_for_internet()
 
-            data_set_number: int = 0
+            data_set_number: int = 0  # TODO: Use list index instead?
 
             for data_set in Config.DATA_SETS:
                 data_set_number += 1

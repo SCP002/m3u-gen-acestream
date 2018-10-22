@@ -13,11 +13,21 @@ from config.data_set import DataSet
 from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 
 
-class FilterHandler:
+class FilterHandler:  # TODO: Assign required variables before 'with' statements
 
-    @staticmethod
-    def replace_categories(channels: List[Channel], data_set: DataSet) -> List[Channel]:
-        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
+    def __init__(self) -> None:
+        self._data_set = None
+
+    @property
+    def data_set(self) -> DataSet:
+        return self._data_set
+
+    @data_set.setter
+    def data_set(self, data_set: DataSet) -> None:
+        self._data_set = data_set
+
+    def replace_categories(self, channels: List[Channel]) -> List[Channel]:
+        with closing(open(self.data_set.filter_file_name, 'r', self.data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
         replace_cats: List[ReplaceCat] = filter_contents.replace_cats
@@ -43,9 +53,8 @@ class FilterHandler:
 
         return channels
 
-    @staticmethod
-    def is_channel_allowed(channel: Channel, data_set: DataSet) -> bool:
-        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
+    def is_channel_allowed(self, channel: Channel) -> bool:
+        with closing(open(self.data_set.filter_file_name, 'r', self.data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
         exclude_cats: List[str] = filter_contents.exclude_cats
@@ -66,9 +75,8 @@ class FilterHandler:
 
         return True
 
-    @staticmethod
-    def clean_filter(src_channels: List[Channel], data_set: DataSet) -> None:
-        with closing(open(data_set.filter_file_name, 'r', data_set.filter_file_encoding)) as filter_file:
+    def clean_filter(self, src_channels: List[Channel]) -> None:
+        with closing(open(self.data_set.filter_file_name, 'r', self.data_set.filter_file_encoding)) as filter_file:
             filter_contents: Filter = load(filter_file, cls=FilterDecoder)
 
         cleaned: bool = False
@@ -116,5 +124,5 @@ class FilterHandler:
             print('')
 
         # Write changes
-        with closing(open(data_set.filter_file_name, 'w', data_set.filter_file_encoding)) as filter_file:
+        with closing(open(self.data_set.filter_file_name, 'w', self.data_set.filter_file_encoding)) as filter_file:
             dump(filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)
