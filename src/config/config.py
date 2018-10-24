@@ -58,6 +58,14 @@ class Config:
         # TTV, all:
         DataSet(
             # Source JSON file URL:
+
+            # List of acceptable sources:
+            # http://91.92.66.82/trash/ttv-list/ttv.json
+            # http://91.92.66.82/trash/ttv-list/allfon.json
+            # http://91.92.66.82/trash/ttv-list/as.json
+            # http://91.92.66.82/trash/ttv-list/ace.json
+            # http://91.92.66.82/trash/ttv-list/acelive.json
+
             # Response example:
             # {
             #   "channels": [
