@@ -33,6 +33,7 @@ class Config:
     MAIL_ON_CRASH: bool = False
 
     # Send email from:
+
     # Note: To use this feature with gmail, enable 'less secure apps' on the sender account.
     # See: https://myaccount.google.com/lesssecureapps
     MAIL_FROM: str = 'from.email.address@domain.com'
@@ -109,6 +110,7 @@ class Config:
             'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
 
             # Filter file name:
+
             # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
             # {
             #
