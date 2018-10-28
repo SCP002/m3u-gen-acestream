@@ -37,6 +37,14 @@ class ChannelHandler:
         self._filter_handler.data_set = data_set
 
     def write_playlist(self) -> None:
+        channels: List[Channel] = self._fetch_channels()
+        channels = self._filter_handler.replace_categories(channels)
+        channels.sort(key=lambda x: x.name)
+        channels.sort(key=lambda x: x.category)
+
+        if self.data_set.clean_filter:
+            self._filter_handler.clean_filter(channels)
+
         out_file_name: str = self.data_set.out_file_name
         out_file_encoding: str = self.data_set.out_file_encoding
         out_file_first_line: str = self.data_set.out_file_first_line
@@ -48,14 +56,6 @@ class ChannelHandler:
 
             total_channel_count: int = 0
             allowed_channel_count: int = 0
-
-            channels: List[Channel] = self._fetch_channels()
-            channels = self._filter_handler.replace_categories(channels)
-            channels.sort(key=lambda x: x.name)
-            channels.sort(key=lambda x: x.category)
-
-            if self.data_set.clean_filter:
-                self._filter_handler.clean_filter(channels)
 
             for channel in channels:
                 total_channel_count += 1
