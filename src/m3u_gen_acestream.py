@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
         if Config.MAIL_ON_CRASH:
             print('Sending notification.', file=stderr)
-            Utils.send_email('m3u-gen-ttv has crashed on ' + gethostname() + '@' + gethostbyname(gethostname()),
+            Utils.send_email('m3u-gen-acestream has crashed on ' + gethostname() + '@' + gethostbyname(gethostname()),
                              format_exc())
 
         if Config.PAUSE_ON_CRASH:
