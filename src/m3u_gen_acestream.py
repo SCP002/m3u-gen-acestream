@@ -13,7 +13,7 @@ from config.config import Config
 from utils import Utils
 
 
-class M3UGenTTV:
+class M3UGenAceStream:
 
     @staticmethod
     def main() -> None:
@@ -50,7 +50,7 @@ class M3UGenTTV:
 if __name__ == '__main__':
     # noinspection PyBroadException
     try:
-        M3UGenTTV.main()
+        M3UGenAceStream.main()
     except Exception:
         print_exc()
 
