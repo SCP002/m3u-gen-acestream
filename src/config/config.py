@@ -33,7 +33,7 @@ class Config:
     MAIL_ON_CRASH: bool = False
 
     # Send email from:
-
+    #
     # Note: To use this feature with gmail, enable 'less secure apps' on the sender account.
     # See: https://myaccount.google.com/lesssecureapps
     MAIL_FROM: str = 'from.email.address@domain.com'
@@ -53,20 +53,19 @@ class Config:
     # Ask to press <Enter> on program crash to exit or not:
     PAUSE_ON_CRASH: bool = True
 
-    # noinspection SpellCheckingInspection
     # Data sets used to generate m3u files:
     DATA_SETS: Tuple[DataSet] = (
         # TTV, all:
         DataSet(
             # Source JSON file URL:
-
+            #
             # List of acceptable sources:
             # http://91.92.66.82/trash/ttv-list/ttv.json
             # http://91.92.66.82/trash/ttv-list/allfon.json
             # http://91.92.66.82/trash/ttv-list/as.json
             # http://91.92.66.82/trash/ttv-list/ace.json
             # http://91.92.66.82/trash/ttv-list/acelive.json
-
+            #
             # Response example:
             # {
             #   "channels": [
@@ -110,7 +109,7 @@ class Config:
             'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
 
             # Filter file name:
-
+            #
             # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
             # {
             #
