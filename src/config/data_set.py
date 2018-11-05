@@ -7,6 +7,8 @@ class DataSet:
     def __init__(self,
                  src_channels_url: str,
                  src_channels_resp_encoding: str,
+                 injection_file_name: str,
+                 injection_file_encoding: str,
                  out_file_name: str,
                  out_file_encoding: str,
                  out_file_first_line: str,
@@ -16,6 +18,8 @@ class DataSet:
                  clean_filter: bool) -> None:
         self._src_channels_url = src_channels_url
         self._src_channels_resp_encoding = src_channels_resp_encoding
+        self._injection_file_name = injection_file_name
+        self._injection_file_encoding = injection_file_encoding
         self._out_file_name = out_file_name
         self._out_file_encoding = out_file_encoding
         self._out_file_first_line = out_file_first_line
@@ -31,6 +35,14 @@ class DataSet:
     @property
     def src_channels_resp_encoding(self) -> str:
         return self._src_channels_resp_encoding
+
+    @property
+    def injection_file_name(self) -> str:
+        return self._injection_file_name
+
+    @property
+    def injection_file_encoding(self) -> str:
+        return self._injection_file_encoding
 
     @property
     def out_file_name(self) -> str:

@@ -94,6 +94,26 @@ class Config:
             # Source channels response encoding:
             'UTF-8-SIG',
 
+            # Channels injection file name:
+            #
+            # Contents example:
+            # [
+            #   {
+            #     "name": "Sample Name To Add 1",
+            #     "category": "Sample Category To Add 1",
+            #     "contentId": "Sample Content ID To Add 1"
+            #   },
+            #   {
+            #     "name": "Sample Name To Add 2",
+            #     "category": "Sample Category To Add 2",
+            #     "contentId": "Sample Content ID To Add 2"
+            #   }
+            # ]
+            './channel/injection.json',
+
+            # Channels injection file encoding:
+            'UTF-8',
+
             # Output file name:
             '../out/acestream-ttv-all.m3u',
 

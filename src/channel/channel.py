@@ -53,3 +53,26 @@ class ChannelsDecoder(JSONDecoder):
             output_obj.append(channel)
 
         return output_obj
+
+
+class InjectionDecoder(JSONDecoder):
+
+    def decode(self, s: str, **kwargs: bool) -> List[Channel]:
+        input_obj: List[Dict[str, str]] = super().decode(s)
+
+        return self._convert(input_obj)
+
+    @staticmethod
+    def _convert(input_obj: List[Dict[str, str]]) -> List[Channel]:
+        output_obj: List[Channel] = []
+
+        for channel_raw in input_obj:
+            name: str = channel_raw.get('name', '')
+            category: str = channel_raw.get('category', '')
+            content_id: str = channel_raw.get('contentId', '')
+
+            channel: Channel = Channel(name, category, content_id)
+
+            output_obj.append(channel)
+
+        return output_obj

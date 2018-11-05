@@ -5,7 +5,7 @@
 from codecs import StreamReaderWriter, open
 from contextlib import closing
 from datetime import timedelta
-from json import loads
+from json import loads, load
 from os import makedirs
 from os.path import dirname
 from sys import stderr
@@ -14,7 +14,7 @@ from typing import List
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from channel.channel import Channel, ChannelsDecoder
+from channel.channel import Channel, ChannelsDecoder, InjectionDecoder
 from config.config import Config
 from config.data_set import DataSet
 from filter.filter_handler import FilterHandler
@@ -38,7 +38,11 @@ class ChannelHandler:
 
     def write_playlist(self) -> None:
         channels: List[Channel] = self._fetch_channels()
+
+        self._inject_channels(channels)
+
         channels = self._filter_handler.replace_categories(channels)
+
         channels.sort(key=lambda x: x.name)
         channels.sort(key=lambda x: x.category)
 
@@ -100,6 +104,15 @@ class ChannelHandler:
                     raise
 
         return [Channel('', '', '')]
+
+    def _inject_channels(self, channels: List[Channel]) -> None:
+        injection_file_name: str = self.data_set.injection_file_name
+        injection_file_encoding: str = self.data_set.injection_file_encoding
+
+        with closing(open(injection_file_name, 'r', injection_file_encoding)) as injection_file:
+            injection: List[Channel] = load(injection_file, cls=InjectionDecoder)
+
+        channels.extend(injection)
 
     def _write_entry(self, channel: Channel, out_file: StreamReaderWriter) -> None:
         out_file_format: str = self.data_set.out_file_format
