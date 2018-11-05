@@ -57,7 +57,7 @@ class Config:
     DATA_SETS: Tuple[DataSet] = (
         # TTV, all:
         DataSet(
-            # Source JSON file URL:
+            # Source channels file URL:
             #
             # List of acceptable sources:
             # http://91.92.66.82/trash/ttv-list/ttv.json
@@ -91,7 +91,7 @@ class Config:
             # }
             'http://91.92.66.82/trash/ttv-list/ttv.json',
 
-            # JSON response encoding:
+            # Source channels response encoding:
             'UTF-8-SIG',
 
             # Output file name:

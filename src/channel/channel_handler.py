@@ -70,8 +70,8 @@ class ChannelHandler:
         print('Channels denied:', total_channel_count - allowed_channel_count)
 
     def _fetch_channels(self) -> List[Channel]:
-        json_url: str = self.data_set.json_url
-        resp_encoding: str = self.data_set.resp_encoding
+        src_channels_url: str = self.data_set.src_channels_url
+        src_channels_resp_encoding: str = self.data_set.src_channels_resp_encoding
 
         for attempt_number in range(1, Config.JSON_SRC_MAX_ATTEMPTS):
             print('Retrieving JSON file, attempt', attempt_number, 'of', Config.JSON_SRC_MAX_ATTEMPTS, end='\n\n')
@@ -80,8 +80,8 @@ class ChannelHandler:
                 Utils.wait_for_internet()
 
             try:
-                with closing(urlopen(json_url, timeout=Config.CONN_TIMEOUT)) as response_raw:
-                    response: str = response_raw.read().decode(resp_encoding)
+                with closing(urlopen(src_channels_url, timeout=Config.CONN_TIMEOUT)) as response_raw:
+                    response: str = response_raw.read().decode(src_channels_resp_encoding)
 
                 channels: List[Channel] = loads(response, cls=ChannelsDecoder)
 

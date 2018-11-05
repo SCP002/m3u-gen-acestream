@@ -5,8 +5,8 @@
 class DataSet:
 
     def __init__(self,
-                 json_url: str,
-                 resp_encoding: str,
+                 src_channels_url: str,
+                 src_channels_resp_encoding: str,
                  out_file_name: str,
                  out_file_encoding: str,
                  out_file_first_line: str,
@@ -14,8 +14,8 @@ class DataSet:
                  filter_file_name: str,
                  filter_file_encoding: str,
                  clean_filter: bool) -> None:
-        self._json_url = json_url
-        self._resp_encoding = resp_encoding
+        self._src_channels_url = src_channels_url
+        self._src_channels_resp_encoding = src_channels_resp_encoding
         self._out_file_name = out_file_name
         self._out_file_encoding = out_file_encoding
         self._out_file_first_line = out_file_first_line
@@ -25,12 +25,12 @@ class DataSet:
         self._clean_filter = clean_filter
 
     @property
-    def json_url(self) -> str:
-        return self._json_url
+    def src_channels_url(self) -> str:
+        return self._src_channels_url
 
     @property
-    def resp_encoding(self) -> str:
-        return self._resp_encoding
+    def src_channels_resp_encoding(self) -> str:
+        return self._src_channels_resp_encoding
 
     @property
     def out_file_name(self) -> str:
