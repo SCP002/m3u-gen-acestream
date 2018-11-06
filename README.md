@@ -15,7 +15,9 @@
 ## Notes:
 See `./src/config/config.py` to configure program behavior.
 
-See `./src/filter/filter.json` to configure filter. See formatting in config file.
+See `./src/filter/filter.json` to configure filter. See formatting in the config file.
+
+See `./src/channel/injection.json` to configure channel injections. See formatting in the config file.
 
 Default output folder: `./out/`.
 
