@@ -33,7 +33,7 @@ class FilterHandler:
         with closing(open(filter_file_name, 'r', filter_file_encoding)) as filter_file:
             self._filter_contents = load(filter_file, cls=FilterDecoder)
 
-    def replace_categories(self, channels: List[Channel]) -> List[Channel]:
+    def replace_categories(self, channels: List[Channel]) -> None:
         replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
         replaced: bool = False
@@ -54,8 +54,6 @@ class FilterHandler:
 
         if replaced:
             print('')
-
-        return channels
 
     def is_channel_allowed(self, channel: Channel) -> bool:
         exclude_cats: List[str] = self._filter_contents.exclude_cats

@@ -41,7 +41,7 @@ class ChannelHandler:
 
         self._inject_channels(channels)
 
-        channels = self._filter_handler.replace_categories(channels)
+        self._filter_handler.replace_categories(channels)
 
         channels.sort(key=lambda x: x.name)
         channels.sort(key=lambda x: x.category)
