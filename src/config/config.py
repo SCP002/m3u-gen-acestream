@@ -134,25 +134,25 @@ class Config:
             # {
             #
             #   // Categories that needs to be changed (channel names uses regex):
-            #   "replace_cats": [
+            #   "replaceCats": [
             #     {
-            #       "for_name": ".*some channel name 1.*",
-            #       "to_cat": "some category 1"
+            #       "forName": ".*some channel name 1.*",
+            #       "toCat": "some category 1"
             #     },
             #     {
-            #       "for_name": "some channel name 2",
-            #       "to_cat": "some category 2"
+            #       "forName": "some channel name 2",
+            #       "toCat": "some category 2"
             #     }
             #   ],
             #
             #   // Categories blacklist (uses regex):
-            #   "exclude_cats": [
+            #   "excludeCats": [
             #     "some category 1",
             #     "some category 2"
             #   ],
             #
             #   // Channel names blacklist (uses regex):
-            #   "exclude_names": [
+            #   "excludeNames": [
             #     ".*some channel name 1.*",
             #     "some channel name 2"
             #   ]

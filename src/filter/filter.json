@@ -1,8 +1,8 @@
 {
-  "replace_cats": [
+  "replaceCats": [
   ],
-  "exclude_cats": [
+  "excludeCats": [
   ],
-  "exclude_names": [
+  "excludeNames": [
   ]
 }

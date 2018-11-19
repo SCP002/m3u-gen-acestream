@@ -77,7 +77,7 @@ class FilterHandler:
     def clean_filter(self, src_channels: List[Channel]) -> None:
         cleaned: bool = False
 
-        # Clean "replace_cats"
+        # Clean "replaceCats"
         replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
         for replace_cat in replace_cats[:]:
@@ -93,7 +93,7 @@ class FilterHandler:
             cleaned = False
             print('')
 
-        # Clean "exclude_cats"
+        # Clean "excludeCats"
         exclude_cats: List[str] = self._filter_contents.exclude_cats
 
         for exclude_cat in exclude_cats[:]:
@@ -107,7 +107,7 @@ class FilterHandler:
             cleaned = False
             print('')
 
-        # Clean "exclude_names"
+        # Clean "excludeNames"
         exclude_names: List[str] = self._filter_contents.exclude_names
 
         for exclude_name in exclude_names[:]:
