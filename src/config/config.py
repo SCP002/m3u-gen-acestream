@@ -20,11 +20,11 @@ class Config:
     # Delay between playlist updates (in seconds):
     UPDATE_DELAY: int = 60 * 60
 
-    # Delay between requests to the JSON source host if it is currently down (in seconds):
-    JSON_SRC_REQ_DELAY: int = 60 * 10
+    # Delay between requests to the channels source host if it is currently down (in seconds):
+    CHANN_SRC_REQ_DELAY: int = 60 * 10
 
-    # Amount of requests to the JSON source host before throw an exception if it is currently down:
-    JSON_SRC_MAX_ATTEMPTS: int = 10
+    # Amount of requests to the channels source host before throw an exception if it is currently down:
+    CHANN_SRC_MAX_ATTEMPTS: int = 10
 
     # Time to wait before consider that destination is unreachable (in seconds):
     CONN_TIMEOUT: int = 10
@@ -163,7 +163,7 @@ class Config:
             # Filter file encoding:
             'UTF-8',
 
-            # Remove entry from filter file if it is not found in source JSON or not:
+            # Remove entry from filter file if it is not found in channels source or not:
             False,
         ),
 

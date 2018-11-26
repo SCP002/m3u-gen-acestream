@@ -77,8 +77,8 @@ class ChannelHandler:
         src_channels_url: str = self.data_set.src_channels_url
         src_channels_resp_encoding: str = self.data_set.src_channels_resp_encoding
 
-        for attempt_number in range(1, Config.JSON_SRC_MAX_ATTEMPTS):
-            print('Retrieving JSON file, attempt', attempt_number, 'of', Config.JSON_SRC_MAX_ATTEMPTS, end='\n\n')
+        for attempt_number in range(1, Config.CHANN_SRC_MAX_ATTEMPTS):
+            print('Retrieving channels file, attempt', attempt_number, 'of', Config.CHANN_SRC_MAX_ATTEMPTS, end='\n\n')
 
             if attempt_number > 1:
                 Utils.wait_for_internet()
@@ -91,14 +91,14 @@ class ChannelHandler:
 
                 return channels
             except URLError as url_error:
-                print('Can not retrieve JSON file.', file=stderr)
+                print('Can not retrieve channels file.', file=stderr)
                 print('Error:', url_error, file=stderr)
 
-                if attempt_number < Config.JSON_SRC_MAX_ATTEMPTS:
-                    print('Sleeping for', timedelta(seconds=Config.JSON_SRC_REQ_DELAY), 'before trying again.',
+                if attempt_number < Config.CHANN_SRC_MAX_ATTEMPTS:
+                    print('Sleeping for', timedelta(seconds=Config.CHANN_SRC_REQ_DELAY), 'before trying again.',
                           end='\n\n',
                           file=stderr)
-                    sleep(Config.JSON_SRC_REQ_DELAY)
+                    sleep(Config.CHANN_SRC_REQ_DELAY)
                 else:
                     print('Raising an exception.', end='\n\n', file=stderr)
                     raise
