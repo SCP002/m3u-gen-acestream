@@ -3,8 +3,9 @@
 
 
 from datetime import datetime, timedelta
+from os import chdir
 from socket import gethostname, gethostbyname
-from sys import stderr
+from sys import stderr, path
 from time import sleep
 from traceback import print_exc, format_exc
 
@@ -50,6 +51,8 @@ class M3UGenAceStream:
 if __name__ == '__main__':
     # noinspection PyBroadException
     try:
+        chdir(path[0])
+
         M3UGenAceStream.main()
     except Exception:
         print_exc()
