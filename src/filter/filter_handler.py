@@ -28,9 +28,8 @@ class FilterHandler:
         self._data_set = data_set
 
         filter_file_name: str = data_set.filter_file_name
-        filter_file_encoding: str = data_set.filter_file_encoding
 
-        with closing(open(filter_file_name, 'r', filter_file_encoding)) as filter_file:  # type: StreamReaderWriter
+        with closing(open(filter_file_name, 'r', 'utf-8')) as filter_file:  # type: StreamReaderWriter
             self._filter_contents = load(filter_file, cls=FilterDecoder)
 
     def replace_categories(self, channels: List[Channel]) -> None:
@@ -121,7 +120,6 @@ class FilterHandler:
 
         # Write changes
         filter_file_name: str = self.data_set.filter_file_name
-        filter_file_encoding: str = self.data_set.filter_file_encoding
 
-        with closing(open(filter_file_name, 'w', filter_file_encoding)) as filter_file:  # type: StreamReaderWriter
+        with closing(open(filter_file_name, 'w', 'utf-8')) as filter_file:  # type: StreamReaderWriter
             dump(self._filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)

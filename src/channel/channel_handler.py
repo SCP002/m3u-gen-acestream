@@ -111,11 +111,8 @@ class ChannelHandler:
 
     def _inject_channels(self, channels: List[Channel]) -> None:
         injection_file_name: str = self.data_set.injection_file_name
-        injection_file_encoding: str = self.data_set.injection_file_encoding
 
-        with closing(
-                open(injection_file_name, 'r', injection_file_encoding)
-        ) as injection_file:  # type: StreamReaderWriter
+        with closing(open(injection_file_name, 'r', 'utf-8')) as injection_file:  # type: StreamReaderWriter
             injection: List[Channel] = load(injection_file, cls=InjectionDecoder)
 
         channels.extend(injection)

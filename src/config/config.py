@@ -108,14 +108,13 @@ class Config:
             # ]
             './channel/injection.json',
 
-            # Channels injection file encoding:
-            'UTF-8',
-
             # Output file name:
             '../out/acestream-ttv-all.m3u',
 
             # Output file encoding:
-            'UTF-8',
+            #
+            # See https://docs.python.org/3/library/codecs.html#standard-encodings
+            'utf-8',
 
             # Output file first line:
             '#EXTM3U url-tvg="http://1ttvapi.top/ttv.xmltv.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1 '
@@ -156,9 +155,6 @@ class Config:
             #
             # }
             './filter/filter.json',
-
-            # Filter file encoding:
-            'UTF-8',
 
             # Remove entry from filter file if it is not found in channels source or not:
             False,
