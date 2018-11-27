@@ -12,7 +12,7 @@ from sys import stderr
 from time import sleep
 from typing import List
 from urllib.error import URLError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from channel.channel import Channel, ChannelsDecoder, InjectionDecoder
 from config.config import Config
@@ -84,7 +84,9 @@ class ChannelHandler:
                 Utils.wait_for_internet()
 
             try:
-                with closing(urlopen(src_channels_url, timeout=Config.CONN_TIMEOUT)) as response_raw:
+                req: Request = Request(src_channels_url)
+
+                with closing(urlopen(req, timeout=Config.CONN_TIMEOUT)) as response_raw:
                     response: str = response_raw.read().decode(src_channels_resp_encoding)
 
                 channels: List[Channel] = loads(response, cls=ChannelsDecoder)

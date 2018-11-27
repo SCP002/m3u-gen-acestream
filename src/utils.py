@@ -8,7 +8,7 @@ from smtplib import SMTP
 from sys import stderr
 from time import sleep
 from urllib.error import URLError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from config.config import Config
 
@@ -19,7 +19,9 @@ class Utils:
     def wait_for_internet() -> None:
         while True:
             try:
-                with closing(urlopen(Config.CONN_CHECK_ADDR, timeout=Config.CONN_TIMEOUT)):
+                req: Request = Request(Config.CONN_CHECK_ADDR)
+
+                with closing(urlopen(req, timeout=Config.CONN_TIMEOUT)):
                     print('Internet connection is up.', end='\n\n')
                     break
             except URLError as url_error:
