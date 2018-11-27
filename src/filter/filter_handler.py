@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from codecs import open
+from codecs import StreamReaderWriter, open
 from contextlib import closing
 from json import load, dump
 from re import match, IGNORECASE
@@ -30,7 +30,7 @@ class FilterHandler:
         filter_file_name: str = data_set.filter_file_name
         filter_file_encoding: str = data_set.filter_file_encoding
 
-        with closing(open(filter_file_name, 'r', filter_file_encoding)) as filter_file:
+        with closing(open(filter_file_name, 'r', filter_file_encoding)) as filter_file:  # type: StreamReaderWriter
             self._filter_contents = load(filter_file, cls=FilterDecoder)
 
     def replace_categories(self, channels: List[Channel]) -> None:
@@ -123,5 +123,5 @@ class FilterHandler:
         filter_file_name: str = self.data_set.filter_file_name
         filter_file_encoding: str = self.data_set.filter_file_encoding
 
-        with closing(open(filter_file_name, 'w', filter_file_encoding)) as filter_file:
+        with closing(open(filter_file_name, 'w', filter_file_encoding)) as filter_file:  # type: StreamReaderWriter
             dump(self._filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)

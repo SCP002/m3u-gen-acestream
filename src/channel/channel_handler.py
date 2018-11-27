@@ -5,14 +5,16 @@
 from codecs import StreamReaderWriter, open
 from contextlib import closing
 from datetime import timedelta
+from http.client import HTTPResponse
 from json import loads, load
 from os import makedirs
 from os.path import dirname
 from sys import stderr
 from time import sleep
-from typing import List
+from typing import List, Union
 from urllib.error import URLError
 from urllib.request import Request, urlopen
+from urllib.response import addinfourl
 
 from channel.channel import Channel, ChannelsDecoder, InjectionDecoder
 from config.config import Config
@@ -55,7 +57,7 @@ class ChannelHandler:
 
         makedirs(dirname(out_file_name), exist_ok=True)
 
-        with closing(open(out_file_name, 'w', out_file_encoding)) as out_file:
+        with closing(open(out_file_name, 'w', out_file_encoding)) as out_file:  # type: StreamReaderWriter
             out_file.write(out_file_first_line)
 
             total_channel_count: int = 0
@@ -86,7 +88,9 @@ class ChannelHandler:
             try:
                 req: Request = Request(src_channels_url)
 
-                with closing(urlopen(req, timeout=Config.CONN_TIMEOUT)) as response_raw:
+                with closing(
+                        urlopen(req, timeout=Config.CONN_TIMEOUT)
+                ) as response_raw:  # type: Union[HTTPResponse, addinfourl]
                     response: str = response_raw.read().decode(src_channels_resp_encoding)
 
                 channels: List[Channel] = loads(response, cls=ChannelsDecoder)
@@ -111,7 +115,9 @@ class ChannelHandler:
         injection_file_name: str = self.data_set.injection_file_name
         injection_file_encoding: str = self.data_set.injection_file_encoding
 
-        with closing(open(injection_file_name, 'r', injection_file_encoding)) as injection_file:
+        with closing(
+                open(injection_file_name, 'r', injection_file_encoding)
+        ) as injection_file:  # type: StreamReaderWriter
             injection: List[Channel] = load(injection_file, cls=InjectionDecoder)
 
         channels.extend(injection)
