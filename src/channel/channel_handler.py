@@ -11,10 +11,9 @@ from os import makedirs
 from os.path import dirname
 from sys import stderr
 from time import sleep
-from typing import List, Union
+from typing import List
 from urllib.error import URLError
 from urllib.request import Request, urlopen
-from urllib.response import addinfourl
 
 from channel.channel import Channel, ChannelsDecoder, InjectionDecoder
 from config.config import Config
@@ -77,7 +76,6 @@ class ChannelHandler:
 
     def _fetch_channels(self) -> List[Channel]:
         src_channels_url: str = self.data_set.src_channels_url
-        src_channels_resp_encoding: str = self.data_set.src_channels_resp_encoding
 
         for attempt_number in range(1, Config.CHANN_SRC_MAX_ATTEMPTS):
             print('Retrieving channels file, attempt', attempt_number, 'of', Config.CHANN_SRC_MAX_ATTEMPTS, end='\n\n')
@@ -88,10 +86,10 @@ class ChannelHandler:
             try:
                 req: Request = Request(src_channels_url)
 
-                with closing(
-                        urlopen(req, timeout=Config.CONN_TIMEOUT)
-                ) as response_raw:  # type: Union[HTTPResponse, addinfourl]
-                    response: str = response_raw.read().decode(src_channels_resp_encoding)
+                # noinspection Mypy
+                with closing(urlopen(req, timeout=Config.CONN_TIMEOUT)) as response_raw:  # type: HTTPResponse
+                    encoding: str = response_raw.info().get_content_charset()
+                    response: str = response_raw.read().decode(encoding)
 
                 channels: List[Channel] = loads(response, cls=ChannelsDecoder)
 

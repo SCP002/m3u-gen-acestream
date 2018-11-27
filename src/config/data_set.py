@@ -6,7 +6,6 @@ class DataSet:
 
     def __init__(self,
                  src_channels_url: str,
-                 src_channels_resp_encoding: str,
                  injection_file_name: str,
                  injection_file_encoding: str,
                  out_file_name: str,
@@ -17,7 +16,6 @@ class DataSet:
                  filter_file_encoding: str,
                  clean_filter: bool) -> None:
         self._src_channels_url = src_channels_url
-        self._src_channels_resp_encoding = src_channels_resp_encoding
         self._injection_file_name = injection_file_name
         self._injection_file_encoding = injection_file_encoding
         self._out_file_name = out_file_name
@@ -31,10 +29,6 @@ class DataSet:
     @property
     def src_channels_url(self) -> str:
         return self._src_channels_url
-
-    @property
-    def src_channels_resp_encoding(self) -> str:
-        return self._src_channels_resp_encoding
 
     @property
     def injection_file_name(self) -> str:

@@ -91,9 +91,6 @@ class Config:
             # }
             'http://91.92.66.82/trash/ttv-list/ttv.json',
 
-            # Source channels response encoding:
-            'UTF-8-SIG',
-
             # Channels injection file name:
             #
             # Contents example:
