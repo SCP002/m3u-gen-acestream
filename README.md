@@ -15,13 +15,29 @@
 ## Notes:
 See `./src/config/config.py` to configure program behavior.
 
-See `./src/filter/filter.json` to configure filter. See formatting in the config file.
+See `./src/filter/filter.json` to configure filter.
+See formatting in the config file.
 
-See `./src/channel/injection.json` to configure channel injections. See formatting in the config file.
+See `./src/channel/injection.json` to configure channel injections.
+See formatting in the config file.
 
 Default output folder: `./out/`.
 
-Tested with [Python 3.7](https://www.python.org/downloads/release/python-370/).
+Tested with [Python 3.7.1](https://www.python.org/downloads/release/python-371/).
+
+---
+If you want to serve generated files over http, you can use
+python built-in http server module, for example:
+
+```sh
+cd out
+python -m http.server 8000
+```
+
+The command above will serve output directory on port `8000`.
+So generated files can be accessed via local network and you can
+open links like `<your-local-ip>:8000/acestream-ttv-all.m3u` in
+IPTV player directly.
 
 ---
 Check other generators:
