@@ -39,8 +39,3 @@ The command above will serve output directory on port `7999`.
 So generated files can be accessed via local network and you can
 open links like `<your-local-ip>:7999/acestream-ttv-all.m3u` in
 IPTV player directly.
-
----
-Check other generators:
-* [m3u-gen-aceproxy](https://github.com/SCP002/m3u-gen-aceproxy) - for HTTPAceProxy.
-* [m3u-gen-noxbit](https://github.com/SCP002/m3u-gen-noxbit) - for Noxbit.
