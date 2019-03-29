@@ -55,12 +55,11 @@ class Config:
 
     # Data sets used to generate m3u files:
     DATA_SETS: Tuple[DataSet] = (
-        # TTV, all:
+        # AceStream search, all:
         DataSet(
             # Source channels file URL:
             #
             # List of acceptable sources:
-            # http://91.92.66.82/trash/ttv-list/ttv.json
             # http://91.92.66.82/trash/ttv-list/allfon.json
             # http://91.92.66.82/trash/ttv-list/as.json
             # http://91.92.66.82/trash/ttv-list/ace.json
@@ -89,7 +88,7 @@ class Config:
             #     }
             #   ]
             # }
-            'http://91.92.66.82/trash/ttv-list/ttv.json',
+            'http://91.92.66.82/trash/ttv-list/as.json',
 
             # Channels injection file name:
             #
@@ -109,7 +108,7 @@ class Config:
             './channel/injection.json',
 
             # Output file name:
-            '../out/acestream-ttv-all.m3u',
+            '../out/acestream-all.m3u',
 
             # Output file encoding:
             #
