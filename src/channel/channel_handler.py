@@ -5,6 +5,7 @@
 from codecs import StreamReaderWriter, open
 from contextlib import closing
 from datetime import timedelta
+from gzip import decompress
 from http.client import HTTPResponse
 from json import loads, load
 from os import makedirs
@@ -85,11 +86,13 @@ class ChannelHandler:
 
             try:
                 req: Request = Request(src_channels_url)
+                req.add_header('Accept-Encoding', 'gzip')
 
                 # noinspection Mypy
                 with closing(urlopen(req, timeout=Config.CONN_TIMEOUT)) as response_raw:  # type: HTTPResponse
+                    response_decompressed: bytes = decompress(response_raw.read())
                     encoding: str = response_raw.info().get_content_charset()
-                    response: str = response_raw.read().decode(encoding)
+                    response: str = response_decompressed.decode(encoding)
 
                 channels: List[Channel] = loads(response, cls=ChannelsDecoder)
 
