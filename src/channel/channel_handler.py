@@ -75,6 +75,7 @@ class ChannelHandler:
         print('Channels allowed:', allowed_channel_count)
         print('Channels denied:', total_channel_count - allowed_channel_count)
 
+    # TODO: Do not load the same source twice with multiple DataSets. Use stored data.
     def _fetch_channels(self) -> List[Channel]:
         src_channels_url: str = self.data_set.src_channels_url
 

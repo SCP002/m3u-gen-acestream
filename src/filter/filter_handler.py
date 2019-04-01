@@ -32,6 +32,7 @@ class FilterHandler:
         with closing(open(filter_file_name, 'r', 'utf-8')) as filter_file:  # type: StreamReaderWriter
             self._filter_contents = load(filter_file, cls=FilterDecoder)
 
+    # TODO: Add category to category replacing.
     def replace_categories(self, channels: List[Channel]) -> None:
         replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
