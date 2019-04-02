@@ -116,8 +116,8 @@ class Config:
             'utf-8',
 
             # Output file first line:
-            '#EXTM3U url-tvg="http://1ttvapi.top/ttv.xmltv.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1 '
-            'cache=3000\r\n',
+            '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip" tvg-shift=0 deinterlace=1 '
+            'm3uautoload=1\r\n',
 
             # Output file format:
             '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
