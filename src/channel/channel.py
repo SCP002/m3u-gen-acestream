@@ -6,7 +6,7 @@ from json import JSONDecoder
 from typing import List, Dict
 
 
-class Channel:
+class Channel:  # TODO: Add getter for tvg-name and use it.
 
     def __init__(self, name: str, category: str, content_id: str) -> None:
         self._name: str = name
