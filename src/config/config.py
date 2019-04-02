@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from typing import Tuple
+from typing import Sequence
 
 from config.data_set import DataSet
 
@@ -54,7 +54,7 @@ class Config:
     PAUSE_ON_CRASH: bool = True
 
     # Data sets used to generate m3u files:
-    DATA_SETS: Tuple[DataSet, DataSet] = (
+    DATA_SETS: Sequence[DataSet] = (
         # AceStream search, all channels, for AceStream:
         DataSet(
             # Source channels file URL:
