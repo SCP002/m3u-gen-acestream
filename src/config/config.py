@@ -54,8 +54,8 @@ class Config:
     PAUSE_ON_CRASH: bool = True
 
     # Data sets used to generate m3u files:
-    DATA_SETS: Tuple[DataSet] = (
-        # AceStream search, all:
+    DATA_SETS: Tuple[DataSet, DataSet] = (
+        # AceStream search, all channels, for AceStream:
         DataSet(
             # Source channels file URL:
             #
@@ -122,6 +122,110 @@ class Config:
             # Output file format:
             '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
             'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
+
+            # Filter file name:
+            #
+            # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
+            # {
+            #
+            #   // Categories that needs to be changed (channel names uses regex):
+            #   "replaceCats": [
+            #     {
+            #       "forName": ".*some channel name 1.*",
+            #       "toCat": "some category 1"
+            #     },
+            #     {
+            #       "forName": "some channel name 2",
+            #       "toCat": "some category 2"
+            #     }
+            #   ],
+            #
+            #   // Categories blacklist (uses regex):
+            #   "excludeCats": [
+            #     "some category 1",
+            #     "some category 2"
+            #   ],
+            #
+            #   // Channel names blacklist (uses regex):
+            #   "excludeNames": [
+            #     ".*some channel name 1.*",
+            #     "some channel name 2"
+            #   ]
+            #
+            # }
+            './filter/filter.json',
+
+            # Remove entry from filter file if it is not found in channels source or not:
+            False,
+        ),
+        # --------------------------------------------------------------------------------------------------------------
+        # AceStream search, all channels, for HttpAceProxy (https://github.com/pepsik-kiev/HTTPAceProxy):
+        DataSet(
+            # Source channels file URL:
+            #
+            # List of acceptable sources:
+            # http://91.92.66.82/trash/ttv-list/allfon.json
+            # http://91.92.66.82/trash/ttv-list/as.json
+            # http://91.92.66.82/trash/ttv-list/ace.json
+            # http://91.92.66.82/trash/ttv-list/acelive.json
+            #
+            # Response example:
+            # {
+            #   "channels": [
+            #     {
+            #       "name": "2x2 (+2)",
+            #       "url": "55025502b66f3a1d637fe22ed1ca54cfa2b255c3",
+            #       "cat": "Развлекательные"
+            #     },
+            #     {
+            #       "name": "AMC",
+            #       "url": "adee14686e77e169b3622d10cc0e66ac84f09e1d",
+            #       "cat": "Фильмы"
+            #     },
+            #
+            #     ...
+            #
+            #     {
+            #       "name": "Super Tennis HD",
+            #       "url": "4468f2698f66674f30044903fc8cadc80ebe181f",
+            #       "cat": "Спорт"
+            #     }
+            #   ]
+            # }
+            'http://91.92.66.82/trash/ttv-list/as.json',
+
+            # Channels injection file name:
+            #
+            # Contents example:
+            # [
+            #   {
+            #     "name": "Sample Name To Add 1",
+            #     "category": "Sample Category To Add 1",
+            #     "contentId": "Sample Content ID To Add 1"
+            #   },
+            #   {
+            #     "name": "Sample Name To Add 2",
+            #     "category": "Sample Category To Add 2",
+            #     "contentId": "Sample Content ID To Add 2"
+            #   }
+            # ]
+            './channel/injection.json',
+
+            # Output file name:
+            '../out/aceproxy-all.m3u',
+
+            # Output file encoding:
+            #
+            # See https://docs.python.org/3/library/codecs.html#standard-encodings
+            'utf-8',
+
+            # Output file first line:
+            '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip" tvg-shift=0 deinterlace=1 '
+            'm3uautoload=1\r\n',
+
+            # Output file format:
+            '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
+            'http://127.0.0.1:8000/pid/{CONTENT_ID}/stream.mp4\r\n',
 
             # Filter file name:
             #
