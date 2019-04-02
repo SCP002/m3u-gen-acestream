@@ -6,7 +6,7 @@ from codecs import StreamReaderWriter, open
 from contextlib import closing
 from json import load, dump
 from re import match, IGNORECASE
-from typing import List
+from typing import List, Optional
 
 from channel.channel import Channel
 from config.data_set import DataSet
@@ -16,8 +16,8 @@ from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
 class FilterHandler:
 
     def __init__(self) -> None:
-        self._data_set: DataSet = None
-        self._filter_contents: Filter = None
+        self._data_set: Optional[DataSet] = None
+        self._filter_contents: Optional[Filter] = None
 
     @property
     def data_set(self) -> DataSet:

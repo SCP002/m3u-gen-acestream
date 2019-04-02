@@ -12,7 +12,7 @@ from os import makedirs
 from os.path import dirname
 from sys import stderr
 from time import sleep
-from typing import List
+from typing import List, Optional
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
@@ -26,7 +26,7 @@ from utils import Utils
 class ChannelHandler:
 
     def __init__(self) -> None:
-        self._data_set: DataSet = None
+        self._data_set: Optional[DataSet] = None
         self._filter_handler: FilterHandler = FilterHandler()
 
     @property
