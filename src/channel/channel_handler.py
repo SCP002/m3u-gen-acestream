@@ -30,7 +30,7 @@ class ChannelHandler:
         self._filter_handler: FilterHandler = FilterHandler()
 
     @property
-    def data_set(self) -> DataSet:
+    def data_set(self) -> Optional[DataSet]:
         return self._data_set
 
     @data_set.setter
@@ -39,6 +39,8 @@ class ChannelHandler:
         self._filter_handler.data_set = data_set
 
     def write_playlist(self) -> None:
+        assert self.data_set is not None
+
         channels: List[Channel] = self._fetch_channels()
 
         self._inject_channels(channels)
@@ -77,6 +79,8 @@ class ChannelHandler:
 
     # TODO: Do not load the same source twice with multiple DataSets. Use stored data.
     def _fetch_channels(self) -> List[Channel]:
+        assert self.data_set is not None
+
         src_channels_url: str = self.data_set.src_channels_url
 
         for attempt_number in range(1, Config.CHANN_SRC_MAX_ATTEMPTS):
@@ -114,6 +118,8 @@ class ChannelHandler:
         return [Channel('', '', '')]
 
     def _inject_channels(self, channels: List[Channel]) -> None:
+        assert self.data_set is not None
+
         injection_file_name: str = self.data_set.injection_file_name
 
         with closing(open(injection_file_name, 'r', 'utf-8')) as injection_file:  # type: StreamReaderWriter
@@ -122,6 +128,8 @@ class ChannelHandler:
         channels.extend(injection)
 
     def _write_entry(self, channel: Channel, out_file: StreamReaderWriter) -> None:
+        assert self.data_set is not None
+
         out_file_format: str = self.data_set.out_file_format
 
         entry: str = out_file_format \

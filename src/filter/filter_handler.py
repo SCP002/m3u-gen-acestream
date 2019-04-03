@@ -20,7 +20,7 @@ class FilterHandler:
         self._filter_contents: Optional[Filter] = None
 
     @property
-    def data_set(self) -> DataSet:
+    def data_set(self) -> Optional[DataSet]:
         return self._data_set
 
     @data_set.setter
@@ -34,6 +34,8 @@ class FilterHandler:
 
     # TODO: Add category to category replacing.
     def replace_categories(self, channels: List[Channel]) -> None:
+        assert self._filter_contents is not None
+
         replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
         replaced: bool = False
@@ -56,6 +58,8 @@ class FilterHandler:
             print('')
 
     def is_channel_allowed(self, channel: Channel) -> bool:
+        assert self._filter_contents is not None
+
         exclude_cats: List[str] = self._filter_contents.exclude_cats
 
         if len(exclude_cats) > 0:
@@ -75,6 +79,9 @@ class FilterHandler:
         return True
 
     def clean_filter(self, src_channels: List[Channel]) -> None:
+        assert self.data_set is not None
+        assert self._filter_contents is not None
+
         cleaned: bool = False
 
         # Clean "replaceCats"
