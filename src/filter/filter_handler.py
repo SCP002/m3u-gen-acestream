@@ -57,7 +57,7 @@ class FilterHandler:
         if replaced:
             print('')
 
-    def is_channel_allowed(self, channel: Channel) -> bool:
+    def is_channel_allowed(self, channel: Channel) -> bool:  # TODO: Avoid building long regex, use loop?
         assert self._filter_contents is not None
 
         exclude_cats: List[str] = self._filter_contents.exclude_cats

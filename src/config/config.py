@@ -120,7 +120,7 @@ class Config:
             'm3uautoload=1\r\n',
 
             # Output file format:
-            '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
+            '#EXTINF:-1 group-title="{CATEGORY}" tvg-name="{TVG_NAME}",{NAME}\r\n'
             'http://127.0.0.1:6878/ace/getstream?id={CONTENT_ID}\r\n',
 
             # Filter file name:
@@ -224,7 +224,7 @@ class Config:
             'm3uautoload=1\r\n',
 
             # Output file format:
-            '#EXTINF:-1 group-title="{CATEGORY}",{NAME}\r\n'
+            '#EXTINF:-1 group-title="{CATEGORY}" tvg-name="{TVG_NAME}",{NAME}\r\n'
             'http://127.0.0.1:8000/pid/{CONTENT_ID}/stream.mp4\r\n',
 
             # Filter file name:

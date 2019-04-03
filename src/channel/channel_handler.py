@@ -115,7 +115,7 @@ class ChannelHandler:
                     print('Raising an exception.', end='\n\n', file=stderr)
                     raise
 
-        return [Channel('', '', '')]
+        return [Channel('', '', '', '')]
 
     def _inject_channels(self, channels: List[Channel]) -> None:
         assert self.data_set is not None
@@ -135,6 +135,7 @@ class ChannelHandler:
         entry: str = out_file_format \
             .replace('{CATEGORY}', channel.category) \
             .replace('{NAME}', channel.name) \
-            .replace('{CONTENT_ID}', channel.content_id)
+            .replace('{CONTENT_ID}', channel.content_id) \
+            .replace('{TVG_NAME}', channel.tvg_name)
 
         out_file.write(entry)
