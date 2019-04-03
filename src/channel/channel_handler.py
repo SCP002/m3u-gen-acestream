@@ -108,8 +108,7 @@ class ChannelHandler:
 
                 if attempt_number < Config.CHANN_SRC_MAX_ATTEMPTS:
                     print('Sleeping for', timedelta(seconds=Config.CHANN_SRC_REQ_DELAY), 'before trying again.',
-                          end='\n\n',
-                          file=stderr)
+                          end='\n\n', file=stderr)
                     sleep(Config.CHANN_SRC_REQ_DELAY)
                 else:
                     print('Raising an exception.', end='\n\n', file=stderr)
