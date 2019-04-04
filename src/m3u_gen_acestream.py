@@ -34,7 +34,7 @@ class M3UGenAceStream:
                 channel_handler.data_set = data_set
                 channel_handler.write_playlist()
 
-                if data_set_number < len(Config.DATA_SETS):
+                if data_set_number < len(Config.DATA_SETS):  # TODO: Do not wait if using cached response.
                     print('Sleeping for', timedelta(seconds=Config.DATA_SET_DELAY),
                           'before processing next data set...')
                     sleep(Config.DATA_SET_DELAY)
