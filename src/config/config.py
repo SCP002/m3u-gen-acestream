@@ -116,8 +116,7 @@ class Config:
             'utf-8',
 
             # Output file first line:
-            '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip" tvg-shift=0 deinterlace=1 '
-            'm3uautoload=1\r\n',
+            '#EXTM3U url-tvg="https://iptvx.one/epg/epg.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1\r\n',
 
             # Output file format:
             '#EXTINF:-1 group-title="{CATEGORY}" tvg-name="{TVG_NAME}",{NAME}\r\n'
@@ -220,8 +219,7 @@ class Config:
             'utf-8',
 
             # Output file first line:
-            '#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip" tvg-shift=0 deinterlace=1 '
-            'm3uautoload=1\r\n',
+            '#EXTM3U url-tvg="https://iptvx.one/epg/epg.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1\r\n',
 
             # Output file format:
             '#EXTINF:-1 group-title="{CATEGORY}" tvg-name="{TVG_NAME}",{NAME}\r\n'
