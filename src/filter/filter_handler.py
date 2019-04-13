@@ -5,8 +5,7 @@
 from codecs import StreamReaderWriter, open
 from contextlib import closing
 from json import load, dump
-from re import match, IGNORECASE
-from typing import List, Optional
+from typing import List, Optional, Pattern
 
 from channel.channel import Channel
 from config.data_set import DataSet
@@ -41,14 +40,14 @@ class FilterHandler:
         replaced: bool = False
 
         for replace_cat in replace_cats:
-            target_name: str = replace_cat.for_name
+            target_name: Pattern[str] = replace_cat.for_name
             target_category: str = replace_cat.to_cat
 
             for channel in channels:
                 current_name: str = channel.name
                 current_category: str = channel.category
 
-                if match(target_name, current_name, IGNORECASE) and not current_category == target_category:
+                if target_name.match(current_name) and not current_category == target_category:
                     channel.category = target_category
                     replaced = True
                     print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
@@ -57,27 +56,18 @@ class FilterHandler:
         if replaced:
             print('')
 
-    # TODO: Use 'typing.Pattern[str]'.
-    # TODO: Avoid building long regex string. Use 'any()'?
-    # TODO: Cache regex with 're.compile'?
     def is_channel_allowed(self, channel: Channel) -> bool:
         assert self._filter_contents is not None
 
-        exclude_cats: List[str] = self._filter_contents.exclude_cats
+        exclude_cats: List[Pattern[str]] = self._filter_contents.exclude_cats
 
-        if len(exclude_cats) > 0:
-            categories_filter: str = '(' + ')|('.join(exclude_cats) + ')'
+        if any(exclude_cat.match(channel.category) for exclude_cat in exclude_cats):
+            return False
 
-            if match(categories_filter, channel.category, IGNORECASE):
-                return False
+        exclude_names: List[Pattern[str]] = self._filter_contents.exclude_names
 
-        exclude_names: List[str] = self._filter_contents.exclude_names
-
-        if len(exclude_names) > 0:
-            names_filter: str = '(' + ')|('.join(exclude_names) + ')'
-
-            if match(names_filter, channel.name, IGNORECASE):
-                return False
+        if any(exclude_name.match(channel.name) for exclude_name in exclude_names):
+            return False
 
         return True
 
@@ -91,12 +81,12 @@ class FilterHandler:
         replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
 
         for replace_cat in replace_cats[:]:
-            name_in_filter: str = replace_cat.for_name
+            name_in_filter: Pattern[str] = replace_cat.for_name
 
-            if all(not match(name_in_filter, src_channel.name, IGNORECASE) for src_channel in src_channels):
+            if all(not name_in_filter.match(src_channel.name) for src_channel in src_channels):
                 replace_cats.remove(replace_cat)
                 cleaned = True
-                print('Not found any match for category replacement: "' + name_in_filter + '" in source,',
+                print('Not found any match for category replacement: "' + name_in_filter.pattern + '" in source,',
                       'removed from filter.')
 
         if cleaned:
@@ -104,13 +94,13 @@ class FilterHandler:
             print('')
 
         # Clean "excludeCats"
-        exclude_cats: List[str] = self._filter_contents.exclude_cats
+        exclude_cats: List[Pattern[str]] = self._filter_contents.exclude_cats
 
         for exclude_cat in exclude_cats[:]:
-            if all(not match(exclude_cat, src_channel.category, IGNORECASE) for src_channel in src_channels):
+            if all(not exclude_cat.match(src_channel.category) for src_channel in src_channels):
                 exclude_cats.remove(exclude_cat)
                 cleaned = True
-                print('Not found any match for category exclusion: "' + exclude_cat + '" in source,',
+                print('Not found any match for category exclusion: "' + exclude_cat.pattern + '" in source,',
                       'removed from filter.')
 
         if cleaned:
@@ -118,13 +108,14 @@ class FilterHandler:
             print('')
 
         # Clean "excludeNames"
-        exclude_names: List[str] = self._filter_contents.exclude_names
+        exclude_names: List[Pattern[str]] = self._filter_contents.exclude_names
 
         for exclude_name in exclude_names[:]:
-            if all(not match(exclude_name, src_channel.name, IGNORECASE) for src_channel in src_channels):
+            if all(not exclude_name.match(src_channel.name) for src_channel in src_channels):
                 exclude_names.remove(exclude_name)
                 cleaned = True
-                print('Not found any match for name exclusion: "' + exclude_name + '" in source, removed from filter.')
+                print('Not found any match for name exclusion: "' + exclude_name.pattern + '" in source,',
+                      ' removed from filter.')
 
         if cleaned:
             print('')

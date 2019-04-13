@@ -3,17 +3,18 @@
 
 
 from json import JSONEncoder, JSONDecoder
-from typing import List, Dict
+from re import compile, IGNORECASE
+from typing import List, Dict, Pattern
 
 
 class ReplaceCat:
 
-    def __init__(self, for_name: str, to_cat: str) -> None:
-        self._for_name: str = for_name
+    def __init__(self, for_name: Pattern[str], to_cat: str) -> None:
+        self._for_name: Pattern[str] = for_name
         self._to_cat: str = to_cat
 
     @property
-    def for_name(self) -> str:
+    def for_name(self) -> Pattern[str]:
         return self._for_name
 
     @property
@@ -23,21 +24,24 @@ class ReplaceCat:
 
 class Filter:
 
-    def __init__(self, replace_cats: List[ReplaceCat], exclude_cats: List[str], exclude_names: List[str]) -> None:
+    def __init__(self,
+                 replace_cats: List[ReplaceCat],
+                 exclude_cats: List[Pattern[str]],
+                 exclude_names: List[Pattern[str]]) -> None:
         self._replace_cats: List[ReplaceCat] = replace_cats
-        self._exclude_cats: List[str] = exclude_cats
-        self._exclude_names: List[str] = exclude_names
+        self._exclude_cats: List[Pattern[str]] = exclude_cats
+        self._exclude_names: List[Pattern[str]] = exclude_names
 
     @property
     def replace_cats(self) -> List[ReplaceCat]:
         return self._replace_cats
 
     @property
-    def exclude_cats(self) -> List[str]:
+    def exclude_cats(self) -> List[Pattern[str]]:
         return self._exclude_cats
 
     @property
-    def exclude_names(self) -> List[str]:
+    def exclude_names(self) -> List[Pattern[str]]:
         return self._exclude_names
 
 
@@ -53,21 +57,21 @@ class FilterDecoder(JSONDecoder):
         replace_cats: List[ReplaceCat] = []
 
         for replace_cat_raw in input_obj.get('replaceCats', []):
-            for_name: str = replace_cat_raw.get('forName')
+            for_name: Pattern[str] = compile(replace_cat_raw.get('forName'), IGNORECASE)
             to_cat: str = replace_cat_raw.get('toCat')
 
             replace_cat: ReplaceCat = ReplaceCat(for_name, to_cat)
             replace_cats.append(replace_cat)
 
-        exclude_cats: List[str] = []
+        exclude_cats: List[Pattern[str]] = []
 
         for exclude_cat in input_obj.get('excludeCats', []):
-            exclude_cats.append(exclude_cat)
+            exclude_cats.append(compile(exclude_cat, IGNORECASE))
 
-        exclude_names: List[str] = []
+        exclude_names: List[Pattern[str]] = []
 
         for exclude_name in input_obj.get('excludeNames', []):
-            exclude_names.append(exclude_name)
+            exclude_names.append(compile(exclude_name, IGNORECASE))
 
         output_obj: Filter = Filter(replace_cats, exclude_cats, exclude_names)
 
@@ -84,17 +88,26 @@ class FilterEncoder(JSONEncoder):
 
         for replace_cat in replace_cats:
             replace_cat_raw: Dict[str, str] = {
-                'forName': replace_cat.for_name,
+                'forName': replace_cat.for_name.pattern,
                 'toCat': replace_cat.to_cat
             }
 
             replace_cats_raw.append(replace_cat_raw)
 
-        exclude_cats: List[str] = input_obj.exclude_cats
-        exclude_names: List[str] = input_obj.exclude_names
+        exclude_cats_raw: List[str] = []
+        exclude_cats: List[Pattern[str]] = input_obj.exclude_cats
+
+        for exclude_cat in exclude_cats:
+            exclude_cats_raw.append(exclude_cat.pattern)
+
+        exclude_names_raw: List[str] = []
+        exclude_names: List[Pattern[str]] = input_obj.exclude_names
+
+        for exclude_name in exclude_names:
+            exclude_names_raw.append(exclude_name.pattern)
 
         output_obj['replaceCats'] = replace_cats_raw
-        output_obj['excludeCats'] = exclude_cats
-        output_obj['excludeNames'] = exclude_names
+        output_obj['excludeCats'] = exclude_cats_raw
+        output_obj['excludeNames'] = exclude_names_raw
 
         return output_obj
