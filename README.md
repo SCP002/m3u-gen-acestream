@@ -37,5 +37,5 @@ python -m http.server 7999
 The command above will serve output directory on port `7999`.
 
 So generated files can be accessed via local network and you can
-open links like `<your-local-ip>:7999/acestream-ttv-all.m3u` in
+open links like `<your-local-ip>:7999/<playlist-file-name>` in
 IPTV player directly.
