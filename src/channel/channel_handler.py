@@ -97,7 +97,8 @@ class ChannelHandler:
                 with closing(urlopen(req, timeout=Config.CONN_TIMEOUT)) as response_raw:  # type: HTTPResponse
                     response_decompressed: bytes = decompress(response_raw.read())
                     encoding: str = response_raw.info().get_content_charset()
-                    response: str = response_decompressed.decode(encoding)
+
+                response: str = response_decompressed.decode(encoding)
 
                 channels: List[Channel] = loads(response, cls=ChannelsDecoder)
 
