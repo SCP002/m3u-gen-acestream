@@ -47,7 +47,7 @@ class FilterHandler:
                 current_name: str = channel.name
                 current_category: str = channel.category
 
-                if target_name.match(current_name) and not current_category == target_category:
+                if not current_category == target_category and target_name.match(current_name):
                     channel.category = target_category
                     replaced = True
                     print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
