@@ -127,14 +127,14 @@ class Config:
             # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
             # {
             #
-            #   // Categories that needs to be changed (channel names uses regex):
-            #   "replaceCats": [
+            #   // Categories that needs to be changed by channels names (channels names uses regex):
+            #   "replaceCatsByNames": [
             #     {
-            #       "forName": ".*some channel name 1.*",
+            #       "byName": ".*some channel name 1.*",
             #       "toCat": "some category 1"
             #     },
             #     {
-            #       "forName": "some channel name 2",
+            #       "byName": "some channel name 2",
             #       "toCat": "some category 2"
             #     }
             #   ],
@@ -230,14 +230,14 @@ class Config:
             # Contents example (Note: Comments '//' disallowed in JSON. They used below just for clarity):
             # {
             #
-            #   // Categories that needs to be changed (channel names uses regex):
-            #   "replaceCats": [
+            #   // Categories that needs to be changed by channels names (channels names uses regex):
+            #   "replaceCatsByNames": [
             #     {
-            #       "forName": ".*some channel name 1.*",
+            #       "byName": ".*some channel name 1.*",
             #       "toCat": "some category 1"
             #     },
             #     {
-            #       "forName": "some channel name 2",
+            #       "byName": "some channel name 2",
             #       "toCat": "some category 2"
             #     }
             #   ],

@@ -35,13 +35,13 @@ class FilterHandler:
     def replace_categories(self, channels: List[Channel]) -> None:
         assert self._filter_contents is not None
 
-        replace_cats: List[NameCatMap] = self._filter_contents.replace_cats
+        replace_cats_by_names: List[NameCatMap] = self._filter_contents.replace_cats_by_names
 
         replaced: bool = False
 
-        for replace_cat in replace_cats:
-            target_name: Pattern[str] = replace_cat.for_name
-            target_category: str = replace_cat.to_cat
+        for replace_cat_by_name in replace_cats_by_names:
+            target_name: Pattern[str] = replace_cat_by_name.k_name
+            target_category: str = replace_cat_by_name.v_cat
 
             for channel in channels:
                 current_name: str = channel.name
@@ -77,14 +77,14 @@ class FilterHandler:
 
         cleaned: bool = False
 
-        # Clean "replaceCats"
-        replace_cats: List[NameCatMap] = self._filter_contents.replace_cats
+        # Clean "replaceCatsByNames"
+        replace_cats_by_names: List[NameCatMap] = self._filter_contents.replace_cats_by_names
 
-        for replace_cat in replace_cats[:]:
-            name_in_filter: Pattern[str] = replace_cat.for_name
+        for replace_cat_by_name in replace_cats_by_names[:]:
+            name_in_filter: Pattern[str] = replace_cat_by_name.k_name
 
             if all(not name_in_filter.match(src_channel.name) for src_channel in src_channels):
-                replace_cats.remove(replace_cat)
+                replace_cats_by_names.remove(replace_cat_by_name)
                 cleaned = True
                 print('Not found any match for category replacement: "' + name_in_filter.pattern + '" in source,',
                       'removed from filter.')
