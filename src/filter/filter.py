@@ -7,7 +7,7 @@ from re import compile, IGNORECASE
 from typing import List, Dict, Pattern
 
 
-class ReplaceCat:
+class NameCatMap:
 
     def __init__(self, for_name: Pattern[str], to_cat: str) -> None:
         self._for_name: Pattern[str] = for_name
@@ -25,15 +25,15 @@ class ReplaceCat:
 class Filter:
 
     def __init__(self,
-                 replace_cats: List[ReplaceCat],
+                 replace_cats: List[NameCatMap],
                  exclude_cats: List[Pattern[str]],
                  exclude_names: List[Pattern[str]]) -> None:
-        self._replace_cats: List[ReplaceCat] = replace_cats
+        self._replace_cats: List[NameCatMap] = replace_cats
         self._exclude_cats: List[Pattern[str]] = exclude_cats
         self._exclude_names: List[Pattern[str]] = exclude_names
 
     @property
-    def replace_cats(self) -> List[ReplaceCat]:
+    def replace_cats(self) -> List[NameCatMap]:
         return self._replace_cats
 
     @property
@@ -54,13 +54,13 @@ class FilterDecoder(JSONDecoder):
 
     @staticmethod
     def _convert(input_obj: Dict[str, list]) -> Filter:
-        replace_cats: List[ReplaceCat] = []
+        replace_cats: List[NameCatMap] = []
 
         for replace_cat_raw in input_obj.get('replaceCats', []):
             for_name: Pattern[str] = compile(replace_cat_raw.get('forName'), IGNORECASE)
             to_cat: str = replace_cat_raw.get('toCat')
 
-            replace_cat: ReplaceCat = ReplaceCat(for_name, to_cat)
+            replace_cat: NameCatMap = NameCatMap(for_name, to_cat)
             replace_cats.append(replace_cat)
 
         exclude_cats: List[Pattern[str]] = []
@@ -84,7 +84,7 @@ class FilterEncoder(JSONEncoder):
         output_obj: Dict[str, list] = {}
 
         replace_cats_raw: List[Dict[str, str]] = []
-        replace_cats: List[ReplaceCat] = input_obj.replace_cats
+        replace_cats: List[NameCatMap] = input_obj.replace_cats
 
         for replace_cat in replace_cats:
             replace_cat_raw: Dict[str, str] = {

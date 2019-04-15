@@ -9,7 +9,7 @@ from typing import List, Optional, Pattern
 
 from channel.channel import Channel
 from config.data_set import DataSet
-from filter.filter import Filter, ReplaceCat, FilterDecoder, FilterEncoder
+from filter.filter import Filter, NameCatMap, FilterDecoder, FilterEncoder
 
 
 class FilterHandler:
@@ -35,7 +35,7 @@ class FilterHandler:
     def replace_categories(self, channels: List[Channel]) -> None:
         assert self._filter_contents is not None
 
-        replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
+        replace_cats: List[NameCatMap] = self._filter_contents.replace_cats
 
         replaced: bool = False
 
@@ -78,7 +78,7 @@ class FilterHandler:
         cleaned: bool = False
 
         # Clean "replaceCats"
-        replace_cats: List[ReplaceCat] = self._filter_contents.replace_cats
+        replace_cats: List[NameCatMap] = self._filter_contents.replace_cats
 
         for replace_cat in replace_cats[:]:
             name_in_filter: Pattern[str] = replace_cat.for_name
