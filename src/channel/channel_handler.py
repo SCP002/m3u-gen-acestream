@@ -78,6 +78,12 @@ class ChannelHandler:
         print('Channels denied:', total_channel_count - allowed_channel_count)
 
     # TODO: Do not load the same source twice with multiple DataSets. Use stored data.
+
+    # TODO: In case of death of the 'http://pomoyka.win/trash/ttv-list/'
+    #  fallback to the 'https://search.acestream.net'.
+
+    # TODO: In case if the 'https://search.acestream.net' becomes paid
+    #  fallback to the 'http://localhost:6878/server/api'.
     def _fetch_channels(self) -> List[Channel]:
         assert self.data_set is not None
 
