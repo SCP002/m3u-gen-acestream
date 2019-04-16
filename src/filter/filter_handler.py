@@ -9,7 +9,7 @@ from typing import List, Optional, Pattern
 
 from channel.channel import Channel
 from config.data_set import DataSet
-from filter.filter import Filter, NameCatMap, FilterDecoder, FilterEncoder
+from filter.filter import Filter, NameCatMap, FilterDecoder, FilterEncoder, CatCatMap
 
 
 class FilterHandler:
@@ -31,30 +31,9 @@ class FilterHandler:
         with closing(open(filter_file_name, 'r', 'utf-8')) as filter_file:  # type: StreamReaderWriter
             self._filter_contents = load(filter_file, cls=FilterDecoder)
 
-    # TODO: Add category to category replacing.
     def replace_categories(self, channels: List[Channel]) -> None:
-        assert self._filter_contents is not None
-
-        replace_cats_by_names: List[NameCatMap] = self._filter_contents.replace_cats_by_names
-
-        replaced: bool = False
-
-        for replace_cat_by_name in replace_cats_by_names:
-            target_name: Pattern[str] = replace_cat_by_name.k_name
-            target_category: str = replace_cat_by_name.v_cat
-
-            for channel in channels:
-                current_name: str = channel.name
-                current_category: str = channel.category
-
-                if not current_category == target_category and target_name.match(current_name):
-                    channel.category = target_category
-                    replaced = True
-                    print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
-                          target_category + '".')
-
-        if replaced:
-            print('')
+        self._replace_cats_by_cats(channels)
+        self._replace_cats_by_names(channels)
 
     def is_channel_allowed(self, channel: Channel) -> bool:
         assert self._filter_contents is not None
@@ -77,6 +56,22 @@ class FilterHandler:
 
         cleaned: bool = False
 
+        # Clean "replaceCatsByCats"
+        replace_cats_by_cats: List[CatCatMap] = self._filter_contents.replace_cats_by_cats
+
+        for replace_cat_by_cat in replace_cats_by_cats[:]:
+            cat_in_filter: Pattern[str] = replace_cat_by_cat.k_cat
+
+            if all(not cat_in_filter.match(src_channel.category) for src_channel in src_channels):
+                replace_cats_by_cats.remove(replace_cat_by_cat)
+                cleaned = True
+                print('Not found any match for category by category replacement: "' + cat_in_filter.pattern +
+                      '" in source, category removed from filter.')
+
+        if cleaned:
+            cleaned = False
+            print('')
+
         # Clean "replaceCatsByNames"
         replace_cats_by_names: List[NameCatMap] = self._filter_contents.replace_cats_by_names
 
@@ -86,8 +81,8 @@ class FilterHandler:
             if all(not name_in_filter.match(src_channel.name) for src_channel in src_channels):
                 replace_cats_by_names.remove(replace_cat_by_name)
                 cleaned = True
-                print('Not found any match for category replacement: "' + name_in_filter.pattern + '" in source,',
-                      'removed from filter.')
+                print('Not found any match for category by name replacement: "' + name_in_filter.pattern +
+                      '" in source, name removed from filter.')
 
         if cleaned:
             cleaned = False
@@ -125,3 +120,51 @@ class FilterHandler:
 
         with closing(open(filter_file_name, 'w', 'utf-8')) as filter_file:  # type: StreamReaderWriter
             dump(self._filter_contents, filter_file, cls=FilterEncoder, indent=2, ensure_ascii=False)
+
+    def _replace_cats_by_cats(self, channels: List[Channel]) -> None:
+        assert self._filter_contents is not None
+
+        replace_cats_by_cats: List[CatCatMap] = self._filter_contents.replace_cats_by_cats
+
+        replaced: bool = False
+
+        for replace_cat_by_cat in replace_cats_by_cats:
+            by_target_category: Pattern[str] = replace_cat_by_cat.k_cat
+            to_target_category: str = replace_cat_by_cat.v_cat
+
+            for channel in channels:
+                current_name: str = channel.name
+                current_category: str = channel.category
+
+                if not current_category == to_target_category and by_target_category.match(current_category):
+                    channel.category = to_target_category
+                    replaced = True
+                    print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
+                          to_target_category + '".')
+
+        if replaced:
+            print('')
+
+    def _replace_cats_by_names(self, channels: List[Channel]) -> None:
+        assert self._filter_contents is not None
+
+        replace_cats_by_names: List[NameCatMap] = self._filter_contents.replace_cats_by_names
+
+        replaced: bool = False
+
+        for replace_cat_by_name in replace_cats_by_names:
+            by_target_name: Pattern[str] = replace_cat_by_name.k_name
+            to_target_category: str = replace_cat_by_name.v_cat
+
+            for channel in channels:
+                current_name: str = channel.name
+                current_category: str = channel.category
+
+                if not current_category == to_target_category and by_target_name.match(current_name):
+                    channel.category = to_target_category
+                    replaced = True
+                    print('Replaced category for channel "' + current_name + '", from "' + current_category + '" to "' +
+                          to_target_category + '".')
+
+        if replaced:
+            print('')
