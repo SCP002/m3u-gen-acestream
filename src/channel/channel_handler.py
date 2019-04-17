@@ -106,7 +106,7 @@ class ChannelHandler:
 
                 response: str = response_decompressed.decode(encoding)
 
-                channels: List[Channel] = loads(response, cls=ChannelsDecoder)
+                channels: List[Channel] = loads(response, cls=ChannelsDecoder, strict=False)
 
                 return channels
             except URLError as url_error:
@@ -129,7 +129,7 @@ class ChannelHandler:
         injection_file_name: str = self.data_set.injection_file_name
 
         with closing(open(injection_file_name, 'r', 'utf-8')) as injection_file:  # type: StreamReaderWriter
-            injection: List[Channel] = load(injection_file, cls=InjectionDecoder)
+            injection: List[Channel] = load(injection_file, cls=InjectionDecoder, strict=False)
 
         channels.extend(injection)
 
