@@ -29,7 +29,7 @@ class FilterHandler:
         filter_file_name: str = data_set.filter_file_name
 
         with closing(open(filter_file_name, 'r', 'utf-8')) as filter_file:  # type: StreamReaderWriter
-            self._filter_contents = load(filter_file, cls=FilterDecoder, strict=False)
+            self._filter_contents = load(filter_file, cls=FilterDecoder)
 
     def replace_categories(self, channels: List[Channel]) -> None:
         self._replace_cats_by_cats(channels)

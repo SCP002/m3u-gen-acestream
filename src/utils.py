@@ -42,3 +42,13 @@ class Utils:
         server.login(Config.SMTP_LOGIN, Config.SMTP_PWD)
         server.sendmail(Config.MAIL_FROM, Config.MAIL_TO, message)
         server.quit()
+
+    @staticmethod
+    def remove_control_symbols(input_object: str) -> str:
+        output_object: str = ''
+
+        for char in input_object:
+            if ord(char) > 31:
+                output_object += char
+
+        return output_object

@@ -6,6 +6,8 @@ from json import JSONEncoder, JSONDecoder
 from re import compile, IGNORECASE
 from typing import List, Dict, Pattern
 
+from utils import Utils
+
 
 class CatCatMap:
 
@@ -69,6 +71,8 @@ class Filter:
 class FilterDecoder(JSONDecoder):
 
     def decode(self, s: str, **kwargs: bool) -> Filter:
+        s = Utils.remove_control_symbols(s)
+
         input_obj: Dict[str, list] = super().decode(s)
 
         return self._convert(input_obj)

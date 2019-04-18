@@ -5,6 +5,8 @@
 from json import JSONDecoder
 from typing import List, Dict
 
+from utils import Utils
+
 
 class Channel:
 
@@ -38,6 +40,8 @@ class Channel:
 class ChannelsDecoder(JSONDecoder):
 
     def decode(self, s: str, **kwargs: bool) -> List[Channel]:
+        s = Utils.remove_control_symbols(s)
+
         input_obj: Dict[str, list] = super().decode(s)
 
         return self._convert(input_obj)
@@ -64,6 +68,8 @@ class ChannelsDecoder(JSONDecoder):
 class InjectionDecoder(JSONDecoder):
 
     def decode(self, s: str, **kwargs: bool) -> List[Channel]:
+        s = Utils.remove_control_symbols(s)
+
         input_obj: List[Dict[str, str]] = super().decode(s)
 
         return self._convert(input_obj)
