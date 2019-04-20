@@ -3,6 +3,8 @@
 > M3U playlist generator for AceStream.
 
 ## How to use?
+* Install [Python 3.7.0](https://www.python.org/downloads/release/python-370/)
+  or higher.
 * Run `./src/m3u_gen_acestream.py` to start a program.
   When playlist(s) is generated, you can close the program
   if you do not need automatic updates.
@@ -22,8 +24,6 @@ See `./src/channel/injection.json` to configure channel injections.
 See formatting in the config file.
 
 Default output folder: `./out/`.
-
-Tested with [Python 3.7.1](https://www.python.org/downloads/release/python-371/).
 
 ---
 If you want to serve generated files over http, you can use
