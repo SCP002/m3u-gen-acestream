@@ -9,12 +9,18 @@
   When playlist(s) is generated, you can close the program
   if you do not need automatic updates.
 * Run AceStream if it is not running yet.
-  In default configuration, assuming that AceStream
+  In default configuration, assuming that AceStream Engine
   is listening at `127.0.0.1:6878`.
+  
+  If you use HTTPAceProxy, you can use it instead.
+  In default configuration, assuming that HTTPAceProxy
+  is listening at `127.0.0.1:8000`.
 * Open generated playlist with your favorite IPTV player.
 * Done.
 
 ## Notes:
+Default output folder: `./out/`.
+
 See `./src/config/config.py` to configure program behavior.
 
 See `./src/filter/filter.json` to configure filter.
@@ -23,7 +29,10 @@ See formatting in the config file.
 See `./src/channel/injection.json` to configure channel injections.
 See formatting in the config file.
 
-Default output folder: `./out/`.
+---
+If you use player with built-in AceStream support,
+you can add new 'DataSet' to the config file
+with URL format like 'acestream://{CONTENT_ID}'.
 
 ---
 If you want to serve generated files over http, you can use
