@@ -14,14 +14,14 @@ class Config:
     # Delay between requests to the internet connection check address (in seconds):
     CONN_CHECK_REQ_DELAY: int = 30
 
-    # Delay between processing each data set (in seconds):
-    DATA_SET_DELAY: int = 5  # TODO: Rename to 'CHANN_SRC_REQ_DELAY_UP'
-
     # Delay between playlist updates (in seconds):
     UPDATE_DELAY: int = 60 * 60
 
+    # Delay between requests to the channels source host if it is currently up (in seconds):
+    CHANN_SRC_REQ_DELAY_UP: int = 5
+
     # Delay between requests to the channels source host if it is currently down (in seconds):
-    CHANN_SRC_REQ_DELAY: int = 60 * 10  # TODO: Rename to 'CHANN_SRC_REQ_DELAY_DOWN'
+    CHANN_SRC_REQ_DELAY_DOWN: int = 60 * 10
 
     # Amount of requests to the channels source host before throw an exception if it is currently down:
     CHANN_SRC_MAX_ATTEMPTS: int = 10

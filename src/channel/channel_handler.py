@@ -139,9 +139,9 @@ class ChannelHandler:
                 print('Error:', url_error, file=stderr)
 
                 if attempt_number < Config.CHANN_SRC_MAX_ATTEMPTS:
-                    print('Sleeping for', timedelta(seconds=Config.CHANN_SRC_REQ_DELAY), 'before trying again.',
+                    print('Sleeping for', timedelta(seconds=Config.CHANN_SRC_REQ_DELAY_DOWN), 'before trying again.',
                           end='\n\n', file=stderr)
-                    sleep(Config.CHANN_SRC_REQ_DELAY)
+                    sleep(Config.CHANN_SRC_REQ_DELAY_DOWN)
                 else:
                     print('Raising an exception.', end='\n\n', file=stderr)
                     raise

@@ -39,9 +39,9 @@ class M3UGenAceStream:
 
                     # If do not have cached channels for the next DataSet
                     if not channel_handler.get_cached_channels_for_url(next_data_set_url):
-                        print('Sleeping for', timedelta(seconds=Config.DATA_SET_DELAY),
+                        print('Sleeping for', timedelta(seconds=Config.CHANN_SRC_REQ_DELAY_UP),
                               'before processing next data set...')
-                        sleep(Config.DATA_SET_DELAY)
+                        sleep(Config.CHANN_SRC_REQ_DELAY_UP)
 
                 print('')
 
