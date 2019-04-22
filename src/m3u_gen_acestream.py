@@ -25,19 +25,23 @@ class M3UGenAceStream:
 
             Utils.wait_for_internet()
 
-            data_set_number: int = 0
+            data_sets_amount: int = len(Config.DATA_SETS)
 
-            for data_set in Config.DATA_SETS:
-                data_set_number += 1
-                print('Processing data set', data_set_number, 'of', len(Config.DATA_SETS))
+            for data_set_index, data_set in enumerate(Config.DATA_SETS):
+                print('Processing data set', data_set_index + 1, 'of', data_sets_amount)
 
                 channel_handler.data_set = data_set
                 channel_handler.write_playlist()
 
-                if data_set_number < len(Config.DATA_SETS):  # TODO: Do not wait if using cached response.
-                    print('Sleeping for', timedelta(seconds=Config.DATA_SET_DELAY),
-                          'before processing next data set...')
-                    sleep(Config.DATA_SET_DELAY)
+                # If remain at least one DataSet to process
+                if data_set_index + 1 < data_sets_amount:
+                    next_data_set_url: str = Config.DATA_SETS[data_set_index + 1].src_channels_url
+
+                    # If do not have cached channels for the next DataSet
+                    if not channel_handler.get_cached_channels_for_url(next_data_set_url):
+                        print('Sleeping for', timedelta(seconds=Config.DATA_SET_DELAY),
+                              'before processing next data set...')
+                        sleep(Config.DATA_SET_DELAY)
 
                 print('')
 
