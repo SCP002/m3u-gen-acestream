@@ -16,7 +16,7 @@ from typing import List, Optional
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
-from channel.channel import Channel, ChannelsDecoder, InjectionDecoder
+from channel.channel import Channel, ChannelsDecoder, InjectionDecoder, UrlChannelsMap
 from config.config import Config
 from config.data_set import DataSet
 from filter.filter_handler import FilterHandler
@@ -28,6 +28,7 @@ class ChannelHandler:
     def __init__(self) -> None:
         self._data_set: Optional[DataSet] = None
         self._filter_handler: FilterHandler = FilterHandler()
+        self._cached_channels_maps: List[UrlChannelsMap] = []
 
     @property
     def data_set(self) -> Optional[DataSet]:
@@ -37,6 +38,20 @@ class ChannelHandler:
     def data_set(self, data_set: DataSet) -> None:
         self._data_set = data_set
         self._filter_handler.data_set = data_set
+
+    def get_cached_channels_for_url(self, url: str) -> List[Channel]:
+        channels: List[Channel] = []
+
+        for cached_channels_map in self._cached_channels_maps:
+            if cached_channels_map.url == url:
+                channels = cached_channels_map.channels
+
+                return channels
+
+        return channels
+
+    def clear_cached_channels(self) -> None:
+        self._cached_channels_maps = []
 
     def write_playlist(self) -> None:
         assert self.data_set is not None
@@ -77,8 +92,6 @@ class ChannelHandler:
         print('Channels allowed:', allowed_channel_count)
         print('Channels denied:', total_channel_count - allowed_channel_count)
 
-    # TODO: Do not load the same source twice with multiple DataSets. Use stored data.
-
     # TODO: In case of death of the 'http://pomoyka.win/trash/ttv-list/'
     #  fallback to the 'https://search.acestream.net'.
 
@@ -89,6 +102,15 @@ class ChannelHandler:
 
         src_channels_url: str = self.data_set.src_channels_url
 
+        # Check cached channels.
+        channels: List[Channel] = self.get_cached_channels_for_url(src_channels_url)
+
+        if channels:
+            print('Using cached channels from previous requests in current iteration', end='\n\n')
+
+            return channels
+
+        # Fetch new channels.
         for attempt_number in range(1, Config.CHANN_SRC_MAX_ATTEMPTS):
             print('Retrieving channels file, attempt', attempt_number, 'of', Config.CHANN_SRC_MAX_ATTEMPTS, end='\n\n')
 
@@ -106,7 +128,10 @@ class ChannelHandler:
 
                 response: str = response_decompressed.decode(encoding)
 
-                channels: List[Channel] = loads(response, cls=ChannelsDecoder)
+                channels = loads(response, cls=ChannelsDecoder)
+
+                cached_channel_map: UrlChannelsMap = UrlChannelsMap(src_channels_url, channels)
+                self._cached_channels_maps.append(cached_channel_map)
 
                 return channels
             except URLError as url_error:
@@ -121,7 +146,7 @@ class ChannelHandler:
                     print('Raising an exception.', end='\n\n', file=stderr)
                     raise
 
-        return [Channel('', '', '', '')]
+        return channels
 
     def _inject_channels(self, channels: List[Channel]) -> None:
         assert self.data_set is not None

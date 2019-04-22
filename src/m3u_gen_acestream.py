@@ -41,6 +41,8 @@ class M3UGenAceStream:
 
                 print('')
 
+            channel_handler.clear_cached_channels()
+
             print('Finished at', datetime.now().strftime('%b %d %H:%M:%S'))
             print('Sleeping for', timedelta(seconds=Config.UPDATE_DELAY), 'before the new update...')
             print('-' * 45, end='\n\n\n')

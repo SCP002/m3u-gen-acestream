@@ -37,6 +37,21 @@ class Channel:
         return self._tvg_name
 
 
+class UrlChannelsMap:
+
+    def __init__(self, url: str, channels: List[Channel]) -> None:
+        self._url: str = url
+        self._channels: List[Channel] = channels
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+    @property
+    def channels(self) -> List[Channel]:
+        return self._channels
+
+
 class ChannelsDecoder(JSONDecoder):
 
     def decode(self, s: str, **kwargs: bool) -> List[Channel]:
