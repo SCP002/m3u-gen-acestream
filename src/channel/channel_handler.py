@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
-from codecs import StreamReaderWriter, open
+from codecs import open, StreamReaderWriter
 from contextlib import closing
 from datetime import timedelta
 from gzip import decompress
 from http.client import HTTPResponse
-from json import loads, load
+from json import load, loads
 from os import makedirs
 from os.path import dirname
 from sys import stderr

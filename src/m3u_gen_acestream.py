@@ -4,10 +4,10 @@
 
 from datetime import datetime, timedelta
 from os import chdir
-from socket import gethostname, gethostbyname
-from sys import stderr, path
+from socket import gethostbyname, gethostname
+from sys import path, stderr
 from time import sleep
-from traceback import print_exc, format_exc
+from traceback import format_exc, print_exc
 
 from channel.channel_handler import ChannelHandler
 from config.config import Config

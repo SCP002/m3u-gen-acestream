@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
-from codecs import StreamReaderWriter, open
+from codecs import open, StreamReaderWriter
 from contextlib import closing
 from json import load, dump
 from typing import List, Optional, Pattern
 
 from channel.channel import Channel
 from config.data_set import DataSet
-from filter.filter import Filter, NameCatMap, FilterDecoder, FilterEncoder, CatCatMap
+from filter.filter import CatCatMap, Filter, FilterDecoder, FilterEncoder, NameCatMap
 
 
 class FilterHandler:

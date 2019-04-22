@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-from json import JSONEncoder, JSONDecoder
+from json import JSONDecoder, JSONEncoder
 from re import compile, IGNORECASE
-from typing import List, Dict, Pattern
+from typing import Dict, List, Pattern
 
 from utils import Utils
 
