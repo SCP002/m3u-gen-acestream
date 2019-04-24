@@ -92,9 +92,6 @@ class ChannelHandler:
         print('Channels allowed:', allowed_channel_count)
         print('Channels denied:', total_channel_count - allowed_channel_count)
 
-    # TODO: In case of death of the 'http://pomoyka.win/trash/ttv-list/'
-    #  fallback to the 'https://search.acestream.net/all?api_version=1.0&api_key=test_api_key'.
-    #  Skip if ('availability' < 0.8) or (now in seconds - 'availability_updated_at' > 8 * 86400).
     def _fetch_channels(self) -> List[Channel]:
         assert self.data_set is not None
 

@@ -7,8 +7,10 @@
 # Not these files
 !/.gitattributes
 !/.gitignore
+!/LICENSE
 !/mypy.ini
 !/README.md
+!/ROADMAP.md
 
 # Not these directories
 !/src
