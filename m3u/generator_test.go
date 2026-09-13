@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/dlclark/regexp2"
-	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/ziutek/dvb/ts"
 
@@ -1126,11 +1125,11 @@ func TestRemoveDead(t *testing.T) {
 			},
 			playlist: config.Playlist{
 				OutputPath:             "file.m3u8",
-				RemoveDeadSources:      lo.ToPtr(true),
-				UseMpegTsAnalyzer:      lo.ToPtr(true),
-				CheckRespTimeout:       lo.ToPtr(time.Second * 50),
-				RemoveDeadLinkTemplate: lo.ToPtr(linkTempl),
-				RemoveDeadWorkers:      lo.ToPtr(2),
+				RemoveDeadSources:      new(true),
+				UseMpegTsAnalyzer:      new(true),
+				CheckRespTimeout:       new(time.Second * 50),
+				RemoveDeadLinkTemplate: new(linkTempl),
+				RemoveDeadWorkers:      new(2),
 			},
 			expected: []acestream.SearchResult{
 				{Items: []acestream.Item{{Name: "name 1 alive", Infohash: hashAlive}}},

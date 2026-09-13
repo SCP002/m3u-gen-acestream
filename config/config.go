@@ -10,7 +10,6 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/dlclark/regexp2"
 	"github.com/goccy/go-yaml"
-	"github.com/samber/lo"
 
 	"m3u_gen_acestream/util/logger"
 )
@@ -114,7 +113,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 		modified := false
 		for idx, playlist := range cfg.Playlists {
 			if playlist.RemoveDeadSources == nil {
-				defVal := lo.ToPtr(false)
+				defVal := new(false)
 				path := fmt.Sprintf("$.playlists[%v].removeDeadSources", idx)
 				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
 				cfg.Playlists[idx].RemoveDeadSources = defVal
@@ -122,7 +121,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 				modified = true
 			}
 			if playlist.UseMpegTsAnalyzer == nil {
-				defVal := lo.ToPtr(false)
+				defVal := new(false)
 				path := fmt.Sprintf("$.playlists[%v].useMpegTsAnalyzer", idx)
 				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
 				cfg.Playlists[idx].UseMpegTsAnalyzer = defVal
@@ -130,7 +129,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 				modified = true
 			}
 			if playlist.CheckRespTimeout == nil {
-				defVal := lo.ToPtr(time.Second * 20)
+				defVal := new(time.Second * 20)
 				path := fmt.Sprintf("$.playlists[%v].checkRespTimeout", idx)
 				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
 				cfg.Playlists[idx].CheckRespTimeout = defVal
@@ -138,7 +137,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 				modified = true
 			}
 			if playlist.RemoveDeadLinkTemplate == nil {
-				defVal := lo.ToPtr("http://{{.EngineAddr}}/ace/getstream?infohash={{.Infohash}}")
+				defVal := new("http://{{.EngineAddr}}/ace/getstream?infohash={{.Infohash}}")
 				path := fmt.Sprintf("$.playlists[%v].removeDeadLinkTemplate", idx)
 				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
 				cfg.Playlists[idx].RemoveDeadLinkTemplate = defVal
@@ -146,7 +145,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 				modified = true
 			}
 			if playlist.RemoveDeadWorkers == nil {
-				defVal := lo.ToPtr(1)
+				defVal := new(1)
 				path := fmt.Sprintf("$.playlists[%v].removeDeadWorkers", idx)
 				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
 				cfg.Playlists[idx].RemoveDeadWorkers = defVal
@@ -219,11 +218,11 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				StatusFilter:                 []int{2},
 				AvailabilityThreshold:        1.0,
 				AvailabilityUpdatedThreshold: time.Hour * 12 * 3,
-				RemoveDeadSources:            lo.ToPtr(false),
-				UseMpegTsAnalyzer:            lo.ToPtr(false),
-				CheckRespTimeout:             lo.ToPtr(time.Second * 20),
-				RemoveDeadLinkTemplate:       lo.ToPtr(removeDeadLink),
-				RemoveDeadWorkers:            lo.ToPtr(1),
+				RemoveDeadSources:            new(false),
+				UseMpegTsAnalyzer:            new(false),
+				CheckRespTimeout:             new(time.Second * 20),
+				RemoveDeadLinkTemplate:       new(removeDeadLink),
+				RemoveDeadWorkers:            new(1),
 			},
 			{
 				OutputPath:                   "./out/playlist_hls_tv_+_music_+_no_category.m3u8",
@@ -245,11 +244,11 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				StatusFilter:                 []int{2},
 				AvailabilityThreshold:        1.0,
 				AvailabilityUpdatedThreshold: time.Hour * 12 * 3,
-				RemoveDeadSources:            lo.ToPtr(false),
-				UseMpegTsAnalyzer:            lo.ToPtr(false),
-				CheckRespTimeout:             lo.ToPtr(time.Second * 20),
-				RemoveDeadLinkTemplate:       lo.ToPtr(removeDeadLink),
-				RemoveDeadWorkers:            lo.ToPtr(1),
+				RemoveDeadSources:            new(false),
+				UseMpegTsAnalyzer:            new(false),
+				CheckRespTimeout:             new(time.Second * 20),
+				RemoveDeadLinkTemplate:       new(removeDeadLink),
+				RemoveDeadWorkers:            new(1),
 			},
 			{
 				OutputPath:                   "./out/playlist_httpaceproxy_all_but_porn.m3u8",
@@ -271,11 +270,11 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				StatusFilter:                 []int{2},
 				AvailabilityThreshold:        1.0,
 				AvailabilityUpdatedThreshold: time.Hour * 12 * 3,
-				RemoveDeadSources:            lo.ToPtr(false),
-				UseMpegTsAnalyzer:            lo.ToPtr(false),
-				CheckRespTimeout:             lo.ToPtr(time.Second * 20),
-				RemoveDeadLinkTemplate:       lo.ToPtr(removeDeadLink),
-				RemoveDeadWorkers:            lo.ToPtr(1),
+				RemoveDeadSources:            new(false),
+				UseMpegTsAnalyzer:            new(false),
+				CheckRespTimeout:             new(time.Second * 20),
+				RemoveDeadLinkTemplate:       new(removeDeadLink),
+				RemoveDeadWorkers:            new(1),
 			},
 		},
 	}
