@@ -278,7 +278,7 @@ playlists:
 
 ## Build from source code [Go / Golang]
 
-1. Install [Golang](https://golang.org/) 1.25 or newer.
+1. Install [Golang](https://golang.org/) 1.27 or newer.
 
 2. Download the source code:  
 
@@ -289,7 +289,7 @@ playlists:
 3. Install dependencies:
 
     ```sh
-    cd m3u_gen_acestream/src
+    cd m3u_gen_acestream
     go get ./...
     ```
 
