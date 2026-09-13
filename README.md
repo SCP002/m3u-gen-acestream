@@ -296,7 +296,7 @@ playlists:
     Or:
 
     ```sh
-    cd m3u_gen_acestream/src
+    cd m3u_gen_acestream
     go mod tidy
     ```
 
@@ -306,10 +306,10 @@ playlists:
     go get -u ./...
     ```
 
-5. To build a binary for current OS / architecture into `../build/` folder:
+5. To build a binary for current OS / architecture into `./build/` folder:
 
     ```sh
-    go build -o ../build/ m3u_gen_acestream.go
+    go build -o build/ m3u_gen_acestream.go
     ```
 
-    Or run `/src/build.sh` to build binaries for every OS / architecture pair.
+    Or run `/build.sh` to build binaries for every OS / architecture pair.
