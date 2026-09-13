@@ -43,7 +43,8 @@ func Generate(log *logger.Logger, searchResults []acestream.SearchResult, cfg *c
 		searchResults := remap(log, searchResults, playlist)
 		searchResults = filter(log, searchResults, playlist)
 		if *playlist.RemoveDeadSources {
-			searchResults = removeDead(log, searchResults, playlist, cfg.EngineAddr, infohashCheckErrorMap)
+			searchResults = removeDead(log, searchResults, playlist, cfg.EngineAddr, infohashCheckErrorMap,
+				acestream.NewChecker())
 		}
 
 		// Transform []SearchResult to []Entry.
@@ -411,19 +412,26 @@ func filterByName(log *logger.Logger,
 	return searchResults
 }
 
+// availabilityChecker checks availability of an Ace Stream source using its `link`.
+type availabilityChecker interface {
+	IsAvailable(link string, timeout time.Duration, analyzeMpegTs bool) error
+}
+
 // removeDead returns `searchResults` without unavailable sources using settings in `playlist` and Ace Stream Engine
 // address `engineAddr`.
 //
 // `infohashCheckErrorMap` is used to cache check results and prevent repeating checks over multiple calls to this
 // function.
+//
+// `checker` is used to check source availability.
 func removeDead(log *logger.Logger,
 	searchResults []acestream.SearchResult,
 	playlist config.Playlist,
 	engineAddr string,
-	infohashCheckErrorMap *sync.Map) []acestream.SearchResult {
+	infohashCheckErrorMap *sync.Map,
+	checker availabilityChecker) []acestream.SearchResult {
 	log.InfoFi("Removing dead sources", "playlist", playlist.OutputPath)
 	prevSources := acestream.GetSourcesAmount(searchResults)
-	checker := acestream.NewChecker()
 
 	linkTempl := template.Must(template.New("").Parse(*playlist.RemoveDeadLinkTemplate))
 	pool := pond.NewPool(*playlist.RemoveDeadWorkers)

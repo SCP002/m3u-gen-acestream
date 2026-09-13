@@ -3,6 +3,9 @@ package m3u
 import (
 	"bytes"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"regexp"
 	"slices"
 	"strings"
 	"sync"
@@ -12,6 +15,7 @@ import (
 	"github.com/dlclark/regexp2"
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
+	"github.com/ziutek/dvb/ts"
 
 	"m3u_gen_acestream/acestream"
 	"m3u_gen_acestream/config"
@@ -1088,10 +1092,25 @@ func TestRemoveDead(t *testing.T) {
 	var consoleBuff bytes.Buffer
 	log := logger.New(logger.DebugLevel, &consoleBuff)
 
-	hashAlive := "a7c19473d3389a3d9c9d1e268ce6e0550fea3192"
-	hashDead := "9ddda51034375eb93505c076d4437064abdf2dcd"
-	linkRxFmt := `http:\/\/127\.0\.0\.1:8080\/ace\/getstream\?infohash=%v`
-	linkTempl := "http://127.0.0.1:8080/ace/getstream?infohash={{.Infohash}}"
+	hashAlive := strings.Repeat("a", 40)
+	hashDead := strings.Repeat("b", 40)
+
+	tsPkt := make([]byte, ts.PktLen)
+	ts.AsPkt(tsPkt).SetSync()
+	aliveBody := bytes.Repeat(tsPkt, 10)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("infohash") == hashAlive {
+			_, _ = w.Write(aliveBody)
+			w.(http.Flusher).Flush()
+			return
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+
+	linkTempl := server.URL + "/ace/getstream?infohash={{.Infohash}}"
+	linkRx := regexp.QuoteMeta(server.URL + "/ace/getstream?infohash=")
 
 	tests := map[string]TransformTest{
 		"2 alive, 2 dead sources": {
@@ -1106,20 +1125,20 @@ func TestRemoveDead(t *testing.T) {
 				}},
 			},
 			playlist: config.Playlist{
-				OutputPath:        "file.m3u8",
-				RemoveDeadSources: lo.ToPtr(true),
-				UseMpegTsAnalyzer: lo.ToPtr(true),
-				CheckRespTimeout:  lo.ToPtr(time.Second * 50),
+				OutputPath:             "file.m3u8",
+				RemoveDeadSources:      lo.ToPtr(true),
+				UseMpegTsAnalyzer:      lo.ToPtr(true),
+				CheckRespTimeout:       lo.ToPtr(time.Second * 50),
 				RemoveDeadLinkTemplate: lo.ToPtr(linkTempl),
-				RemoveDeadWorkers: lo.ToPtr(2),
+				RemoveDeadWorkers:      lo.ToPtr(2),
 			},
 			expected: []acestream.SearchResult{
 				{Items: []acestream.Item{{Name: "name 1 alive", Infohash: hashAlive}}},
 				{Items: []acestream.Item{{Name: "name 3 alive", Infohash: hashAlive}}},
 			},
 			logLines: []string{
-				timeRx + ` INFO Keep: name "name 1 alive", link "` + fmt.Sprintf(linkRxFmt, hashAlive) + `"`,
-				timeRx + ` WARN Reject: name "name 2 dead", link "` + fmt.Sprintf(linkRxFmt, hashDead) + `", reason ` +
+				timeRx + ` INFO Keep: name "name 1 alive", link "` + linkRx + hashAlive + `"`,
+				timeRx + ` WARN Reject: name "name 2 dead", link "` + linkRx + hashDead + `", reason ` +
 					`"Response status 500 Internal Server Error"`,
 				timeRx + ` INFO Rejected: sources "2", by "response", playlist "file.m3u8"`,
 			},
@@ -1128,7 +1147,8 @@ func TestRemoveDead(t *testing.T) {
 
 	infohashCheckErrorMap := &sync.Map{}
 	for name, test := range tests {
-		actual := removeDead(log, test.input, test.playlist, "127.0.0.1:6878", infohashCheckErrorMap)
+		actual := removeDead(log, test.input, test.playlist, "", infohashCheckErrorMap,
+			acestream.NewChecker())
 		slices.SortStableFunc(actual, func(a, b acestream.SearchResult) int {
 			return strings.Compare(string(a.Name), string(b.Name))
 		})
@@ -1140,8 +1160,8 @@ func TestRemoveDead(t *testing.T) {
 		consoleBuff.Reset()
 	}
 
-    _, ok := infohashCheckErrorMap.Load(hashAlive)
-    assert.True(t, ok, "expected infohashCheckErrorMap to contain %s", hashAlive)
-    _, ok = infohashCheckErrorMap.Load(hashDead)
-    assert.True(t, ok, "expected infohashCheckErrorMap to contain %s", hashDead)
+	_, ok := infohashCheckErrorMap.Load(hashAlive)
+	assert.True(t, ok, "expected infohashCheckErrorMap to contain %s", hashAlive)
+	_, ok = infohashCheckErrorMap.Load(hashDead)
+	assert.True(t, ok, "expected infohashCheckErrorMap to contain %s", hashDead)
 }
