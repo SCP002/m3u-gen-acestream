@@ -248,7 +248,8 @@ func newConsoleFormatter(colorize bool, timeFormat string) func(io.Writer, *pLog
 			messageSb.WriteString(": ")
 		}
 		for idx, item := range a.KeyValues {
-			messageSb.WriteString(item.Key + " \"")
+			messageSb.WriteString(item.Key)
+			messageSb.WriteString(" \"")
 			if colorize {
 				messageSb.WriteString(color.CyanString(item.Value))
 			} else {
