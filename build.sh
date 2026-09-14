@@ -15,5 +15,5 @@ for target in $(go tool dist list); do
     [[ $arch == "wasm" ]] && ext=".wasm"
 
     echo "Building for $os / $arch"
-    GOOS=$os GOARCH=$arch go build -o "${build_path}/${project_name}_${os}_${arch}${ext}" "${project_name}.go"
+    GOOS=$os GOARCH=$arch go build -o "${build_path}/${project_name}_${os}_${arch}${ext}" .
 done
