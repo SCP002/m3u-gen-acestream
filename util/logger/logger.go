@@ -208,7 +208,6 @@ func print(entry *pLog.Entry, msg string, fields []any) {
 // If `colorize` is true, add colors to output.
 func newConsoleFormatter(colorize bool, timeFormat string) func(io.Writer, *pLog.FormatterArgs) (int, error) {
 	return func(w io.Writer, a *pLog.FormatterArgs) (int, error) {
-		gray := color.RGB(118, 118, 118).SprintFunc()
 		var messageSb strings.Builder
 
 		formatterTime, err := time.Parse(time.RFC3339Nano, a.Time) // Get time object from FormatterArgs
@@ -217,14 +216,14 @@ func newConsoleFormatter(colorize bool, timeFormat string) func(io.Writer, *pLog
 		}
 		properTime := formatterTime.Format(timeFormat)
 		if colorize {
-			messageSb.WriteString(gray(properTime))
+			messageSb.WriteString(color.HiBlackString(properTime))
 		} else {
 			messageSb.WriteString(properTime)
 		}
 		messageSb.WriteRune(' ')
 
-		if colorize {
-			messageSb.WriteString(levelColorMap[a.Level])
+		if level, ok := levelColorMap[a.Level]; colorize && ok {
+			messageSb.WriteString(level)
 		} else {
 			messageSb.WriteString(strings.ToUpper(a.Level))
 		}
@@ -232,7 +231,7 @@ func newConsoleFormatter(colorize bool, timeFormat string) func(io.Writer, *pLog
 
 		if a.Caller != "" {
 			if colorize {
-				messageSb.WriteString(gray(a.Caller))
+				messageSb.WriteString(color.HiBlackString(a.Caller))
 			} else {
 				messageSb.WriteString(a.Caller)
 			}
