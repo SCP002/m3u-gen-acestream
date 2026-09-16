@@ -12,7 +12,7 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/samber/lo"
 
-	"m3u_gen_acestream/util/logger"
+	"m3u-gen-acestream/util/logger"
 )
 
 // Engine respresents handler for Ace Stream Engine to interract with it using REST API.

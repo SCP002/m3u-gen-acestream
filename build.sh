@@ -1,6 +1,6 @@
 #!/bin/bash
 
-project_name="m3u_gen_acestream"
+project_name="m3u-gen-acestream"
 build_path="build"
 version="v2.2.2"
 
@@ -16,5 +16,5 @@ for target in $(go tool dist list); do
     [[ $arch == "wasm" ]] && ext=".wasm"
 
     echo "Building for $os / $arch"
-    GOOS=$os GOARCH=$arch go build -ldflags "-X m3u_gen_acestream/version.Version=${version}" -o "${build_path}/${project_name}_${os}_${arch}${ext}" .
+    GOOS=$os GOARCH=$arch go build -ldflags "-X m3u-gen-acestream/version.Version=${version}" -o "${build_path}/${project_name}-${os}-${arch}${ext}" .
 done

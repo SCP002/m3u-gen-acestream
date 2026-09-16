@@ -11,7 +11,7 @@ import (
 	"github.com/dlclark/regexp2"
 	"github.com/goccy/go-yaml"
 
-	"m3u_gen_acestream/util/logger"
+	"m3u-gen-acestream/util/logger"
 )
 
 // Config represents program configuration.

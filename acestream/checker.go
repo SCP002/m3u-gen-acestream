@@ -9,7 +9,7 @@ import (
 	"github.com/cockroachdb/errors"
 	"github.com/ziutek/dvb/ts"
 
-	"m3u_gen_acestream/util/network"
+	"m3u-gen-acestream/util/network"
 )
 
 // Checker respresents availability checker.

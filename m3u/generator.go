@@ -15,10 +15,10 @@ import (
 	"github.com/dlclark/regexp2"
 	"github.com/samber/lo"
 
-	"m3u_gen_acestream/acestream"
-	"m3u_gen_acestream/config"
-	"m3u_gen_acestream/util/logger"
-	"m3u_gen_acestream/util/maps"
+	"m3u-gen-acestream/acestream"
+	"m3u-gen-acestream/config"
+	"m3u-gen-acestream/util/logger"
+	"m3u-gen-acestream/util/maps"
 )
 
 // Entry represents M3U file entry to execute template on.

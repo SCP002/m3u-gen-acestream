@@ -16,9 +16,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/ziutek/dvb/ts"
 
-	"m3u_gen_acestream/acestream"
-	"m3u_gen_acestream/config"
-	"m3u_gen_acestream/util/logger"
+	"m3u-gen-acestream/acestream"
+	"m3u-gen-acestream/config"
+	"m3u-gen-acestream/util/logger"
 )
 
 type TransformTest struct {

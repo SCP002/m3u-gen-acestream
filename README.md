@@ -1,4 +1,4 @@
-# m3u_gen_acestream
+# m3u-gen-acestream
 
 ## What is this?
 
@@ -26,14 +26,14 @@ To use it, VPN or proxy might be required as some ISP block connections to acest
 | -u, --update         | Check for updates and update                                                              |
 | -l, --logLevel       | Logging level. Can be from `1` (most verbose) to `7` (least verbose) [default: `3`]       |
 | -f, --logFile        | Log file. If set, writes structured log to a file at the specified path                   |
-| -c, --cfgPath        | Config file path to read from or initialize a default [default: `m3u_gen_acestream.yaml`] |
+| -c, --cfgPath        | Config file path to read from or initialize a default [default: `m3u-gen-acestream.yaml`] |
 
 Unless config already exists, on first run it creates default config in current directory and terminates.
 Tweak it to suit your needs and start the program again.
 
 ## Downloads
 
-See [releases page](https://github.com/SCP002/m3u_gen_acestream/releases)
+See [releases page](https://github.com/SCP002/m3u-gen-acestream/releases)
 
 ## Default config
 
@@ -283,20 +283,20 @@ playlists:
 2. Download the source code:  
 
     ```sh
-    git clone https://github.com/SCP002/m3u_gen_acestream.git
+    git clone https://github.com/SCP002/m3u-gen-acestream.git
     ```
 
 3. Install dependencies:
 
     ```sh
-    cd m3u_gen_acestream
+    cd m3u-gen-acestream
     go get ./...
     ```
 
     Or:
 
     ```sh
-    cd m3u_gen_acestream
+    cd m3u-gen-acestream
     go mod tidy
     ```
 
@@ -309,7 +309,7 @@ playlists:
 5. To build a binary for current OS / architecture into `./build/` folder:
 
     ```sh
-    go build -o build/ m3u_gen_acestream.go
+    go build -o build/ m3u-gen-acestream.go
     ```
 
-    Or run `/build.sh` to build binaries for every OS / architecture pair.
+    Or run `./build.sh` to build binaries for every OS / architecture pair.

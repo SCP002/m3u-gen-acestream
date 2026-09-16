@@ -12,8 +12,8 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/samber/lo"
 
-	"m3u_gen_acestream/util/logger"
-	"m3u_gen_acestream/version"
+	"m3u-gen-acestream/util/logger"
+	"m3u-gen-acestream/version"
 )
 
 // Updater represents update handler for this program.
@@ -89,7 +89,7 @@ func (u Updater) doUpdate(url string) error {
 
 // getLatestRelease returns latest release info.
 func (u Updater) getLatestRelease() (Release, error) {
-	resp, err := u.httpClient.Get("https://api.github.com/repos/SCP002/m3u_gen_acestream/releases/latest")
+	resp, err := u.httpClient.Get("https://api.github.com/repos/SCP002/m3u-gen-acestream/releases/latest")
 	if err != nil {
 		return Release{}, errors.Wrap(err, "Send get request")
 	}
@@ -111,7 +111,7 @@ func (u Updater) getLatestRelease() (Release, error) {
 
 // getDownloadUrl returns proper URL to download a binary in `assets`.
 func getDownloadUrl(assets []Asset) (string, error) {
-	requiredName := fmt.Sprintf("m3u_gen_acestream_%v_%v", runtime.GOOS, runtime.GOARCH)
+	requiredName := fmt.Sprintf("m3u-gen-acestream_%v_%v", runtime.GOOS, runtime.GOARCH)
 	if runtime.GOOS == "windows" {
 		requiredName += ".exe"
 	}

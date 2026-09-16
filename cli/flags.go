@@ -20,7 +20,7 @@ func Parse() (Flags, error) {
 	flags := Flags{
 		// Set defaults
 		LogLevel: pLog.InfoLevel,
-		CfgPath:  "m3u_gen_acestream.yaml",
+		CfgPath:  "m3u-gen-acestream.yaml",
 	}
 	parser := goFlags.NewParser(&flags, goFlags.Options(goFlags.Default))
 	_, err := parser.Parse()

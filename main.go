@@ -10,14 +10,14 @@ import (
 	"github.com/cockroachdb/errors"
 	goFlags "github.com/jessevdk/go-flags"
 
-	"m3u_gen_acestream/acestream"
-	"m3u_gen_acestream/cli"
-	"m3u_gen_acestream/config"
-	"m3u_gen_acestream/m3u"
-	"m3u_gen_acestream/updater"
-	"m3u_gen_acestream/util/logger"
-	"m3u_gen_acestream/util/network"
-	"m3u_gen_acestream/version"
+	"m3u-gen-acestream/acestream"
+	"m3u-gen-acestream/cli"
+	"m3u-gen-acestream/config"
+	"m3u-gen-acestream/m3u"
+	"m3u-gen-acestream/updater"
+	"m3u-gen-acestream/util/logger"
+	"m3u-gen-acestream/util/network"
+	"m3u-gen-acestream/version"
 )
 
 func main() {

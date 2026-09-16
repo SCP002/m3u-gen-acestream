@@ -1,4 +1,4 @@
-module m3u_gen_acestream
+module m3u-gen-acestream
 
 go 1.27.0
 
