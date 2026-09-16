@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
     image: m3u_gen_acestream_dev:latest
-    container_name: m3u_gen_acestream_dev
     init: true
     command: sleep infinity
     working_dir: /workspace
