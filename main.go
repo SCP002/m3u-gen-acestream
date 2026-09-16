@@ -17,16 +17,15 @@ import (
 	"m3u_gen_acestream/updater"
 	"m3u_gen_acestream/util/logger"
 	"m3u_gen_acestream/util/network"
+	"m3u_gen_acestream/version"
 )
 
 func main() {
 	log := logger.New(logger.FatalLevel, os.Stderr)
 
-	programVersion := "v2.2.2"
-
 	flags, err := cli.Parse()
 	if flags.Version {
-		fmt.Println(programVersion)
+		fmt.Println(version.Version)
 		os.Exit(0)
 	}
 	if cli.IsErrOfType(err, goFlags.ErrHelp) {
@@ -55,7 +54,7 @@ func main() {
 		updaterHttpClient := network.NewHTTPClient(time.Second * 5)
 		updater := updater.New(log, updaterHttpClient)
 
-		if err := updater.Update(programVersion); err != nil {
+		if err := updater.Update(); err != nil {
 			log.Fatal(errors.Wrap(err, "Self update failed"))
 		}
 	}

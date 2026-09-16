@@ -13,6 +13,7 @@ import (
 	"github.com/samber/lo"
 
 	"m3u_gen_acestream/util/logger"
+	"m3u_gen_acestream/version"
 )
 
 // Updater represents update handler for this program.
@@ -38,15 +39,15 @@ type Asset struct {
 	BrowserDownloadURL string `json:"browser_download_url"`
 }
 
-// Update checks if latest release is equal to `currentVersion`. If so, it will exit the program with code 0.
+// Update checks if latest release is equal to `version.Version`. If so, it will exit the program with code 0.
 // Otherwise it will update current executable to the latest version.
-func (u Updater) Update(currentVersion string) error {
+func (u Updater) Update() error {
 	release, err := u.getLatestRelease()
 	if err != nil {
 		return errors.Wrap(err, "Get latest release info")
 	}
 
-	if release.TagName == currentVersion {
+	if release.TagName == version.Version {
 		u.log.Info("No update available")
 		os.Exit(0)
 	}
