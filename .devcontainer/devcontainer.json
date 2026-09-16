@@ -1,6 +1,6 @@
 {
   "name": "m3u-gen-acestream",
-  "dockerComposeFile": "../compose.dev.yml",
+  "dockerComposeFile": "../compose.dev.yaml",
   "service": "dev",
   "workspaceFolder": "/workspace",
   "overrideCommand": false,
