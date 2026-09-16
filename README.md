@@ -48,7 +48,7 @@ playlists:
 # Change any non-default category to 'other'.
 - #
   # Destination filepath to write playlist to.
-  outputPath: ./out/playlist_mpegts_all.m3u8
+  outputPath: ./out/playlist-mpegts-all.m3u8
   #
   # Template for the header of M3U file.
   headerTemplate: |
@@ -206,7 +206,7 @@ playlists:
 #
 # HLS format, only keep tv, music and empty category.
 # Change category 'tv' to 'television' and empty category to 'unknown'.
-- outputPath: ./out/playlist_hls_tv_+_music_+_no_category.m3u8
+- outputPath: ./out/playlist-hls-tv-+-music-+-no-category.m3u8
   headerTemplate: |
     #EXTM3U url-tvg="http://epg.one/epg2.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1
   entryTemplate: |
@@ -241,7 +241,7 @@ playlists:
   removeDeadWorkers: 1
 #
 # https://github.com/pepsik-kiev/HTTPAceProxy format, all but erotic channels.
-- outputPath: ./out/playlist_httpaceproxy_all_but_porn.m3u8
+- outputPath: ./out/playlist-httpaceproxy-all-but-porn.m3u8
   headerTemplate: |
     #EXTM3U url-tvg="http://epg.one/epg2.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1
   entryTemplate: |

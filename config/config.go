@@ -199,7 +199,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		EngineAddr: "127.0.0.1:6878",
 		Playlists: []Playlist{
 			{
-				OutputPath:                   "./out/playlist_mpegts_all.m3u8",
+				OutputPath:                   "./out/playlist-mpegts-all.m3u8",
 				HeaderTemplate:               headerLine,
 				EntryTemplate:                entryLine1 + entryMpegtsLink,
 				CategoryRxToCategoryMap:      map[string]string{regexpNonDefault: "other"},
@@ -225,7 +225,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				RemoveDeadWorkers:            new(1),
 			},
 			{
-				OutputPath:                   "./out/playlist_hls_tv_+_music_+_no_category.m3u8",
+				OutputPath:                   "./out/playlist-hls-tv-+-music-+-no-category.m3u8",
 				HeaderTemplate:               headerLine,
 				EntryTemplate:                entryLine1 + entryHlsLink,
 				CategoryRxToCategoryMap:      map[string]string{`(?i)^tv$`: "television", `^$`: "unknown"},
@@ -251,7 +251,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				RemoveDeadWorkers:            new(1),
 			},
 			{
-				OutputPath:                   "./out/playlist_httpaceproxy_all_but_porn.m3u8",
+				OutputPath:                   "./out/playlist-httpaceproxy-all-but-porn.m3u8",
 				HeaderTemplate:               headerLine,
 				EntryTemplate:                entryLine1 + entryHttpAceProxyLink,
 				CategoryRxToCategoryMap:      map[string]string{},
