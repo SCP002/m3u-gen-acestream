@@ -1,0 +1,32 @@
+{
+  "name": "m3u_gen_acestream",
+  "dockerComposeFile": "../compose.dev.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "overrideCommand": false,
+  "shutdownAction": "stopCompose",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "go.gopath": "/go",
+        "go.goroot": "/usr/local/go",
+        "go.useLanguageServer": true,
+        "go.lintTool": "golangci-lint",
+        "go.testFlags": [
+          "-v"
+        ],
+        "go.testTimeout": "60s",
+        "go.toolsEnvVars": {
+          "GO111MODULE": "on"
+        },
+        "go.toolsManagement.autoUpdate": true,
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "golang.go"
+      ]
+    }
+  },
+  "postCreateCommand": "go mod download"
+}
