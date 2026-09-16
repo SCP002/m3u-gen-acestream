@@ -1,9 +1,11 @@
+name: m3u-gen-acestream
+
 services:
   dev:
     build:
       context: .
       dockerfile: .devcontainer/Dockerfile
-    image: m3u_gen_acestream_dev
+    image: m3u-gen-acestream-dev
     init: true
     command: sleep infinity
     working_dir: /workspace
