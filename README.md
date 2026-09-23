@@ -35,6 +35,54 @@ Tweak it to suit your needs and start the program again.
 
 See [releases page](https://github.com/SCP002/m3u-gen-acestream/releases)
 
+## Docker
+
+For use:
+
+* Run the program once to initialize config:
+
+```sh
+docker compose --file compose.yaml run --rm --detach gen
+```
+
+* Make changes in the `./data/config/m3u-gen-acestream.yaml` file to `engineAddr` and `entryTemplate` like so:
+
+```yaml
+engineAddr: engine:6878
+```
+
+```yaml
+  entryTemplate: |
+    #EXTINF:-1 group-title="{{.Categories}}",{{.Name}}
+    http://192.168.0.100:8080/ace/getstream?infohash={{.Infohash}}
+```
+
+(replace the `192.168.0.100` with your actual IP).
+
+* Next, to generate playlists:
+
+```sh
+docker compose --file compose.yaml up --detach
+```
+
+To run with interval, uncomment the:
+
+```yaml
+    # environment:
+    #  - INTERVAL=6h
+```
+
+block at the `gen` service in `compose.yaml` file and run that command again.
+
+For developement:
+
+```sh
+docker compose --file compose.dev.yaml up --detach
+docker compose --file compose.dev.yaml exec dev bash
+```
+
+to enter the devcontainer, or open the project in Visual Studio Code with `Dev Containers` extension installed.
+
 ## Default config
 
 ```yaml
@@ -309,7 +357,7 @@ playlists:
 5. To build a binary for current OS / architecture into `./build/` folder:
 
     ```sh
-    go build -o build/ m3u-gen-acestream.go
+    go build -o build/ .
     ```
 
     Or run `./build.sh` to build binaries for every OS / architecture pair.

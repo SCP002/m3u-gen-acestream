@@ -1,4 +1,7 @@
-.git
-build
-*.exe
-*.wasm
+.gitignore
+compose.dev.yaml
+/.devcontainer/
+/.git/
+/.kilo/
+/build/
+/data/
