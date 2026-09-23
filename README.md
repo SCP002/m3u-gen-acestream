@@ -83,6 +83,12 @@ docker compose --file compose.dev.yaml exec dev bash
 
 to enter the devcontainer, or open the project in Visual Studio Code with `Dev Containers` extension installed.
 
+To build in dev environment:
+
+```sh
+docker compose --file compose.dev.yaml exec dev bash ./build.sh
+```
+
 ## Default config
 
 ```yaml
