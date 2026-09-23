@@ -2,7 +2,7 @@
 
 project_name="m3u-gen-acestream"
 build_path="build"
-version="v2.2.2"
+version="v3.0.0"
 
 command -v go > /dev/null || { echo "go not found in PATH" >&2; exit 1; }
 
