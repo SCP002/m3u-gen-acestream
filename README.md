@@ -64,13 +64,15 @@ engineAddr: engine:6878
 
 (replace the `192.168.0.100` with your actual IP).
 
-* Next, to generate playlists:
+* Next, to run  Ace Stream engine, acexy, and generate playlists:
 
 ```sh
 docker compose --file compose.yaml up --detach
 ```
 
 They will be available under `./data/out/`.
+Streams will point to your acexy server in docker.
+Acexy default port for incoming connections is `8080`.
 
 To run with interval, uncomment the:
 
