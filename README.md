@@ -45,7 +45,8 @@ For use:
 docker compose --file compose.yaml run --rm --detach gen
 ```
 
-* Make changes in the `./data/config/m3u-gen-acestream.yaml` file to `engineAddr` and `entryTemplate` like so:
+* Make changes in the `./data/config/m3u-gen-acestream.yaml` file to `engineAddr`,
+ `entryTemplate` and `removeDeadLinkTemplate` like so:
 
 ```yaml
 engineAddr: engine:6878
@@ -57,6 +58,10 @@ engineAddr: engine:6878
     http://192.168.0.100:8080/ace/getstream?infohash={{.Infohash}}
 ```
 
+```yaml
+  removeDeadLinkTemplate: http://192.168.0.100:8080/ace/getstream?infohash={{.Infohash}}
+```
+
 (replace the `192.168.0.100` with your actual IP).
 
 * Next, to generate playlists:
@@ -64,6 +69,8 @@ engineAddr: engine:6878
 ```sh
 docker compose --file compose.yaml up --detach
 ```
+
+They will be available under `./data/out/`.
 
 To run with interval, uncomment the:
 
@@ -83,10 +90,10 @@ docker compose --file compose.dev.yaml exec dev bash
 
 to enter the devcontainer, or open the project in Visual Studio Code with `Dev Containers` extension installed.
 
-To build in dev environment:
+To build in container environment:
 
 ```sh
-docker compose --file compose.dev.yaml exec dev bash ./build.sh
+docker compose --file compose.dev.yaml run --rm --build dev bash ./build.sh
 ```
 
 ## Default config
