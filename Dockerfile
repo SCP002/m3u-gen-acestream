@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-ARG VERSION=dev
+ARG VERSION=v3.0.0
 RUN CGO_ENABLED=0 go build -trimpath \
     -ldflags "-X m3u-gen-acestream/version.Version=${VERSION}" \
     -o /m3u-gen-acestream .
