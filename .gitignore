@@ -4,6 +4,9 @@
 # Generated playlists and config
 /data/
 
+# Kilo
+/.kilo/
+
 # OS
 .DS_Store
 Thumbs.db
