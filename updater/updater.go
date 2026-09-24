@@ -111,7 +111,7 @@ func (u Updater) getLatestRelease() (Release, error) {
 
 // getDownloadUrl returns proper URL to download a binary in `assets`.
 func getDownloadUrl(assets []Asset) (string, error) {
-	requiredName := fmt.Sprintf("m3u-gen-acestream_%v_%v", runtime.GOOS, runtime.GOARCH)
+	requiredName := fmt.Sprintf("m3u-gen-acestream-%v-%v", runtime.GOOS, runtime.GOARCH)
 	if runtime.GOOS == "windows" {
 		requiredName += ".exe"
 	}
