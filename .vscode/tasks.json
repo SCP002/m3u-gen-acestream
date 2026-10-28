@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "Go: format, sort imports, lint",
-      "detail": "Runs goimports, golines at 120 columns, then golangci-lint --fix; findings are reported as warnings.",
+      "detail": "Runs goimports, golines at 120 columns, then golangci-lint --fix",
       "type": "shell",
       "command": "./format.sh",
       "options": {
