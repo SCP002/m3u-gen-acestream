@@ -124,7 +124,7 @@ func (e Engine) WaitForConnection(ctx context.Context) {
 			continue
 		}
 		body, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		if err != nil {
 			e.log.Error(errors.Wrap(err, "Connect to engine: Read get_version response body"))
 			e.log.Debug("Sleeping before reconnect")
@@ -177,7 +177,7 @@ func (e Engine) searchAtPage(ctx context.Context, page int) ([]SearchResult, err
 	if err != nil {
 		return []SearchResult{}, errors.Wrap(err, "Send search request")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return []SearchResult{}, errors.Wrap(err, "Read search response body")

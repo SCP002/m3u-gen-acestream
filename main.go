@@ -40,7 +40,7 @@ func main() {
 	logFile, err := log.AddFileWriter(flags.LogFile)
 	if err == nil {
 		// Closing nil file does not panic.
-		defer logFile.Close()
+		defer func() { _ = logFile.Close() }()
 	} else {
 		log.Error(err)
 	}

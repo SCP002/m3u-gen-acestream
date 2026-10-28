@@ -76,7 +76,7 @@ func (u Updater) doUpdate(url string) error {
 	if err != nil {
 		return errors.Wrap(err, "Send get request")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	u.log.Info("Installing update. This program will terminate to do it.")
 	err = selfupdate.Apply(resp.Body, selfupdate.Options{})
@@ -93,7 +93,7 @@ func (u Updater) getLatestRelease() (Release, error) {
 	if err != nil {
 		return Release{}, errors.Wrap(err, "Send get request")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return Release{}, errors.Wrap(err, "Read response body")

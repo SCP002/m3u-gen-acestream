@@ -38,7 +38,7 @@ func (c Checker) IsAvailable(link string, timeout time.Duration, analyzeMpegTs b
 	if err != nil {
 		return errors.Wrap(err, "Execute request")
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode >= 400 {
 		return errors.Newf("Response status %v", resp.Status)
 	}
