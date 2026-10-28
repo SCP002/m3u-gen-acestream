@@ -4,8 +4,8 @@
 # Generated playlists and config
 /data/
 
-# Kilo
-/.kilo/
+# Claude Code (personal settings)
+/.claude/settings.local.json
 
 # OS
 .DS_Store

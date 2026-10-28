@@ -2,6 +2,7 @@
 compose.dev.yaml
 /.devcontainer/
 /.git/
-/.kilo/
+/.claude/
+/CLAUDE.md
 /build/
 /data/
