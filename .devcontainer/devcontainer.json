@@ -10,9 +10,20 @@
     "vscode": {
       "settings": {
         "go.gopath": "/go",
-        "go.goroot": "/usr/local/go",
         "go.useLanguageServer": true,
         "go.lintTool": "golangci-lint",
+        "go.formatTool": "custom",
+        "go.alternateTools": {
+          "customFormatter": "golines"
+        },
+        "go.formatFlags": [
+          "-m",
+          "120"
+        ],
+        "[go]": {
+          "editor.defaultFormatter": "golang.go",
+          "editor.formatOnSave": true
+        },
         "go.testFlags": [
           "-v"
         ],
@@ -24,7 +35,8 @@
         "terminal.integrated.defaultProfile.linux": "bash"
       },
       "extensions": [
-        "golang.go"
+        "golang.go",
+        "kilocode.kilo-code"
       ]
     }
   },

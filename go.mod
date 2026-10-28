@@ -1,6 +1,6 @@
 module m3u-gen-acestream
 
-go 1.27.0
+go 1.27.3
 
 require (
 	github.com/adampresley/sigint v0.0.0-20150906022118-7e8d2ad16a94
