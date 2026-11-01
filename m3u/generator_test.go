@@ -3,6 +3,7 @@ package m3u
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -26,6 +27,19 @@ type TransformTest struct {
 	playlist config.Playlist
 	expected []acestream.SearchResult
 	logLines []string
+}
+
+// lockedWriter serializes writes to `w`.
+type lockedWriter struct {
+	mu sync.Mutex
+	w  io.Writer
+}
+
+// Write implements io.Writer.
+func (l *lockedWriter) Write(p []byte) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.w.Write(p)
 }
 
 var timeRx = `[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}`
@@ -1089,7 +1103,7 @@ func TestFilterByName(t *testing.T) {
 
 func TestRemoveDead(t *testing.T) {
 	var consoleBuff bytes.Buffer
-	log := logger.New(logger.DebugLevel, &consoleBuff)
+	log := logger.New(logger.DebugLevel, &lockedWriter{w: &consoleBuff})
 
 	hashAlive := strings.Repeat("a", 40)
 	hashDead := strings.Repeat("b", 40)
@@ -1102,6 +1116,8 @@ func TestRemoveDead(t *testing.T) {
 		if r.URL.Query().Get("infohash") == hashAlive {
 			_, _ = w.Write(aliveBody)
 			w.(http.Flusher).Flush()
+			// Keep the stream open until client disconnects, as a live stream would.
+			<-r.Context().Done()
 			return
 		}
 		w.WriteHeader(http.StatusInternalServerError)

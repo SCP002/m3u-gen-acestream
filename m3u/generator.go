@@ -38,13 +38,13 @@ func Generate(log *logger.Logger, searchResults []acestream.SearchResult, cfg *c
 	log.Info("Generating M3U files")
 
 	infohashCheckErrorMap := &sync.Map{}
+	checker := acestream.NewChecker()
 
 	for _, playlist := range cfg.Playlists {
 		searchResults := remap(log, searchResults, playlist)
 		searchResults = filter(log, searchResults, playlist)
 		if *playlist.RemoveDeadSources {
-			searchResults = removeDead(log, searchResults, playlist, cfg.EngineAddr, infohashCheckErrorMap,
-				acestream.NewChecker())
+			searchResults = removeDead(log, searchResults, playlist, cfg.EngineAddr, infohashCheckErrorMap, checker)
 		}
 
 		// Transform []SearchResult to []Entry.

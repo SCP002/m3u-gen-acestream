@@ -16,6 +16,7 @@ require (
 	github.com/samber/lo v1.53.0
 	github.com/stretchr/testify v1.11.1
 	github.com/ziutek/dvb v0.1.5
+	go.uber.org/goleak v1.3.0
 )
 
 require (

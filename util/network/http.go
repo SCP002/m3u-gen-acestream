@@ -11,7 +11,8 @@ func NewHTTPClient(timeout time.Duration) *http.Client {
 	return &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
+			Proxy:           http.ProxyFromEnvironment,
+			IdleConnTimeout: time.Second * 5,
 		},
 	}
 }
