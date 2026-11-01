@@ -23,7 +23,7 @@ To use it, VPN or proxy might be required as some ISP block connections to acest
 | -------------------- | ----------------------------------------------------------------------------------------- |
 | -h, --help           | Print help message                                                                        |
 | -v, --version        | Print the program version                                                                 |
-| -u, --update         | Check for updates and update                                                              |
+| -u, --update         | Check for updates, update and exit                                                        |
 | -l, --logLevel       | Logging level. Can be from `1` (most verbose) to `7` (least verbose) [default: `3`]       |
 | -f, --logFile        | Log file. If set, writes structured log to a file at the specified path                   |
 | -c, --cfgPath        | Config file path to read from or initialize a default [default: `m3u-gen-acestream.yaml`] |

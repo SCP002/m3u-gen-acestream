@@ -51,12 +51,13 @@ func main() {
 	})
 
 	if flags.Update {
-		updaterHttpClient := network.NewHTTPClient(time.Second * 5)
+		updaterHttpClient := network.NewHTTPClient(time.Minute * 10)
 		updater := updater.New(log, updaterHttpClient)
 
 		if err := updater.Update(); err != nil {
 			log.Fatal(errors.Wrap(err, "Self update failed"))
 		}
+		return
 	}
 
 	log.Info("Starting")
