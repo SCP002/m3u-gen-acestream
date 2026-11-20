@@ -103,7 +103,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 			}
 			if _, err := template.New("").Parse(*playlist.RemoveDeadLinkTemplate); err != nil {
 				return errors.Wrapf(err, "Can not parse template:\n%v\nin removeDeadLinkTemplate",
-					playlist.EntryTemplate)
+					*playlist.RemoveDeadLinkTemplate)
 			}
 		}
 		return nil
