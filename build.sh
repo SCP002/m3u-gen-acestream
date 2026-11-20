@@ -17,5 +17,5 @@ for target in $(go tool dist list); do
     [[ $arch == "wasm" ]] && ext=".wasm"
 
     echo "Building for $os / $arch"
-    CGO_ENABLED=$cgo_enabled GOOS=$os GOARCH=$arch go build -trimpath -ldflags "-X ${project_name}/version.Version=${version}" -o "${build_path}/${project_name}-${os}-${arch}${ext}" .
+    CGO_ENABLED=$cgo_enabled GOOS=$os GOARCH=$arch go build -trimpath -ldflags "-s -w -X ${project_name}/version.Version=${version}" -o "${build_path}/${project_name}-${os}-${arch}${ext}" .
 done

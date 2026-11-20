@@ -9,7 +9,7 @@ COPY . .
 
 ARG VERSION=v3.0.1
 RUN CGO_ENABLED=0 go build -trimpath \
-    -ldflags "-X m3u-gen-acestream/version.Version=${VERSION}" \
+    -ldflags "-s -w -X m3u-gen-acestream/version.Version=${VERSION}" \
     -o /m3u-gen-acestream .
 
 FROM alpine:3.23
