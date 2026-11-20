@@ -1,13 +1,16 @@
 package maps
 
-import "github.com/dlclark/regexp2"
+import (
+	"m3u-gen-acestream/util/logger"
+	"m3u-gen-acestream/util/regex"
+)
 
-// ForEveryMatchingRx funs `cb` for every regular expression (keys in `rxMap`) matching `match`.
+// ForEveryMatchingRx funs `cb` for every regular expression (keys in `rxMap`) matching `match`, logging to `log`.
 //
 // `cb` argument is a `rxMap` value.
-func ForEveryMatchingRx[T any](rxMap map[string]T, match string, cb func(mapVal T)) {
+func ForEveryMatchingRx[T any](log *logger.Logger, rxMap map[string]T, match string, cb func(mapVal T)) {
 	for rx, mapVal := range rxMap {
-		if ok, _ := regexp2.MustCompile(rx, regexp2.RE2).MatchString(match); ok {
+		if regex.MatchString(log, rx, match) {
 			cb(mapVal)
 		}
 	}

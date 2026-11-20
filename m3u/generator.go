@@ -12,13 +12,13 @@ import (
 
 	"github.com/alitto/pond/v2"
 	"github.com/cockroachdb/errors"
-	"github.com/dlclark/regexp2"
 	"github.com/samber/lo"
 
 	"m3u-gen-acestream/acestream"
 	"m3u-gen-acestream/config"
 	"m3u-gen-acestream/util/logger"
 	"m3u-gen-acestream/util/maps"
+	"m3u-gen-acestream/util/regex"
 )
 
 // Entry represents M3U file entry to execute template on.
@@ -125,7 +125,7 @@ func remapCategoryToCategory(log *logger.Logger,
 	var changed int
 	if len(playlist.CategoryRxToCategoryMap) > 0 {
 		searchResults = mapAcestreamCategories(searchResults, func(category string, _ int) string {
-			maps.ForEveryMatchingRx(playlist.CategoryRxToCategoryMap, category, func(newCategory string) {
+			maps.ForEveryMatchingRx(log, playlist.CategoryRxToCategoryMap, category, func(newCategory string) {
 				log.DebugFi("Changed", "category", category, "to", newCategory, "playlist", playlist.OutputPath)
 				category = newCategory
 				changed++
@@ -144,7 +144,7 @@ func remapNameToCategories(log *logger.Logger,
 	var changed int
 	if len(playlist.NameRxToCategoriesMap) > 0 {
 		searchResults = mapAcestreamItems(searchResults, func(item acestream.Item, _ int) acestream.Item {
-			maps.ForEveryMatchingRx(playlist.NameRxToCategoriesMap, item.Name, func(newCategories []string) {
+			maps.ForEveryMatchingRx(log, playlist.NameRxToCategoriesMap, item.Name, func(newCategories []string) {
 				log.DebugFi("Changed", "categories", item.Categories, "to", newCategories, "by name", item.Name,
 					"playlist", playlist.OutputPath)
 				item.Categories = newCategories
@@ -386,8 +386,7 @@ func filterByName(log *logger.Logger,
 	if len(playlist.NameRxFilter) > 0 {
 		searchResults = filterAcestreamItems(searchResults, func(item acestream.Item, _ int) bool {
 			return lo.SomeBy(playlist.NameRxFilter, func(rxStr string) bool {
-				rx := regexp2.MustCompile(rxStr, regexp2.RE2)
-				keep, _ := rx.MatchString(item.Name)
+				keep := regex.MatchString(log, rxStr, item.Name)
 				if !keep {
 					log.DebugFi("Rejected", "name", item.Name, "playlist", playlist.OutputPath)
 				}
@@ -398,8 +397,7 @@ func filterByName(log *logger.Logger,
 	if len(playlist.NameRxBlacklist) > 0 {
 		searchResults = rejectAcestreamItems(searchResults, func(item acestream.Item, _ int) bool {
 			return lo.SomeBy(playlist.NameRxBlacklist, func(rxStr string) bool {
-				rx := regexp2.MustCompile(rxStr, regexp2.RE2)
-				reject, _ := rx.MatchString(item.Name)
+				reject := regex.MatchString(log, rxStr, item.Name)
 				if reject {
 					log.DebugFi("Rejected", "name", item.Name, "playlist", playlist.OutputPath)
 				}
