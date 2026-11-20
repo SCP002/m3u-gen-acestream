@@ -10,6 +10,7 @@ import (
 	"github.com/fynelabs/selfupdate"
 	"github.com/goccy/go-json"
 	"github.com/samber/lo"
+	"golang.org/x/mod/semver"
 
 	"m3u-gen-acestream/util/logger"
 	"m3u-gen-acestream/version"
@@ -50,12 +51,12 @@ type Asset struct {
 	BrowserDownloadURL string `json:"browser_download_url"`
 }
 
-// Update replaces the executable with the latest release if it differs from the current version. The new version
+// Update replaces the executable with the latest release if it is newer than the current version. The new version
 // takes effect on the next start of this program.
 //
-// It returns error if the current version is a development build.
+// It returns error if the current version is not a semantic version, such as a development build.
 func (u Updater) Update() error {
-	if u.currentVersion == "dev" {
+	if !semver.IsValid(u.currentVersion) {
 		return errors.Newf("Current version %q is not a release, download a release manually", u.currentVersion)
 	}
 
@@ -64,8 +65,8 @@ func (u Updater) Update() error {
 		return errors.Wrap(err, "Get latest release info")
 	}
 
-	if release.TagName == u.currentVersion {
-		u.log.InfoFi("No update available", "current version", u.currentVersion)
+	if semver.Compare(release.TagName, u.currentVersion) <= 0 {
+		u.log.InfoFi("No update available", "current version", u.currentVersion, "latest version", release.TagName)
 		return nil
 	}
 

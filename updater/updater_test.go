@@ -117,14 +117,39 @@ func TestUpdateDoesNothingIfOnLatest(t *testing.T) {
 	assert.Zero(t, github.binaryRequests.Load())
 }
 
-func TestUpdateRefusesDevelopmentBuild(t *testing.T) {
+func TestUpdateDoesNothingIfNewerThanLatest(t *testing.T) {
 	github := newFakeGithub(t)
-	u := newTestUpdater(t, github, "dev")
+	github.tagName = "v2.0.0"
+	u := newTestUpdater(t, github, "v2.1.0")
 
-	assert.ErrorContains(t, u.Update(), `Current version "dev" is not a release`)
+	assert.NoError(t, u.Update())
 
 	assertExecutable(t, u, oldBinary)
-	assert.Zero(t, github.binaryRequests.Load())
+	assert.Zero(t, github.binaryRequests.Load(), "should not downgrade")
+}
+
+func TestUpdateComparesVersionsNumerically(t *testing.T) {
+	github := newFakeGithub(t)
+	github.tagName = "v2.10.0"
+	u := newTestUpdater(t, github, "v2.9.0")
+
+	assert.NoError(t, u.Update())
+
+	assertExecutable(t, u, newBinary)
+}
+
+func TestUpdateRefusesNonReleaseVersion(t *testing.T) {
+	for _, version := range []string{"dev", "custom", "2.0.0"} {
+		t.Run(version, func(t *testing.T) {
+			github := newFakeGithub(t)
+			u := newTestUpdater(t, github, version)
+
+			assert.ErrorContains(t, u.Update(), `Current version "`+version+`" is not a release`)
+
+			assertExecutable(t, u, oldBinary)
+			assert.Zero(t, github.binaryRequests.Load())
+		})
+	}
 }
 
 func TestUpdateFailsOnReleaseRequestError(t *testing.T) {
