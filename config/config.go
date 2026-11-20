@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"text/template"
@@ -41,11 +40,11 @@ type Playlist struct {
 	StatusFilter                 []int               `yaml:"statusFilter"`
 	AvailabilityThreshold        float64             `yaml:"availabilityThreshold"`
 	AvailabilityUpdatedThreshold time.Duration       `yaml:"availabilityUpdatedThreshold"`
-	RemoveDeadSources            *bool               `yaml:"removeDeadSources"`
-	UseMpegTsAnalyzer            *bool               `yaml:"useMpegTsAnalyzer"`
-	CheckRespTimeout             *time.Duration      `yaml:"checkRespTimeout"`
-	RemoveDeadLinkTemplate       *string             `yaml:"removeDeadLinkTemplate"`
-	RemoveDeadWorkers            *int                `yaml:"removeDeadWorkers"`
+	RemoveDeadSources            bool                `yaml:"removeDeadSources"`
+	UseMpegTsAnalyzer            bool                `yaml:"useMpegTsAnalyzer"`
+	CheckRespTimeout             time.Duration       `yaml:"checkRespTimeout"`
+	RemoveDeadLinkTemplate       string              `yaml:"removeDeadLinkTemplate"`
+	RemoveDeadWorkers            int                 `yaml:"removeDeadWorkers"`
 }
 
 // Init returns config instance and false if config at `filePath` already exist.
@@ -101,9 +100,9 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 			if _, err := template.New("").Parse(playlist.EntryTemplate); err != nil {
 				return errors.Wrapf(err, "Can not parse template:\n%v\nin entryTemplate", playlist.EntryTemplate)
 			}
-			if _, err := template.New("").Parse(*playlist.RemoveDeadLinkTemplate); err != nil {
+			if _, err := template.New("").Parse(playlist.RemoveDeadLinkTemplate); err != nil {
 				return errors.Wrapf(err, "Can not parse template:\n%v\nin removeDeadLinkTemplate",
-					*playlist.RemoveDeadLinkTemplate)
+					playlist.RemoveDeadLinkTemplate)
 			}
 		}
 		return nil
@@ -111,48 +110,12 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 
 	addNewOptions := func() error {
 		modified := false
-		for idx, playlist := range cfg.Playlists {
-			if playlist.RemoveDeadSources == nil {
-				defVal := new(false)
-				path := fmt.Sprintf("$.playlists[%v].removeDeadSources", idx)
-				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
-				cfg.Playlists[idx].RemoveDeadSources = defVal
-				commentMap[path] = defCommentMap[path]
-				modified = true
-			}
-			if playlist.UseMpegTsAnalyzer == nil {
-				defVal := new(false)
-				path := fmt.Sprintf("$.playlists[%v].useMpegTsAnalyzer", idx)
-				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
-				cfg.Playlists[idx].UseMpegTsAnalyzer = defVal
-				commentMap[path] = defCommentMap[path]
-				modified = true
-			}
-			if playlist.CheckRespTimeout == nil {
-				defVal := new(time.Second * 20)
-				path := fmt.Sprintf("$.playlists[%v].checkRespTimeout", idx)
-				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
-				cfg.Playlists[idx].CheckRespTimeout = defVal
-				commentMap[path] = defCommentMap[path]
-				modified = true
-			}
-			if playlist.RemoveDeadLinkTemplate == nil {
-				defVal := new("http://{{.EngineAddr}}/ace/getstream?infohash={{.Infohash}}")
-				path := fmt.Sprintf("$.playlists[%v].removeDeadLinkTemplate", idx)
-				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
-				cfg.Playlists[idx].RemoveDeadLinkTemplate = defVal
-				commentMap[path] = defCommentMap[path]
-				modified = true
-			}
-			if playlist.RemoveDeadWorkers == nil {
-				defVal := new(1)
-				path := fmt.Sprintf("$.playlists[%v].removeDeadWorkers", idx)
-				log.InfoFi("Adding new config option", "path", path, "value", defVal, "playlist", playlist.OutputPath)
-				cfg.Playlists[idx].RemoveDeadWorkers = defVal
-				commentMap[path] = defCommentMap[path]
-				modified = true
-			}
-		}
+		// Add new options here with addNewOption(), for example:
+		//
+		// for idx := range cfg.Playlists {
+		// 	path := fmt.Sprintf("$.playlists[%v].newOption", idx)
+		// 	modified = addNewOption(log, &cfg.Playlists[idx].NewOption, 1, path, commentMap, defCommentMap) || modified
+		// }
 		if modified {
 			return errors.Wrap(writeConfig(&cfg, commentMap), "Write config")
 		}
@@ -181,6 +144,22 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 	}
 
 	return &cfg, false, nil
+}
+
+// addNewOption sets option `opt` to `defVal` and adds its default comment from `defCommentMap` by `path` to
+// `commentMap` if the option is missing in config. Returns true if the option was added.
+//
+// Option must be a pointer to tell a missing value from zero.
+func addNewOption[T any](log *logger.Logger, opt **T, defVal T, path string,
+	commentMap, defCommentMap yaml.CommentMap,
+) bool {
+	if *opt != nil {
+		return false
+	}
+	log.InfoFi("Adding new config option", "path", path, "value", defVal)
+	*opt = &defVal
+	commentMap[path] = defCommentMap[path]
+	return true
 }
 
 // newDefCfg returns new default config and comment map.
@@ -218,11 +197,11 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				StatusFilter:                 []int{2},
 				AvailabilityThreshold:        1.0,
 				AvailabilityUpdatedThreshold: time.Hour * 12 * 3,
-				RemoveDeadSources:            new(false),
-				UseMpegTsAnalyzer:            new(false),
-				CheckRespTimeout:             new(time.Second * 20),
-				RemoveDeadLinkTemplate:       new(removeDeadLink),
-				RemoveDeadWorkers:            new(1),
+				RemoveDeadSources:            false,
+				UseMpegTsAnalyzer:            false,
+				CheckRespTimeout:             time.Second * 20,
+				RemoveDeadLinkTemplate:       removeDeadLink,
+				RemoveDeadWorkers:            1,
 			},
 			{
 				OutputPath:                   "./out/playlist-hls-tv-+-music-+-no-category.m3u8",
@@ -244,11 +223,11 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				StatusFilter:                 []int{2},
 				AvailabilityThreshold:        1.0,
 				AvailabilityUpdatedThreshold: time.Hour * 12 * 3,
-				RemoveDeadSources:            new(false),
-				UseMpegTsAnalyzer:            new(false),
-				CheckRespTimeout:             new(time.Second * 20),
-				RemoveDeadLinkTemplate:       new(removeDeadLink),
-				RemoveDeadWorkers:            new(1),
+				RemoveDeadSources:            false,
+				UseMpegTsAnalyzer:            false,
+				CheckRespTimeout:             time.Second * 20,
+				RemoveDeadLinkTemplate:       removeDeadLink,
+				RemoveDeadWorkers:            1,
 			},
 			{
 				OutputPath:                   "./out/playlist-httpaceproxy-all-but-porn.m3u8",
@@ -270,11 +249,11 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 				StatusFilter:                 []int{2},
 				AvailabilityThreshold:        1.0,
 				AvailabilityUpdatedThreshold: time.Hour * 12 * 3,
-				RemoveDeadSources:            new(false),
-				UseMpegTsAnalyzer:            new(false),
-				CheckRespTimeout:             new(time.Second * 20),
-				RemoveDeadLinkTemplate:       new(removeDeadLink),
-				RemoveDeadWorkers:            new(1),
+				RemoveDeadSources:            false,
+				UseMpegTsAnalyzer:            false,
+				CheckRespTimeout:             time.Second * 20,
+				RemoveDeadLinkTemplate:       removeDeadLink,
+				RemoveDeadWorkers:            1,
 			},
 		},
 	}

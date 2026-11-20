@@ -43,7 +43,7 @@ func Generate(log *logger.Logger, searchResults []acestream.SearchResult, cfg *c
 	for _, playlist := range cfg.Playlists {
 		searchResults := remap(log, searchResults, playlist)
 		searchResults = filter(log, searchResults, playlist)
-		if *playlist.RemoveDeadSources {
+		if playlist.RemoveDeadSources {
 			searchResults = removeDead(log, searchResults, playlist, cfg.EngineAddr, infohashCheckErrorMap, checker)
 		}
 
@@ -433,8 +433,8 @@ func removeDead(log *logger.Logger,
 	log.InfoFi("Removing dead sources", "playlist", playlist.OutputPath)
 	prevSources := acestream.GetSourcesAmount(searchResults)
 
-	linkTempl := template.Must(template.New("").Parse(*playlist.RemoveDeadLinkTemplate))
-	pool := pond.NewPool(*playlist.RemoveDeadWorkers)
+	linkTempl := template.Must(template.New("").Parse(playlist.RemoveDeadLinkTemplate))
+	pool := pond.NewPool(playlist.RemoveDeadWorkers)
 
 	for _, sr := range searchResults {
 		for _, item := range sr.Items {
@@ -455,7 +455,7 @@ func removeDead(log *logger.Logger,
 				}
 				link := linkBuff.String()
 
-				err := checker.IsAvailable(link, *playlist.CheckRespTimeout, *playlist.UseMpegTsAnalyzer)
+				err := checker.IsAvailable(link, playlist.CheckRespTimeout, playlist.UseMpegTsAnalyzer)
 				infohashCheckErrorMap.Store(item.Infohash, err)
 
 				if err == nil {

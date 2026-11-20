@@ -1141,11 +1141,11 @@ func TestRemoveDead(t *testing.T) {
 			},
 			playlist: config.Playlist{
 				OutputPath:             "file.m3u8",
-				RemoveDeadSources:      new(true),
-				UseMpegTsAnalyzer:      new(true),
-				CheckRespTimeout:       new(time.Second * 50),
-				RemoveDeadLinkTemplate: new(linkTempl),
-				RemoveDeadWorkers:      new(2),
+				RemoveDeadSources:      true,
+				UseMpegTsAnalyzer:      true,
+				CheckRespTimeout:       time.Second * 50,
+				RemoveDeadLinkTemplate: linkTempl,
+				RemoveDeadWorkers:      2,
 			},
 			expected: []acestream.SearchResult{
 				{Items: []acestream.Item{{Name: "name 1 alive", Infohash: hashAlive}}},
