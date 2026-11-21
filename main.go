@@ -73,7 +73,9 @@ func main() {
 
 	engineHttpClient := network.NewHTTPClient(time.Second * 5)
 	engine := acestream.NewEngine(log, engineHttpClient, cfg.EngineAddr)
-	engine.WaitForConnection(context.Background())
+	if err := engine.WaitForConnection(context.Background()); err != nil {
+		log.Fatal(errors.Wrap(err, "Wait for engine"))
+	}
 
 	results, err := engine.SearchAll(context.Background())
 	if err != nil {

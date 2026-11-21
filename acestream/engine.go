@@ -90,61 +90,59 @@ func NewEngine(log *logger.Logger, httpClient *http.Client, addr string) *Engine
 	return &Engine{log: log, httpClient: httpClient, addr: addr, pageSize: 200}
 }
 
-// WaitForConnection blocks current goroutine until engine responds with version info or until `ctx` deadline exceedes.
-func (e Engine) WaitForConnection(ctx context.Context) {
+// WaitForConnection blocks current goroutine until engine responds with version info or until `ctx` is done.
+// Returns error only if `ctx` is done before engine responded.
+func (e Engine) WaitForConnection(ctx context.Context) error {
 	e.log.Info("Connecting to engine")
 
 	ticker := time.NewTicker(time.Second * 5)
 	defer ticker.Stop()
 
-	for ; true; <-ticker.C {
+	for {
+		err := e.getVersion(ctx)
+		if err == nil {
+			e.log.Info("Engine is running")
+			return nil
+		}
+		if ctx.Err() != nil {
+			return errors.Wrap(ctx.Err(), "Connect to engine")
+		}
+		e.log.Error(errors.Wrap(err, "Connect to engine"))
+		e.log.Debug("Sleeping before reconnect")
 		select {
 		case <-ctx.Done():
-			e.log.Error(errors.Wrap(ctx.Err(), "Connect to engine"))
-			return
-		default:
+			return errors.Wrap(ctx.Err(), "Connect to engine")
+		case <-ticker.C:
 		}
-		params := url.Values{}
-		params.Set("method", "get_version")
-		url := url.URL{Scheme: "http", Host: e.addr, Path: "webui/api/service", RawQuery: params.Encode()}
-		req, err := http.NewRequestWithContext(ctx, http.MethodGet, url.String(), nil)
-		if err != nil {
-			e.log.Error(errors.Wrap(err, "Connect to engine: Create get_version request"))
-			e.log.Debug("Sleeping before reconnect")
-			continue
-		}
-		resp, err := e.httpClient.Do(req)
-		if errors.Is(err, context.DeadlineExceeded) {
-			e.log.Error(errors.Wrap(err, "Connect to engine: Send get_version request"))
-			return
-		}
-		if err != nil {
-			e.log.Error(errors.Wrap(err, "Connect to engine: Send get_version request"))
-			e.log.Debug("Sleeping before reconnect")
-			continue
-		}
-		body, err := io.ReadAll(resp.Body)
-		_ = resp.Body.Close()
-		if err != nil {
-			e.log.Error(errors.Wrap(err, "Connect to engine: Read get_version response body"))
-			e.log.Debug("Sleeping before reconnect")
-			continue
-		}
-		var version versionResp
-		err = json.Unmarshal(body, &version)
-		if err != nil {
-			e.log.Error(errors.Wrap(err, "Connect to engine: Decode get_version response body as JSON"))
-			e.log.Debug("Sleeping before reconnect")
-			continue
-		}
-		if version.Result.Code == 0 || version.Error != nil {
-			e.log.Errorf("Connect to engine: Bad engine response: %+v", version)
-			e.log.Debug("Sleeping before reconnect")
-			continue
-		}
-		e.log.Info("Engine is running")
-		return
 	}
+}
+
+// getVersion requests version info from engine and returns error if engine did not respond properly.
+func (e Engine) getVersion(ctx context.Context) error {
+	params := url.Values{}
+	params.Set("method", "get_version")
+	url := url.URL{Scheme: "http", Host: e.addr, Path: "webui/api/service", RawQuery: params.Encode()}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url.String(), nil)
+	if err != nil {
+		return errors.Wrap(err, "Create get_version request")
+	}
+	resp, err := e.httpClient.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "Send get_version request")
+	}
+	body, err := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	if err != nil {
+		return errors.Wrap(err, "Read get_version response body")
+	}
+	var version versionResp
+	if err := json.Unmarshal(body, &version); err != nil {
+		return errors.Wrap(err, "Decode get_version response body as JSON")
+	}
+	if version.Result.Code == 0 || version.Error != nil {
+		return errors.Newf("Bad engine response: %+v", version)
+	}
+	return nil
 }
 
 // SearchAll returns all currently available ace stream channels.
