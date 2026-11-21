@@ -1,31 +1,38 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/cockroachdb/errors"
 	goFlags "github.com/jessevdk/go-flags"
-	pLog "github.com/phuslu/log"
+
+	"m3u-gen-acestream/util/logger"
 )
 
 // Flags represents command line flags.
 //
 //nolint:lll // go-flags struct tags cannot be wrapped across lines.
 type Flags struct {
-	Version  bool       `short:"v" long:"version"  description:"Print the program version"`
-	Update   bool       `short:"u" long:"update"   description:"Check for updates, update and exit"`
-	LogLevel pLog.Level `short:"l" long:"logLevel" description:"Logging level. Can be from 1 (most verbose) to 7 (least verbose)"`
-	LogFile  string     `short:"f" long:"logFile"  description:"Log file. If set, writes structured log to a file at the specified path"`
-	CfgPath  string     `short:"c" long:"cfgPath"  description:"Config file path to read from or initialize a default"`
+	Version  bool         `short:"v" long:"version"  description:"Print the program version"`
+	Update   bool         `short:"u" long:"update"   description:"Check for updates, update and exit"`
+	LogLevel logger.Level `short:"l" long:"logLevel" description:"Logging level. Can be from 1 (most verbose) to 7 (least verbose)"`
+	LogFile  string       `short:"f" long:"logFile"  description:"Log file. If set, writes structured log to a file at the specified path"`
+	CfgPath  string       `short:"c" long:"cfgPath"  description:"Config file path to read from or initialize a default"`
 }
 
 // Parse returns a structure initialized with command line arguments and error if parsing failed.
 func Parse() (Flags, error) {
 	flags := Flags{
 		// Set defaults
-		LogLevel: pLog.InfoLevel,
+		LogLevel: logger.InfoLevel,
 		CfgPath:  "m3u-gen-acestream.yaml",
 	}
 	parser := goFlags.NewParser(&flags, goFlags.Options(goFlags.Default))
 	_, err := parser.Parse()
+	if err == nil && (flags.LogLevel < logger.TraceLevel || flags.LogLevel > logger.PanicLevel) {
+		err = &goFlags.Error{Type: goFlags.ErrMarshal, Message: fmt.Sprintf(
+			"invalid log level %v, must be from %v to %v", flags.LogLevel, logger.TraceLevel, logger.PanicLevel)}
+	}
 	return flags, errors.Wrap(err, "Parse command line flags")
 }
 

@@ -12,6 +12,7 @@ require (
 	github.com/goccy/go-json v0.10.6
 	github.com/goccy/go-yaml v1.19.2
 	github.com/jessevdk/go-flags v1.6.1
+	github.com/mattn/go-isatty v0.0.24
 	github.com/phuslu/log v1.0.132
 	github.com/samber/lo v1.53.0
 	github.com/stretchr/testify v1.11.1
@@ -29,7 +30,6 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
-	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.16.0 // indirect
