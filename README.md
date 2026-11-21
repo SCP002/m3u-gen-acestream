@@ -35,6 +35,24 @@ Tweak it to suit your needs and start the program again.
 
 See [releases page](https://github.com/SCP002/m3u-gen-acestream/releases)
 
+## Android
+
+* Install and start [Ace Stream Engine](https://docs.acestream.net/products/)
+  (engine API listens on `127.0.0.1:6878`, the default `engineAddr`).
+* Install [Termux](https://f-droid.org/packages/com.termux/) and run in it:
+
+```sh
+termux-setup-storage
+curl -LO https://github.com/SCP002/m3u-gen-acestream/releases/latest/download/m3u-gen-acestream-android-arm64
+chmod +x m3u-gen-acestream-android-arm64
+./m3u-gen-acestream-android-arm64
+```
+
+* To make playlists accessible to players, set `outputPath` in config to e.g. `/storage/emulated/0/Download/playlist.m3u8`
+  and run the program again.
+* For long runs (e.g. with `removeDeadSources: true`) run `termux-wake-lock` first and disable battery optimization
+  for Termux and Ace Stream Engine.
+
 ## Docker
 
 For use:
