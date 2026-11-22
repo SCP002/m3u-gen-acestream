@@ -37,6 +37,9 @@ See [releases page](https://github.com/SCP002/m3u-gen-acestream/releases)
 
 ## Docker
 
+> [!NOTE]
+> Only x86-64 (amd64) is supported by the engine in the setup below.
+
 For use:
 
 * Run the program once to initialize config:
