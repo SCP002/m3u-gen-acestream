@@ -17,21 +17,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      # Dockerfile takes its version from build.sh, so build.sh is the only place to check.
       - name: Check version
         run: |
           tag="$GITHUB_REF_NAME"
           build_version=$(sed -n 's/^version="\(.*\)"$/\1/p' build.sh)
-          docker_version=$(sed -n 's/^ARG VERSION=//p' Dockerfile)
-          ok=true
           if [[ $build_version != "$tag" ]]; then
             echo "::error file=build.sh::Tag is $tag, but version in build.sh is '$build_version'"
-            ok=false
+            exit 1
           fi
-          if [[ $docker_version != "$tag" ]]; then
-            echo "::error file=Dockerfile::Tag is $tag, but VERSION in Dockerfile is '$docker_version'"
-            ok=false
-          fi
-          $ok
 
       - name: Setup Go
         uses: actions/setup-go@v6

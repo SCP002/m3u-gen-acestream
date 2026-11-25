@@ -1,16 +1,23 @@
+# syntax=docker/dockerfile:1
+
 FROM golang:1.27.3-alpine AS builder
 
 WORKDIR /src
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
 
 COPY . .
 
-ARG VERSION=v3.1.3
-RUN CGO_ENABLED=0 go build -trimpath \
-    -ldflags "-s -w -X m3u-gen-acestream/version.Version=${VERSION}" \
-    -o /m3u-gen-acestream .
+# Version is taken from build.sh unless set explicitly.
+ARG VERSION
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    version="${VERSION:-$(sed -n 's/^version="\(.*\)"$/\1/p' build.sh)}" \
+    && CGO_ENABLED=0 go build -trimpath \
+        -ldflags "-s -w -X m3u-gen-acestream/version.Version=${version}" \
+        -o /m3u-gen-acestream .
 
 FROM alpine:3.23
 
