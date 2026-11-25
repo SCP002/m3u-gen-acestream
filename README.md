@@ -4,14 +4,14 @@
 
 > M3U playlist generator for Ace Stream.
 
-## How it works?
+## How does it work?
 
-It fetches available channels from ace stream engine using API, filters and transforms them and writes
-M3U playlists using templates defined in config.
+It fetches available channels from Ace Stream Engine using its API, filters and transforms them, and writes
+M3U playlists using templates defined in the config.
 
 ## Notes
 
-To use it, VPN or proxy might be required as some ISP block connections to acestream servers.
+A VPN or proxy might be required, as some ISPs block connections to Ace Stream servers.
 
 ## Requirements
 
@@ -28,19 +28,19 @@ To use it, VPN or proxy might be required as some ISP block connections to acest
 | -f, --logFile        | Log file. If set, writes structured log to a file at the specified path                   |
 | -c, --cfgPath        | Config file path to read from or initialize a default [default: `m3u-gen-acestream.yaml`] |
 
-Unless config already exists, on first run it creates default config in current directory and terminates.
+If the config does not exist, on the first run it creates a default one at `--cfgPath` and exits.
 Tweak it to suit your needs and start the program again.
 
 ## Downloads
 
-See [releases page](https://github.com/SCP002/m3u-gen-acestream/releases)
+See the [releases page](https://github.com/SCP002/m3u-gen-acestream/releases).
 
 ## Docker
 
 > [!NOTE]
 > Only x86-64 (amd64) is supported by the engine in the setup below.
 
-For use:
+### Usage
 
 * Run the program once to initialize config:
 
@@ -48,8 +48,8 @@ For use:
 docker compose --file compose.yaml run --rm --detach gen
 ```
 
-* Make changes in the `./data/config/m3u-gen-acestream.yaml` file to `engineAddr`,
- `entryTemplate` and `removeDeadLinkTemplate` like so:
+* Change `engineAddr`, `entryTemplate` and `removeDeadLinkTemplate` in the `./data/config/m3u-gen-acestream.yaml`
+  file like so:
 
 ```yaml
 engineAddr: engine:6878
@@ -65,37 +65,36 @@ engineAddr: engine:6878
   removeDeadLinkTemplate: http://192.168.0.100:8080/ace/getstream?infohash={{.Infohash}}
 ```
 
-(replace the `192.168.0.100` with your actual IP).
+Replace `192.168.0.100` with your actual IP address.
 
-* Next, to run  Ace Stream engine, acexy, and generate playlists:
+* Start Ace Stream Engine and acexy, and generate playlists:
 
 ```sh
 docker compose --file compose.yaml up --detach
 ```
 
-They will be available under `./data/out/`.
-Streams will point to your acexy server in docker.
-Acexy default port for incoming connections is `8080`.
+Playlists will be available under `./data/out/`.
+Streams will point to your acexy server in Docker.
+The default acexy port for incoming connections is `8080`.
 
-To run with interval, uncomment the:
+To run on an interval, uncomment this block of the `gen` service in `compose.yaml` and run the command above again:
 
 ```yaml
     # environment:
     #  - INTERVAL=6h
 ```
 
-block at the `gen` service in `compose.yaml` file and run that command again.
+### Development
 
-For developement:
+Open the project in Visual Studio Code with the `Dev Containers` extension installed, or enter the dev container
+manually:
 
 ```sh
 docker compose --file compose.dev.yaml up --detach
 docker compose --file compose.dev.yaml exec dev bash
 ```
 
-to enter the devcontainer, or open the project in Visual Studio Code with `Dev Containers` extension installed.
-
-To build in container environment:
+To build in a container environment:
 
 ```sh
 docker compose --file compose.dev.yaml run --rm --build dev bash ./build.sh
@@ -104,7 +103,7 @@ docker compose --file compose.dev.yaml run --rm --build dev bash ./build.sh
 ## Default config
 
 ```yaml
-# Ace Stream Engine address in format of host:port.
+# Ace Stream Engine address in host:port format.
 engineAddr: 127.0.0.1:6878
 #
 # Playlists to generate.
@@ -113,10 +112,10 @@ playlists:
 # MPEG-TS format, all.
 # Change any non-default category to 'other'.
 - #
-  # Destination filepath to write playlist to.
+  # Destination file path to write the playlist to.
   outputPath: ./out/playlist-mpegts-all.m3u8
   #
-  # Template for the header of M3U file.
+  # Template for the header of the M3U file.
   headerTemplate: |
     #EXTM3U url-tvg="http://epg.one/epg2.xml.gz" tvg-shift=0 deinterlace=1 m3uautoload=1
   #
@@ -133,8 +132,8 @@ playlists:
     #EXTINF:-1 group-title="{{.Categories}}",{{.Name}}
     http://{{.EngineAddr}}/ace/getstream?infohash={{.Infohash}}
   #
-  # Change categories by category regular expressions (keys) to strings (values).
-  # Use '^$' regular expression to match unset categories.
+  # Change categories matching regular expressions (keys) to strings (values).
+  # Use the '^$' regular expression to match unset categories.
   # Example:
   # categoryRxToCategoryMap:
   #   '^category regexp A$': 'becomes category B'
@@ -142,7 +141,7 @@ playlists:
   categoryRxToCategoryMap:
     ^(?!.*(informational|entertaining|educational|movies|documentaries|sport|fashion|music|regional|ethnic|religion|teleshop|erotic_18_plus|other_18_plus|cyber_games|amateur|webcam)).*: other
   #
-  # Set categories by name regular expressions (keys) to list of strings (values).
+  # Set categories of channels whose name matches regular expressions (keys) to lists of strings (values).
   # Example:
   # nameRxToCategoriesMap:
   #   '^name regexp A$':
@@ -153,87 +152,87 @@ playlists:
   #   - 'and category F'
   nameRxToCategoriesMap: {}
   #
-  # Only keep channels which name matches any of these regular expressions.
+  # Only keep channels whose name matches any of these regular expressions.
   # Example:
   # nameRxFilter:
   # - '.*keep channels matching name A.*'
   # - '.*keep channels matching name B.*'
   nameRxFilter: []
   #
-  # Remove channels which name matches any of these regular expressions.
+  # Remove channels whose name matches any of these regular expressions.
   # Example:
   # nameRxBlacklist:
   # - '.*remove channels matching name A.*'
   # - '.*remove channels matching name B.*'
   nameRxBlacklist: []
   #
-  # Only keep channels which category equals to any of these.
+  # Only keep channels whose category equals any of these.
   # See https://docs.acestream.net/developers/knowledge-base/list-of-categories/
-  # for known (but not all possible) categories list.
-  # Use empty string to include results with unset category.
+  # for the list of known (but not all possible) categories.
+  # Use an empty string to include results with unset category.
   # Example:
   # categoriesFilter:
   # - 'keep channels with category A'
   # - 'keep channels with category B'
   categoriesFilter: []
   #
-  # If true, only keep channels with categories that are in filter, but not any other.
+  # If true, only keep channels with categories that are in the filter and no others.
   categoriesFilterStrict: false
   #
-  # Remove channels which category equals to any of these.
+  # Remove channels whose category equals any of these.
   # See https://docs.acestream.net/developers/knowledge-base/list-of-categories/
-  # for known (but not all possible) categories list.
-  # Use empty string to exclude results with unset category.
+  # for the list of known (but not all possible) categories.
+  # Use an empty string to exclude results with unset category.
   # Example:
   # categoriesBlacklist:
   # - 'remove channels with category A'
   # - 'remove channels with category B'
   categoriesBlacklist: []
   #
-  # Only keep channels which language equals to any of these.
-  # Languages are 3-character, lower case strings, such as 'eng', 'rus' etc.
-  # Use empty string to include results with unset language.
+  # Only keep channels whose language equals any of these.
+  # Languages are 3-character lowercase strings, such as 'eng', 'rus', etc.
+  # Use an empty string to include results with unset language.
   # Example:
   # languagesFilter:
   # - 'keep channels with language A'
   # - 'keep channels with language B'
   languagesFilter: []
   #
-  # If true, only keep channels with languages that are in filter, but not any other.
+  # If true, only keep channels with languages that are in the filter and no others.
   languagesFilterStrict: false
   #
-  # Remove channels which language equals to any of these.
-  # Languages are 3-character, lower case strings, such as 'eng', 'rus' etc.
-  # Use empty string to exclude results with unset language.
+  # Remove channels whose language equals any of these.
+  # Languages are 3-character lowercase strings, such as 'eng', 'rus', etc.
+  # Use an empty string to exclude results with unset language.
   # Example:
   # languagesBlacklist:
   # - 'remove channels with language A'
   # - 'remove channels with language B'
   languagesBlacklist: []
   #
-  # Only keep channels which country equals to any of these.
-  # Countries are 2-character, lower case strings, such as 'us', 'ru' etc. and 'int' for international.
-  # Use empty string to include results with unset country.
+  # Only keep channels whose country equals any of these.
+  # Countries are 2-character lowercase strings, such as 'us', 'ru', etc., and 'int' for international.
+  # Use an empty string to include results with unset country.
   # Example:
   # countriesFilter:
   # - 'keep channels with country A'
   # - 'keep channels with country B'
   countriesFilter: []
   #
-  # If true, only keep channels with countries that are in filter, but not any other.
+  # If true, only keep channels with countries that are in the filter and no others.
   countriesFilterStrict: false
   #
-  # Remove channels which country equals to any of these.
-  # Countries are 2-character, lower case strings, such as 'us', 'ru' etc. and 'int' for international.
-  # Use empty string to exclude results with unset country.
+  # Remove channels whose country equals any of these.
+  # Countries are 2-character lowercase strings, such as 'us', 'ru', etc., and 'int' for international.
+  # Use an empty string to exclude results with unset country.
   # Example:
   # countriesBlacklist:
   # - 'remove channels with country A'
   # - 'remove channels with country B'
   countriesBlacklist: []
   #
-  # Only keep channels which status equals to any of these.
-  # Can be 1 (no guaranty that channel is working) or 2 (channel is available).
+  # Only keep channels whose status equals any of these.
+  # Can be 1 (no guarantee that the channel is working) or 2 (the channel is available).
   # Example:
   # statusFilter:
   # - 1
@@ -241,22 +240,22 @@ playlists:
   statusFilter:
   - 2
   #
-  # Only keep channels which availability equals to or more than this.
+  # Only keep channels whose availability is equal to or greater than this.
   # Can be between 0.0 (zero availability) and 1.0 (full availability).
-  # The lower this value is, the less channels gets removed.
+  # The lower this value is, the fewer channels get removed.
   availabilityThreshold: 1.0
   #
-  # Only keep channels which availability was updated that much time ago or sooner.
-  # The lower this value is, the more channels gets removed.
+  # Only keep channels whose availability was updated no longer ago than this.
+  # The lower this value is, the more channels get removed.
   availabilityUpdatedThreshold: 36h0m0s
   #
-  # Remove sources that does not respond with any content.
+  # Remove sources that do not respond with any content.
   removeDeadSources: false
   #
   # Try to read TS packets when removing dead sources.
   useMpegTsAnalyzer: false
   #
-  # Timeout for reading Ace Stream Engine response when removing dead sources.
+  # Timeout for reading the Ace Stream Engine response when removing dead sources.
   checkRespTimeout: 20s
   #
   # Template of the link to check when removing dead sources.
@@ -265,12 +264,12 @@ playlists:
   # {{.EngineAddr}}
   removeDeadLinkTemplate: http://{{.EngineAddr}}/ace/getstream?infohash={{.Infohash}}
   #
-  # Amount of simultaneous availability checks when removing dead sources.
-  # Do not set above 1 if using default Ace Stream Engine without proxy.
-  # If using proxy, change `removeDeadLinkTemplate` accordingly.
+  # Number of simultaneous availability checks when removing dead sources.
+  # Do not set above 1 if using the default Ace Stream Engine without a proxy.
+  # If using a proxy, change `removeDeadLinkTemplate` accordingly.
   removeDeadWorkers: 1
 #
-# HLS format, only keep tv, music and empty category.
+# HLS format, only keep 'tv', 'music' and empty categories.
 # Change category 'tv' to 'television' and empty category to 'unknown'.
 - outputPath: ./out/playlist-hls-tv-+-music-+-no-category.m3u8
   headerTemplate: |
@@ -346,7 +345,7 @@ playlists:
 
 1. Install [Golang](https://golang.org/) 1.27.3 or newer.
 
-2. Download the source code:  
+2. Download the source code:
 
     ```sh
     git clone https://github.com/SCP002/m3u-gen-acestream.git
@@ -372,7 +371,7 @@ playlists:
     go get -u ./...
     ```
 
-5. To build a binary for current OS / architecture into `./build/` folder:
+5. To build a binary for the current OS / architecture into the `./build/` folder:
 
     ```sh
     go build -trimpath -ldflags "-s -w" -o build/ .

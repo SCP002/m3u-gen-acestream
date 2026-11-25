@@ -19,7 +19,7 @@ type Config struct {
 	Playlists  []Playlist `yaml:"playlists"`
 }
 
-// Playlist represents set of parameters for M3U playlist generation such as output path, template and filter criterias.
+// Playlist represents a set of parameters for M3U playlist generation, such as output path, templates and filter criteria.
 type Playlist struct {
 	OutputPath                   string              `yaml:"outputPath"`
 	HeaderTemplate               string              `yaml:"headerTemplate"`
@@ -47,9 +47,9 @@ type Playlist struct {
 	RemoveDeadWorkers            int                 `yaml:"removeDeadWorkers"`
 }
 
-// Init returns config instance and false if config at `filePath` already exist.
+// Init returns config instance and false if config at `filePath` already exists.
 //
-// If config does not exist, creates a default, returns empty instance and true.
+// If config does not exist, creates a default one, returns an empty instance and true.
 func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 	log.Info("Reading config")
 
@@ -79,29 +79,29 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 		for _, playlist := range cfg.Playlists {
 			for rx := range playlist.CategoryRxToCategoryMap {
 				if _, err := regexp2.Compile(rx, regexp2.RE2); err != nil {
-					return errors.Wrapf(err, "Can not compile regular expression:\n%v\nin categoryRxToCategoryMap", rx)
+					return errors.Wrapf(err, "Cannot compile regular expression:\n%v\nin categoryRxToCategoryMap", rx)
 				}
 			}
 			for rx := range playlist.NameRxToCategoriesMap {
 				if _, err := regexp2.Compile(rx, regexp2.RE2); err != nil {
-					return errors.Wrapf(err, "Can not compile regular expression:\n%v:\nin nameRxToCategoriesMap", rx)
+					return errors.Wrapf(err, "Cannot compile regular expression:\n%v:\nin nameRxToCategoriesMap", rx)
 				}
 			}
 			for _, rx := range playlist.NameRxFilter {
 				if _, err := regexp2.Compile(rx, regexp2.RE2); err != nil {
-					return errors.Wrapf(err, "Can not compile regular expression:\n%v\nin nameRxFilter", rx)
+					return errors.Wrapf(err, "Cannot compile regular expression:\n%v\nin nameRxFilter", rx)
 				}
 			}
 			for _, rx := range playlist.NameRxBlacklist {
 				if _, err := regexp2.Compile(rx, regexp2.RE2); err != nil {
-					return errors.Wrapf(err, "Can not compile regular expression:\n%v\nin nameRxBlacklist", rx)
+					return errors.Wrapf(err, "Cannot compile regular expression:\n%v\nin nameRxBlacklist", rx)
 				}
 			}
 			if _, err := template.New("").Parse(playlist.EntryTemplate); err != nil {
-				return errors.Wrapf(err, "Can not parse template:\n%v\nin entryTemplate", playlist.EntryTemplate)
+				return errors.Wrapf(err, "Cannot parse template:\n%v\nin entryTemplate", playlist.EntryTemplate)
 			}
 			if _, err := template.New("").Parse(playlist.RemoveDeadLinkTemplate); err != nil {
-				return errors.Wrapf(err, "Can not parse template:\n%v\nin removeDeadLinkTemplate",
+				return errors.Wrapf(err, "Cannot parse template:\n%v\nin removeDeadLinkTemplate",
 					playlist.RemoveDeadLinkTemplate)
 			}
 		}
@@ -122,7 +122,7 @@ func Init(log *logger.Logger, filePath string) (*Config, bool, error) {
 		return nil
 	}
 
-	// Read config or create a new if not exist.
+	// Read config or create a new one if it does not exist.
 	if err := readConfig(); err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			log.Info("Config file not found, creating a default")
@@ -260,7 +260,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 
 	commentMap := yaml.CommentMap{
 		"$.engineAddr": []*yaml.Comment{
-			yaml.HeadComment(" Ace Stream Engine address in format of host:port."),
+			yaml.HeadComment(" Ace Stream Engine address in host:port format."),
 		},
 		"$.playlists": []*yaml.Comment{
 			yaml.HeadComment("", " Playlists to generate."),
@@ -273,10 +273,10 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 			),
 		},
 		"$.playlists[0].outputPath": []*yaml.Comment{
-			yaml.HeadComment("", " Destination filepath to write playlist to."),
+			yaml.HeadComment("", " Destination file path to write the playlist to."),
 		},
 		"$.playlists[0].headerTemplate": []*yaml.Comment{
-			yaml.HeadComment("", " Template for the header of M3U file."),
+			yaml.HeadComment("", " Template for the header of the M3U file."),
 		},
 		"$.playlists[0].entryTemplate": []*yaml.Comment{
 			yaml.HeadComment(
@@ -295,8 +295,8 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].categoryRxToCategoryMap": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Change categories by category regular expressions (keys) to strings (values).",
-				" Use '^$' regular expression to match unset categories.",
+				" Change categories matching regular expressions (keys) to strings (values).",
+				" Use the '^$' regular expression to match unset categories.",
 				" Example:",
 				" categoryRxToCategoryMap:",
 				"   '^category regexp A$': 'becomes category B'",
@@ -306,7 +306,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].nameRxToCategoriesMap": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Set categories by name regular expressions (keys) to list of strings (values).",
+				" Set categories of channels whose name matches regular expressions (keys) to lists of strings (values).",
 				" Example:",
 				" nameRxToCategoriesMap:",
 				"   '^name regexp A$':",
@@ -320,7 +320,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].nameRxFilter": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which name matches any of these regular expressions.",
+				" Only keep channels whose name matches any of these regular expressions.",
 				" Example:",
 				" nameRxFilter:",
 				" - '.*keep channels matching name A.*'",
@@ -330,7 +330,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].nameRxBlacklist": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Remove channels which name matches any of these regular expressions.",
+				" Remove channels whose name matches any of these regular expressions.",
 				" Example:",
 				" nameRxBlacklist:",
 				" - '.*remove channels matching name A.*'",
@@ -340,10 +340,10 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].categoriesFilter": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which category equals to any of these.",
+				" Only keep channels whose category equals any of these.",
 				" See https://docs.acestream.net/developers/knowledge-base/list-of-categories/",
-				" for known (but not all possible) categories list.",
-				" Use empty string to include results with unset category.",
+				" for the list of known (but not all possible) categories.",
+				" Use an empty string to include results with unset category.",
 				" Example:",
 				" categoriesFilter:",
 				" - 'keep channels with category A'",
@@ -353,16 +353,16 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].categoriesFilterStrict": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" If true, only keep channels with categories that are in filter, but not any other.",
+				" If true, only keep channels with categories that are in the filter and no others.",
 			),
 		},
 		"$.playlists[0].categoriesBlacklist": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Remove channels which category equals to any of these.",
+				" Remove channels whose category equals any of these.",
 				" See https://docs.acestream.net/developers/knowledge-base/list-of-categories/",
-				" for known (but not all possible) categories list.",
-				" Use empty string to exclude results with unset category.",
+				" for the list of known (but not all possible) categories.",
+				" Use an empty string to exclude results with unset category.",
 				" Example:",
 				" categoriesBlacklist:",
 				" - 'remove channels with category A'",
@@ -372,9 +372,9 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].languagesFilter": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which language equals to any of these.",
-				" Languages are 3-character, lower case strings, such as 'eng', 'rus' etc.",
-				" Use empty string to include results with unset language.",
+				" Only keep channels whose language equals any of these.",
+				" Languages are 3-character lowercase strings, such as 'eng', 'rus', etc.",
+				" Use an empty string to include results with unset language.",
 				" Example:",
 				" languagesFilter:",
 				" - 'keep channels with language A'",
@@ -384,15 +384,15 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].languagesFilterStrict": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" If true, only keep channels with languages that are in filter, but not any other.",
+				" If true, only keep channels with languages that are in the filter and no others.",
 			),
 		},
 		"$.playlists[0].languagesBlacklist": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Remove channels which language equals to any of these.",
-				" Languages are 3-character, lower case strings, such as 'eng', 'rus' etc.",
-				" Use empty string to exclude results with unset language.",
+				" Remove channels whose language equals any of these.",
+				" Languages are 3-character lowercase strings, such as 'eng', 'rus', etc.",
+				" Use an empty string to exclude results with unset language.",
 				" Example:",
 				" languagesBlacklist:",
 				" - 'remove channels with language A'",
@@ -402,9 +402,9 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].countriesFilter": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which country equals to any of these.",
-				" Countries are 2-character, lower case strings, such as 'us', 'ru' etc. and 'int' for international.",
-				" Use empty string to include results with unset country.",
+				" Only keep channels whose country equals any of these.",
+				" Countries are 2-character lowercase strings, such as 'us', 'ru', etc., and 'int' for international.",
+				" Use an empty string to include results with unset country.",
 				" Example:",
 				" countriesFilter:",
 				" - 'keep channels with country A'",
@@ -414,15 +414,15 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].countriesFilterStrict": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" If true, only keep channels with countries that are in filter, but not any other.",
+				" If true, only keep channels with countries that are in the filter and no others.",
 			),
 		},
 		"$.playlists[0].countriesBlacklist": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Remove channels which country equals to any of these.",
-				" Countries are 2-character, lower case strings, such as 'us', 'ru' etc. and 'int' for international.",
-				" Use empty string to exclude results with unset country.",
+				" Remove channels whose country equals any of these.",
+				" Countries are 2-character lowercase strings, such as 'us', 'ru', etc., and 'int' for international.",
+				" Use an empty string to exclude results with unset country.",
 				" Example:",
 				" countriesBlacklist:",
 				" - 'remove channels with country A'",
@@ -432,8 +432,8 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].statusFilter": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which status equals to any of these.",
-				" Can be 1 (no guaranty that channel is working) or 2 (channel is available).",
+				" Only keep channels whose status equals any of these.",
+				" Can be 1 (no guarantee that the channel is working) or 2 (the channel is available).",
 				" Example:",
 				" statusFilter:",
 				" - 1",
@@ -443,22 +443,22 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].availabilityThreshold": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which availability equals to or more than this.",
+				" Only keep channels whose availability is equal to or greater than this.",
 				" Can be between 0.0 (zero availability) and 1.0 (full availability).",
-				" The lower this value is, the less channels gets removed.",
+				" The lower this value is, the fewer channels get removed.",
 			),
 		},
 		"$.playlists[0].availabilityUpdatedThreshold": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Only keep channels which availability was updated that much time ago or sooner.",
-				" The lower this value is, the more channels gets removed.",
+				" Only keep channels whose availability was updated no longer ago than this.",
+				" The lower this value is, the more channels get removed.",
 			),
 		},
 		"$.playlists[0].removeDeadSources": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Remove sources that does not respond with any content.",
+				" Remove sources that do not respond with any content.",
 			),
 		},
 		"$.playlists[0].useMpegTsAnalyzer": []*yaml.Comment{
@@ -470,7 +470,7 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].checkRespTimeout": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Timeout for reading Ace Stream Engine response when removing dead sources.",
+				" Timeout for reading the Ace Stream Engine response when removing dead sources.",
 			),
 		},
 		"$.playlists[0].removeDeadLinkTemplate": []*yaml.Comment{
@@ -485,15 +485,15 @@ func newDefCfg() (*Config, yaml.CommentMap) {
 		"$.playlists[0].removeDeadWorkers": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" Amount of simultaneous availability checks when removing dead sources.",
-				" Do not set above 1 if using default Ace Stream Engine without proxy.",
-				" If using proxy, change `removeDeadLinkTemplate` accordingly.",
+				" Number of simultaneous availability checks when removing dead sources.",
+				" Do not set above 1 if using the default Ace Stream Engine without a proxy.",
+				" If using a proxy, change `removeDeadLinkTemplate` accordingly.",
 			),
 		},
 		"$.playlists[1]": []*yaml.Comment{
 			yaml.HeadComment(
 				"",
-				" HLS format, only keep tv, music and empty category.",
+				" HLS format, only keep 'tv', 'music' and empty categories.",
 				" Change category 'tv' to 'television' and empty category to 'unknown'.",
 			),
 		},
